@@ -10,7 +10,7 @@ function Remove-WHDClient {
     )
 
     # Search for the Client by Email to get the ID
-    $Client = Get-WHDClient @PSBoundParameters
+    $Client = Get-WHDClient -Email $Email
 
     # Validate we got exactly 1 result back, otherwise we don't know what to delete
     if ($Client.Count -eq 0) {
@@ -22,7 +22,7 @@ function Remove-WHDClient {
     # Delete the Client by ID
     if ($PSCmdlet.ShouldProcess("Email=$Email")) {
         Remove-WHDResource `
-            -Resource   ([WHDResourceType]::Client) `
+            -Resource   ([WHDResourceType]::Clients) `
             -ResourceId $Client[0].id `
             -Confirm:$false
     }

@@ -55,7 +55,7 @@ function Get-WHDResource {
     }
 
     # verify a saved session exists when we're not passing credentials
-    if ($PSCmdlet.ParameterSetName -like "Session*" -and -not $Script:WHD.Session) {
+    if ($PSCmdlet.ParameterSetName -like "Session*" -and -not $Script:WHDConnection.Session) {
         throw "No active session. Please connect to Web Help Desk first using Connect-WebHelpDesk."
     }
 
@@ -70,7 +70,7 @@ function Get-WHDResource {
         $QueryParameters["password"] = $Password
     }
     else {
-        $QueryParameters["sessionKey"] = $Script:WHD.Session.sessionKey
+        $QueryParameters["sessionKey"] = $Script:WHDConnection.Session.sessionKey
     }
 
     # Add qualifier if we are using Search mode
@@ -78,16 +78,17 @@ function Get-WHDResource {
 
     # Build the Uri, ignore Ticket SubType as it isn't used in the URI
     # TODO: there must be a cleaner way to construct this string.
-    $Uri = "$($Script:WHD.BaseUrl)/$Resource"
+    $Uri = "$($Script:WHDConnection.BaseUrl)/$Resource"
     if (($null -ne $SubType) -and ($SubType -ne [WHDCustomFieldType]::Ticket)) { $Uri += "/$SubType" }
     if ($PSCmdlet.ParameterSetName -like "*Single") { $Uri += "/$ResourceId" }
 
     # Send the query
     $Results = Invoke-RestMethod `
-        -Uri        $Uri `
-        -Method     ([Microsoft.PowerShell.Commands.WebRequestMethod]::Get) `
-        -Body       $QueryParameters `
-        -WebSession $Script:WHD.WebSession
+        -Uri         $Uri `
+        -Method      ([Microsoft.PowerShell.Commands.WebRequestMethod]::Get) `
+        -ContentType "application/json" `
+        -Body        $QueryParameters `
+        -WebSession  $Script:WHDConnection.WebSession
 
     # If we got a result, modify it with some additional properties and types to make it easier to work with
     if ($null -ne $Results) {

@@ -18,14 +18,14 @@ function Connect-WebHelpDesk {
     if (-not $Script:WHD) { $Script:WHD = @{} }
 
     # Store the base URL, used by other helper functions when building endpoints
-    $Script:WHD.BaseUrl  = "$BaseUrl/helpdesk/WebObjects/Helpdesk.woa/ra"
+    $Script:WHDConnection.BaseUrl  = "$BaseUrl/helpdesk/WebObjects/Helpdesk.woa/ra"
 
     # Pre-create a WebSession object that we can reuse for all our requests; this
     # handles cookies/caching for the REST API.
-    $Script:WHD.WebSession = [Microsoft.PowerShell.Commands.WebRequestSession]::new()
+    $Script:WHDConnection.WebSession = [Microsoft.PowerShell.Commands.WebRequestSession]::new()
 
     # Get a session key and save it in our state – works with either credentials
-    $Script:WHD.Session = if ($ApiKey) {
+    $Script:WHDConnection.Session = if ($ApiKey) {
         Get-WHDSession -ApiKey $ApiKey -Username $Username
     } else {
         Get-WHDSession -Username $Username -Password $Password
