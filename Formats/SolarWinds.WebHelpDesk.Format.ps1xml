@@ -1,0 +1,32 @@
+<Configuration>
+  <ViewDefinitions>
+
+    <View>
+      <Name>SolarWinds.WHD.Asset.Table</Name>
+      <ViewSelectedBy>
+        <TypeName>SolarWinds.WHD.Asset</TypeName>
+      </ViewSelectedBy>
+
+      <TableControl>
+        <TableHeaders>
+          <TableColumnHeader><Label>Id</Label></TableColumnHeader>
+          <TableColumnHeader><Label>Asset</Label></TableColumnHeader>
+          <TableColumnHeader><Label>Serial</Label></TableColumnHeader>
+          <TableColumnHeader><Label>Status</Label></TableColumnHeader>
+        </TableHeaders>
+
+        <TableRowEntries>
+          <TableRowEntry>
+            <TableColumnItems>
+              <TableColumnItem><PropertyName>Id</PropertyName></TableColumnItem>
+              <TableColumnItem><PropertyName>AssetNumber</PropertyName></TableColumnItem>
+              <TableColumnItem><PropertyName>SerialNumber</PropertyName></TableColumnItem>
+              <TableColumnItem><PropertyName>Status</PropertyName></TableColumnItem>
+            </TableColumnItems>
+          </TableRowEntry>
+        </TableRowEntries>
+      </TableControl>
+    </View>
+
+  </ViewDefinitions>
+</Configuration>
