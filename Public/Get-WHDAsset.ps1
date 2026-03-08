@@ -53,32 +53,47 @@ function Get-WHDAsset {
         }
         "Search" {
             # Build a search qualifier based on the provided parameters
-            # FIXME: I wan't this to be a loop, but the attribute names don't match the parameter names
-            # FIXME: Use an arraylist instead of an array and avoid creating a new array on each addition
-            $Qualifiers = @()
+            # FIXME: I wanted this to be a loop, but the attribute names don't match the parameter names
+            $Qualifiers = [System.Collections.ArrayList]::new()
             if ($PSCmdlet.MyInvocation.BoundParameters.ContainsKey("AssetNumber")) {
-                $Qualifiers += New-WHDQualifier `
-                    -Attribute "assetNumber" `
-                    -Operator  ([WHDQualifierOperator]::Equals) `
-                    -Value     $PSCmdlet.MyInvocation.BoundParameters["AssetNumber"]
+                $Qualifiers.Add(
+                    (
+                        New-WHDQualifier `
+                            -Attribute "assetNumber" `
+                            -Operator  ([WHDQualifierOperator]::Equals) `
+                            -Value     $PSCmdlet.MyInvocation.BoundParameters["AssetNumber"]
+                    )
+                )
             }
             if ($PSCmdlet.MyInvocation.BoundParameters.ContainsKey("SerialNumber")) {
-                $Qualifiers += New-WHDQualifier `
-                    -Attribute "serialNumber" `
-                    -Operator  ([WHDQualifierOperator]::Equals) `
-                    -Value     $PSCmdlet.MyInvocation.BoundParameters["SerialNumber"]
+                $Qualifiers.Add(
+                    (
+                        New-WHDQualifier `
+                            -Attribute "serialNumber" `
+                            -Operator  ([WHDQualifierOperator]::Equals) `
+                            -Value     $PSCmdlet.MyInvocation.BoundParameters["SerialNumber"]
+                    )
+                )
             }
             if ($PSCmdlet.MyInvocation.BoundParameters.ContainsKey("Location")) {
-                $Qualifiers += New-WHDQualifier `
-                    -Attribute "location.locationName" `
-                    -Operator  ([WHDQualifierOperator]::Equals) `
-                    -Value     $PSCmdlet.MyInvocation.BoundParameters["Location"]
+                $Qualifiers.Add(
+                    (
+                        New-WHDQualifier `
+                            -Attribute "location.locationName" `
+                            -Operator  ([WHDQualifierOperator]::Equals) `
+                            -Value     $PSCmdlet.MyInvocation.BoundParameters["Location"]
+                    )
+                )
             }
             if ($PSCmdlet.MyInvocation.BoundParameters.ContainsKey("Room")) {
-                $Qualifiers += New-WHDQualifier `
-                    -Attribute "room.roomName" `
-                    -Operator  ([WHDQualifierOperator]::Equals) `
-                    -Value     $PSCmdlet.MyInvocation.BoundParameters["Room"]
+                $Qualifiers.Add(
+                    (
+                        New-WHDQualifier `
+                            -Attribute "room.roomName" `
+                            -Operator  ([WHDQualifierOperator]::Equals) `
+                            -Value     $PSCmdlet.MyInvocation.BoundParameters["Room"]
+                    )
+                )
             }
 
             # Combine qualifiers with AND, if there are any
