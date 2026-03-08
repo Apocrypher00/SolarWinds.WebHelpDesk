@@ -14,7 +14,11 @@
     The API key for authentication.
 
     .PARAMETER Username
-    The username associated with the API key. This is required for Applicayion API keys but optional for User API keys.
+    The username associated with the API key. This is required for Application API keys but optional for User API keys.
+
+    .PARAMETER PersistCredentials
+    If set, the API key and username will be stored in the module's state for future use.
+    By default, credentials are only used to obtain a session key and are not stored.
 #>
 function Connect-WebHelpDesk {
     [CmdletBinding()]
@@ -26,7 +30,10 @@ function Connect-WebHelpDesk {
         [string] $ApiKey,
 
         [Parameter()]
-        [string] $Username
+        [string] $Username,
+
+        [Parameter()]
+        [switch] $PersistCredentials
     )
 
     # Store the base URL, used by other helper functions when building endpoints
@@ -40,10 +47,12 @@ function Connect-WebHelpDesk {
     $Script:WHDConnection.Authentication.apiKey   = $ApiKey
     $Script:WHDConnection.Authentication.username = $Username
 
-    # Get a session key and save it in our state – works with either credentials
-    $Script:WHDConnection.Session = Get-WHDSession
+    if (-not $PersistCredentials) {
+        # Get a session key and save it in our state
+        $Script:WHDConnection.Session = Get-WHDSession
 
-    # Clear the temporary credentials from our state for security; we only need the session key going forward
-    $Script:WHDConnection.Authentication.apiKey   = $null
-    $Script:WHDConnection.Authentication.username = $null
+        # Clear the temporary credentials from our state for security; we only need the session key going forward
+        $Script:WHDConnection.Authentication.apiKey   = $null
+        $Script:WHDConnection.Authentication.username = $null
+    }
 }
