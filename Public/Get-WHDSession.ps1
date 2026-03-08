@@ -11,10 +11,10 @@ function Get-WHDSession {
         [Parameter(Mandatory)]
         [string] $Username,
 
-        [Parameter(Mandatory, ParameterSetName = "ApiKey")]
+        [Parameter(ParameterSetName = "ApiKey", Mandatory)]
         [string] $ApiKey,
 
-        [Parameter(Mandatory, ParameterSetName = "Password")]
+        [Parameter(ParameterSetName = "Password", Mandatory)]
         [string] $Password
     )
 
@@ -23,14 +23,14 @@ function Get-WHDSession {
             Get-WHDResource `
                 -Username  $Username `
                 -ApiKey    $ApiKey `
-                -Resource  ([WHDResourceType]::Session) `
+                -ResourceType  ([WHDResourceType]::Session) `
                 -Qualifier ""
         }
         "Password" {
             Get-WHDResource `
                 -Username  $Username `
                 -Password  $Password `
-                -Resource  ([WHDResourceType]::Session) `
+                -ResourceType  ([WHDResourceType]::Session) `
                 -Qualifier ""
         }
     }

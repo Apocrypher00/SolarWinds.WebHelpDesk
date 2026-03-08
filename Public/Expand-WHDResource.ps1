@@ -13,7 +13,6 @@ function Expand-WHDResource {
     )
 
     process {
-        # Send the query and return the result
         return Get-WHDResource `
             -Resource   $Resource.ResourceType `
             -ResourceId $Resource.id

@@ -12,10 +12,15 @@ function Get-WHDClient {
         [switch] $Expand
     )
 
+    $Qualifier = New-WHDQualifier `
+        -Attribute "email" `
+        -Operator  ([WHDQualifierOperator]::CaseInsensitiveLike) `
+        -Value     $Email
+
     # Search for the Client by Email to get the ID
     $Results = Get-WHDResource `
-        -Resource  ([WHDResourceType]::Clients) `
-        -Qualifier "(email caseInsensitiveLike '$Email')" `
+        -ResourceType ([WHDResourceType]::Clients) `
+        -Qualifier    $Qualifier `
         -Expand:$Expand
 
     return $Results

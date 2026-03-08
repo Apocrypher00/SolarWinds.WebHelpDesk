@@ -3,7 +3,7 @@ $Script:WHDConnection = @{
     BaseUrl    = $null
     Session    = $null
     WebSession = $null
-    Cache      = @{
+    Cache      = @{ # TODO: We will store data here that replaces stub fields, such as the AssetStatus field on Tickets
         AssetStatus = @{
             Map     = @{}                           # [int] -> [string]
             Fetched = $null                         # [datetime]
@@ -19,4 +19,4 @@ Get-ChildItem -Path $Private -Filter '*.ps1' -File | ForEach-Object { . $_.FullN
 Get-ChildItem -Path $Public  -Filter '*.ps1' -File | ForEach-Object { . $_.FullName }
 
 # Export all functions in the Public folder
-Export-ModuleMember -Function (Get-ChildItem $Public -Filter '*.ps1' -File | ForEach-Object { $_.BaseName })
+# Export-ModuleMember -Function (Get-ChildItem $Public -Filter '*.ps1' -File | ForEach-Object { $_.BaseName })

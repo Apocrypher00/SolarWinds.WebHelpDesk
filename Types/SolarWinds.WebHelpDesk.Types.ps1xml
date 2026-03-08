@@ -1,13 +1,11 @@
 <Types>
-  <Type>
-    <Name>SolarWinds.WebHelpDesk.Asset</Name>
-    <Members>
-
-      <ScriptProperty>
-        <Name>AssetNumber</Name>
-        <GetScriptBlock>$this.Raw.assetNumber</GetScriptBlock>
-      </ScriptProperty>
-
-    </Members>
-  </Type>
+    <Type>
+        <Name>SolarWinds.WebHelpDesk.Assets</Name>
+        <Members>
+            <ScriptProperty>
+                <Name>Status</Name>
+                <GetScriptBlock>$this.assetStatus</GetScriptBlock>
+            </ScriptProperty>
+        </Members>
+    </Type>
 </Types>

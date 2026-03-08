@@ -6,7 +6,7 @@ function Remove-WHDSession {
     [CmdletBinding(SupportsShouldProcess, ConfirmImpact = "High")]
     param (
         [Parameter(ParameterSetName = "Session", Mandatory)]
-        [PSTypeNameAttribute("SolarWinds.WebHelpDesk.Session")] $Session,
+        [PSTypeName("SolarWinds.WebHelpDesk.Session")] $Session,
 
         [Parameter(ParameterSetName = "SessionId", Mandatory)]
         [int] $SessionId
@@ -18,7 +18,7 @@ function Remove-WHDSession {
 
     if ($PSCmdlet.ShouldProcess("SessionId=$SessionId")) {
         Remove-WHDResource `
-            -Resource   ([WHDResourceType]::Session) `
+            -ResourceType   ([WHDResourceType]::Session) `
             -ResourceId $SessionId `
             -Confirm:$false
     }

@@ -5,6 +5,7 @@
     .NOTES
     Qualifiers are case sensitive.
     Not all Resources support qualifiers. Use the more specific functions when possible.
+    FIXME: We need to move the auth logic out
 #>
 function Get-WHDResource {
     [CmdletBinding(DefaultParameterSetName = "SessionSearch")]
@@ -29,7 +30,7 @@ function Get-WHDResource {
 
         # always required
         [Parameter(Mandatory)]
-        [WHDResourceType] $Resource,
+        [WHDResourceType] $ResourceType,
 
         [Parameter()]
         [WHDCustomFieldType] $SubType,
@@ -50,7 +51,7 @@ function Get-WHDResource {
     )
 
     # Only allow SubType for CustomFieldDefinitions
-    if ($SubType -and ($Resource -ne [WHDResourceType]::CustomFieldDefinitions)) {
+    if ($SubType -and ($ResourceType -ne [WHDResourceType]::CustomFieldDefinitions)) {
         throw "SubType is only valid for the 'CustomFieldDefinitions' resource."
     }
 
@@ -78,7 +79,7 @@ function Get-WHDResource {
 
     # Build the Uri, ignore Ticket SubType as it isn't used in the URI
     # TODO: there must be a cleaner way to construct this string.
-    $Uri = "$($Script:WHDConnection.BaseUrl)/$Resource"
+    $Uri = "$($Script:WHDConnection.BaseUrl)/$ResourceType"
     if (($null -ne $SubType) -and ($SubType -ne [WHDCustomFieldType]::Ticket)) { $Uri += "/$SubType" }
     if ($PSCmdlet.ParameterSetName -like "*Single") { $Uri += "/$ResourceId" }
 
@@ -93,13 +94,13 @@ function Get-WHDResource {
     # If we got a result, modify it with some additional properties and types to make it easier to work with
     if ($null -ne $Results) {
         # Modify the resulting objects with a custom type
-        $Results | Set-WHDTypeName -ResourceType $Resource
+        $Results | Set-WHDTypeName -ResourceType $ResourceType
 
         # Add a type field with the types we use
-        $Results | Add-Member -MemberType NoteProperty -Name "ResourceType" -Value $Resource -Force
+        $Results | Add-Member -MemberType NoteProperty -Name "ResourceType" -Value $ResourceType -Force
 
-        # Expand if requested
-        if ($Expand) { $Results = $Results | Expand-WHDResource }
+        # Expand if requested, but if this is a single resource query, it's already expanded
+        if ($Expand -and ($PSCmdlet.ParameterSetName -notlike "*Single")) { $Results = $Results | Expand-WHDResource }
     }
 
     return $Results

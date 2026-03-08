@@ -20,6 +20,9 @@
 function Get-WHDAsset {
     [CmdletBinding()]
     param (
+        [Parameter(ParameterSetName = "ID", Mandatory)]
+        [int] $ResourceId,
+
         [Parameter(ParameterSetName = "AssetNumber", Mandatory)]
         [string] $AssetNumber,
 
@@ -30,26 +33,33 @@ function Get-WHDAsset {
         [switch] $Expand
     )
 
-    # Build a search qualifier based on the parameter set
-    $Qualifier = switch ($PSCmdlet.ParameterSetName) {
-        "AssetNumber" { "(assetNumber = '$AssetNumber')" }
-        "SerialNumber" { "(serialNumber = '$SerialNumber')" }
-    }
-
-    # Get the assets
-    $Results = Get-WHDResource `
-        -Resource  ([WHDResourceType]::Assets) `
-        -Qualifier $Qualifier `
-        -Expand:$Expand
-
-    # Replace status with the actual name, if requested
-    # FIXME: we should probably cache these lookups instead of doing one per asset
-    # FIXME: This should be a resolved property
-    if ($Expand) {
-        $AssetStatuses = Get-WHDAssetStatus
-        foreach ($Result in $Results) {
-            $Result.assetStatus = ($AssetStatuses | Where-Object "id" -EQ $Result.assetStatus.id)[0].name
+    if ($PSCmdlet.ParameterSetName -eq "ID") {
+        $Results = Get-WHDResource `
+            -ResourceType  ([WHDResourceType]::Assets) `
+            -ResourceId $ResourceId
+    } else {
+        # Build a search qualifier based on the parameter set
+        # FIXME: We could just combine all specified attributes
+        $Qualifier = switch ($PSCmdlet.ParameterSetName) {
+            "AssetNumber" {
+                New-WHDQualifier `
+                    -Attribute "assetNumber" `
+                    -Operator  ([WHDQualifierOperator]::Equals) `
+                    -Value     $AssetNumber
+            }
+            "SerialNumber" {
+                New-WHDQualifier `
+                    -Attribute "serialNumber" `
+                    -Operator  ([WHDQualifierOperator]::Equals) `
+                    -Value     $SerialNumber
+            }
         }
+
+        # Get the assets
+        $Results = Get-WHDResource `
+            -ResourceType  ([WHDResourceType]::Assets) `
+            -Qualifier $Qualifier `
+            -Expand:$Expand
     }
 
     # Return the asset

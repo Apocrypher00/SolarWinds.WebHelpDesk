@@ -22,12 +22,12 @@ function Get-WHDAssetStatus {
     # FIXME: Use a better qualifier here
     $Results = if ($PSCmdlet.ParameterSetName -eq "Single") {
         Get-WHDResource `
-            -Resource   ([WHDResourceType]::AssetStatuses) `
+            -ResourceType   ([WHDResourceType]::AssetStatuses) `
             -ResourceId $ResourceId `
             -Expand:$Expand
     } else {
         Get-WHDResource `
-            -Resource  ([WHDResourceType]::AssetStatuses) `
+            -ResourceType  ([WHDResourceType]::AssetStatuses) `
             -Qualifier "" `
             -Expand:$Expand
     }

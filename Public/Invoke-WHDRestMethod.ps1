@@ -1,6 +1,15 @@
+<#
+    .SYNOPSIS
+
+    .DESCRIPTION
+    This will be a combined function for all types of requests
+
+    .NOTES
+    FIXME: This is a w.i.p.
+#>
 function Invoke-WHDRestMethod {
     param (
-        [Parameter(Mandatory = $true, Position = 0)]
+        [Parameter(Mandatory)]
         [ValidateSet(
             [Microsoft.PowerShell.Commands.WebRequestMethod]::Get,
             [Microsoft.PowerShell.Commands.WebRequestMethod]::Post,
@@ -9,10 +18,10 @@ function Invoke-WHDRestMethod {
         )]
         [Microsoft.PowerShell.Commands.WebRequestMethod] $Method,
 
-        [Parameter(Mandatory = $true, Position = 1)]
+        [Parameter(Mandatory)]
         [string] $Uri,
 
-        [Parameter(Mandatory = $false, Position = 2)]
+        [Parameter()]
         [hashtable] $Body
     )
 
