@@ -5,49 +5,24 @@
     .NOTES
     Qualifiers are case sensitive.
     Not all Resources support qualifiers. Use the more specific functions when possible.
-    FIXME: We need to move the auth logic out
 #>
 function Get-WHDResource {
-    [CmdletBinding(DefaultParameterSetName = "SessionSearch")]
+    [CmdletBinding(DefaultParameterSetName = "Search")]
     param (
-        # credential sets: provide either username+password, username+apiKey,
-        # or nothing and rely on the saved sessionKey.  Each pair is combined
-        # with a "Single" or "Search" suffix to keep ResourceId/Qualifier
-        # mutually exclusive.
-        [Parameter(ParameterSetName = "PasswordSingle", Mandatory)]
-        [Parameter(ParameterSetName = "PasswordSearch", Mandatory)]
-        [Parameter(ParameterSetName = "ApiKeySingle", Mandatory)]
-        [Parameter(ParameterSetName = "ApiKeySearch", Mandatory)]
-        [string] $Username,
-
-        [Parameter(ParameterSetName = "ApiKeySingle", Mandatory)]
-        [Parameter(ParameterSetName = "ApiKeySearch", Mandatory)]
-        [string] $ApiKey,
-
-        [Parameter(ParameterSetName = "PasswordSingle", Mandatory)]
-        [Parameter(ParameterSetName = "PasswordSearch", Mandatory)]
-        [string] $Password,
-
-        # always required
         [Parameter(Mandatory)]
         [WHDResourceType] $ResourceType,
 
         [Parameter()]
         [WHDCustomFieldType] $SubType,
 
-        [Parameter()]
-        [switch] $Expand,
-
-        # mutually exclusive selectors
-        [Parameter(ParameterSetName = "PasswordSingle")]
-        [Parameter(ParameterSetName = "ApiKeySingle")]
-        [Parameter(ParameterSetName = "SessionSingle")]
+        [Parameter(ParameterSetName = "Single", Mandatory)]
         [int] $ResourceId,
 
-        [Parameter(ParameterSetName = "PasswordSearch")]
-        [Parameter(ParameterSetName = "ApiKeySearch")]
-        [Parameter(ParameterSetName = "SessionSearch")]
-        [string] $Qualifier
+        [Parameter(ParameterSetName = "Search")]
+        [string] $Qualifier = "",
+
+        [Parameter()]
+        [switch] $Expand
     )
 
     # Only allow SubType for CustomFieldDefinitions
@@ -55,33 +30,29 @@ function Get-WHDResource {
         throw "SubType is only valid for the 'CustomFieldDefinitions' resource."
     }
 
-    # verify a saved session exists when we're not passing credentials
-    if ($PSCmdlet.ParameterSetName -like "Session*" -and -not $Script:WHDConnection.Session) {
-        throw "No active session. Please connect to Web Help Desk first using Connect-WebHelpDesk."
-    }
-
-    # Base Parameters
+    # Start building the query parameters with our authentication; this is required for all requests
+    # FIXME: This is a little messy, we can do better.
     $QueryParameters = @{}
-    if ($PSCmdlet.ParameterSetName -like "ApiKey*") {
-        $QueryParameters["apiKey"]  = $ApiKey
-        $QueryParameters["username"] = $Username
-    }
-    elseif ($PSCmdlet.ParameterSetName -like "Password*") {
-        $QueryParameters["username"] = $Username
-        $QueryParameters["password"] = $Password
-    }
-    else {
+    if ($Script:WHDConnection.Session) {
         $QueryParameters["sessionKey"] = $Script:WHDConnection.Session.sessionKey
+    } elseif ($Script:WHDConnection.Authentication.apiKey) {
+        $QueryParameters["apiKey"]  = $Script:WHDConnection.Authentication.apiKey
+
+        if ($Script:WHDConnection.Authentication.username) {
+            $QueryParameters["username"] = $Script:WHDConnection.Authentication.username
+        }
+    } else {
+        throw "No authentication method available. Please connect to Web Help Desk first using Connect-WebHelpDesk."
     }
 
     # Add qualifier if we are using Search mode
-    if ($PSCmdlet.ParameterSetName -like "*Search") { $QueryParameters["qualifier"] = $Qualifier }
+    if ($PSCmdlet.ParameterSetName -eq "Search") { $QueryParameters["qualifier"] = $Qualifier }
 
     # Build the Uri, ignore Ticket SubType as it isn't used in the URI
     # TODO: there must be a cleaner way to construct this string.
     $Uri = "$($Script:WHDConnection.BaseUrl)/$ResourceType"
     if (($null -ne $SubType) -and ($SubType -ne [WHDCustomFieldType]::Ticket)) { $Uri += "/$SubType" }
-    if ($PSCmdlet.ParameterSetName -like "*Single") { $Uri += "/$ResourceId" }
+    if ($PSCmdlet.ParameterSetName -eq "Single") { $Uri += "/$ResourceId" }
 
     # Send the query
     $Results = Invoke-RestMethod `
@@ -97,10 +68,14 @@ function Get-WHDResource {
         $Results | Set-WHDTypeName -ResourceType $ResourceType
 
         # Add a type field with the types we use
-        $Results | Add-Member -MemberType NoteProperty -Name "ResourceType" -Value $ResourceType -Force
+        $Results | Add-Member `
+            -MemberType ([System.Management.Automation.PSMemberTypes]::NoteProperty) `
+            -Name       "ResourceType" `
+            -Value      $ResourceType `
+            -Force
 
         # Expand if requested, but if this is a single resource query, it's already expanded
-        if ($Expand -and ($PSCmdlet.ParameterSetName -notlike "*Single")) { $Results = $Results | Expand-WHDResource }
+        if ($Expand -and ($PSCmdlet.ParameterSetName -ne "Single")) { $Results = $Results | Expand-WHDResource }
     }
 
     return $Results

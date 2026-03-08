@@ -1,9 +1,13 @@
 # Module state
 $Script:WHDConnection = @{
-    BaseUrl    = $null
-    Session    = $null
-    WebSession = $null
-    Cache      = @{ # TODO: We will store data here that replaces stub fields, such as the AssetStatus field on Tickets
+    BaseUrl        = $null
+    WebSession     = $null
+    Session        = $null
+    Authentication = @{
+        apiKey   = $null
+        username = $null
+    }
+    Cache          = @{ # TODO: We will store data here that replaces stub fields
         AssetStatus = @{
             Map     = @{}                           # [int] -> [string]
             Fetched = $null                         # [datetime]
