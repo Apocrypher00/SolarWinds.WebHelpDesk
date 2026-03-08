@@ -1,9 +1,9 @@
 <#
     .SYNOPSIS
-
+    Create a WHD API qualifier string.
 
     .DESCRIPTION
-    We will use this to build qualifiers that are syntactically correct and properly escaped.
+    This function helps build qualifiers that are syntactically correct and properly escaped.
 
     .PARAMETER Attribute
     The attribute name to filter on.
@@ -60,7 +60,10 @@ function New-WHDQualifier {
         [WHDQualifierOperator] $Operator,
 
         [Parameter(Mandatory, Position = 2)]
-        [string] $Value
+        [string] $Value,
+
+        [Parameter()]
+        [switch] $Negate
     )
 
     $OpString = switch ($Operator) {
@@ -74,9 +77,13 @@ function New-WHDQualifier {
         ([WHDQualifierOperator]::CaseInsensitiveLike) { "caseInsensitiveLike" }
     }
 
-    # FIXME: This is very naive, but it matches how we currently use it.
-    # FIXME: Find out when escaping is actually necessary and implement it properly.
-    # FIXME: Do we need to wrap the attribute in quotes?
-    # FIXME: WWHEN do we need to wrap the value in quotes?
-    return "($Attribute $OpString '$Value')"
+    # FIXME: This is a very naive approach.
+    # FIXME: Find out when escaping is necessary and implement it properly.
+    # FIXME: WHEN do we need to wrap the value in quotes?
+    $Qualifier = "($Attribute $OpString '$Value')"
+
+    # FIXME: Let's add an option that only negates the passed qualifier
+    if ($Negate) { $Qualifier = "(not $Qualifier)" }
+
+    return $Qualifier
 }

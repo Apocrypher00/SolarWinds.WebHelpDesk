@@ -11,6 +11,12 @@
     .PARAMETER SerialNumber
     The serial number of the asset to retrieve.
 
+    .PARAMETER Location
+    The location name of the asset to retrieve.
+
+    .PARAMETER Room
+    The room name of the asset to retrieve.
+
     .PARAMETER Expand
     If specified, the function will expand the asset details to include additional information such as status names.
 
@@ -20,46 +26,75 @@
 function Get-WHDAsset {
     [CmdletBinding()]
     param (
-        [Parameter(ParameterSetName = "ID", Mandatory)]
+        [Parameter(ParameterSetName = "Single", Mandatory)]
         [int] $ResourceId,
 
-        [Parameter(ParameterSetName = "AssetNumber", Mandatory)]
+        [Parameter(ParameterSetName = "Search")]
         [string] $AssetNumber,
 
-        [Parameter(ParameterSetName = "SerialNumber", Mandatory)]
+        [Parameter(ParameterSetName = "Search")]
         [string] $SerialNumber,
+
+        [Parameter(ParameterSetName = "Search")]
+        [string] $Location,
+
+        [Parameter(ParameterSetName = "Search")]
+        [string] $Room,
 
         [Parameter()]
         [switch] $Expand
     )
 
-    if ($PSCmdlet.ParameterSetName -eq "ID") {
-        $Results = Get-WHDResource `
-            -ResourceType  ([WHDResourceType]::Assets) `
-            -ResourceId $ResourceId
-    } else {
-        # Build a search qualifier based on the parameter set
-        # FIXME: We could just combine all specified attributes
-        $Qualifier = switch ($PSCmdlet.ParameterSetName) {
-            "AssetNumber" {
-                New-WHDQualifier `
+    switch ($PSCmdlet.ParameterSetName) {
+        "Single" {
+            $Results = Get-WHDResource `
+                -ResourceType  ([WHDResourceType]::Assets) `
+                -ResourceId $ResourceId
+        }
+        "Search" {
+            # Build a search qualifier based on the provided parameters
+            # FIXME: I wan't this to be a loop, but the attribute names don't match the parameter names
+            # FIXME: Use an arraylist instead of an array and avoid creating a new array on each addition
+            $Qualifiers = @()
+            if ($PSCmdlet.MyInvocation.BoundParameters.ContainsKey("AssetNumber")) {
+                $Qualifiers += New-WHDQualifier `
                     -Attribute "assetNumber" `
                     -Operator  ([WHDQualifierOperator]::Equals) `
-                    -Value     $AssetNumber
+                    -Value     $PSCmdlet.MyInvocation.BoundParameters["AssetNumber"]
             }
-            "SerialNumber" {
-                New-WHDQualifier `
+            if ($PSCmdlet.MyInvocation.BoundParameters.ContainsKey("SerialNumber")) {
+                $Qualifiers += New-WHDQualifier `
                     -Attribute "serialNumber" `
                     -Operator  ([WHDQualifierOperator]::Equals) `
-                    -Value     $SerialNumber
+                    -Value     $PSCmdlet.MyInvocation.BoundParameters["SerialNumber"]
             }
-        }
+            if ($PSCmdlet.MyInvocation.BoundParameters.ContainsKey("Location")) {
+                $Qualifiers += New-WHDQualifier `
+                    -Attribute "location.locationName" `
+                    -Operator  ([WHDQualifierOperator]::Equals) `
+                    -Value     $PSCmdlet.MyInvocation.BoundParameters["Location"]
+            }
+            if ($PSCmdlet.MyInvocation.BoundParameters.ContainsKey("Room")) {
+                $Qualifiers += New-WHDQualifier `
+                    -Attribute "room.roomName" `
+                    -Operator  ([WHDQualifierOperator]::Equals) `
+                    -Value     $PSCmdlet.MyInvocation.BoundParameters["Room"]
+            }
 
-        # Get the assets
-        $Results = Get-WHDResource `
-            -ResourceType  ([WHDResourceType]::Assets) `
-            -Qualifier $Qualifier `
-            -Expand:$Expand
+            # Combine qualifiers with AND, if there are any
+            # Otherwise, if there are no qualifiers, we want to pass an empty string to get all assets
+            $Qualifier = if ($Qualifiers.Count -eq 0) { "" } else {
+                Join-WHDQualifier `
+                    -Qualifiers   $Qualifiers `
+                    -JoinOperator ([WHDQualifierLogicalOperator]::AND)
+            }
+
+            # Get the assets
+            $Results = Get-WHDResource `
+                -ResourceType  ([WHDResourceType]::Assets) `
+                -Qualifier $Qualifier `
+                -Expand:$Expand
+        }
     }
 
     # Return the asset
