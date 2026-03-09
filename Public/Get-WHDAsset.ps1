@@ -18,7 +18,7 @@
     The room name of the asset to retrieve.
 
     .PARAMETER Expand
-    If specified, the function will expand the asset details to include additional information such as status names.
+    If specified, the function will expand the asset details to include additional.
 
     .NOTES
     This can return 0, 1, or multiple Assets!
@@ -48,8 +48,8 @@ function Get-WHDAsset {
     switch ($PSCmdlet.ParameterSetName) {
         "Single" {
             $Results = Get-WHDResource `
-                -ResourceType  ([WHDResourceType]::Assets) `
-                -ResourceId $ResourceId
+                -ResourceType ([WHDResourceType]::Assets) `
+                -ResourceId   $ResourceId
         }
         "Search" {
             # Build a search qualifier based on the provided parameters
@@ -106,8 +106,8 @@ function Get-WHDAsset {
 
             # Get the assets
             $Results = Get-WHDResource `
-                -ResourceType  ([WHDResourceType]::Assets) `
-                -Qualifier $Qualifier `
+                -ResourceType ([WHDResourceType]::Assets) `
+                -Qualifier    $Qualifier `
                 -Expand:$Expand
         }
     }

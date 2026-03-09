@@ -22,5 +22,12 @@ $Public  = Join-Path $PSScriptRoot 'Public'
 Get-ChildItem -Path $Private -Filter '*.ps1' -File | ForEach-Object { . $_.FullName }
 Get-ChildItem -Path $Public  -Filter '*.ps1' -File | ForEach-Object { . $_.FullName }
 
+# Register type accelerators for enums?
+# $accelerators = [psobject].Assembly.GetType("System.Management.Automation.TypeAccelerators")
+# $accelerators::Add("WHDResourceType", [WHDResourceType])
+# $accelerators::Add("WHDCustomFieldType", [WHDCustomFieldType])
+# $accelerators::Add("WHDQualifierOperator", [WHDQualifierOperator])
+# $accelerators::Add("WHDQualifierLogicalOperator", [WHDQualifierLogicalOperator])
+
 # Export all functions in the Public folder
 # Export-ModuleMember -Function (Get-ChildItem $Public -Filter '*.ps1' -File | ForEach-Object { $_.BaseName })
