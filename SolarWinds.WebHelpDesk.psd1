@@ -74,12 +74,17 @@
     # do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
     FunctionsToExport    = @(
         "Connect-WebHelpDesk"
+        "Disconnect-WebHelpDesk"
         "New-WHDQualifier"
         "Join-WHDQualifier"
         "Get-WHDResource"
         "Get-WHDAsset"
         "Get-WHDAssetStatus"
         "Get-WHDClient"
+        "Get-WHDSession"
+        "Remove-WHDResource"
+        "Remove-WHDClient"
+        "Remove-WHDSession"
     )
 
     # Cmdlets to export from this module, for best performance,

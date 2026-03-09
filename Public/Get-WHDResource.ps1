@@ -34,7 +34,12 @@ function Get-WHDResource {
     # FIXME: This is a little messy, we can do better.
     $QueryParameters = @{}
     if ($Script:WHDConnection.Session) {
-        $QueryParameters["sessionKey"] = $Script:WHDConnection.Session.sessionKey
+        # Check if we have a valid session key, if so use it for authentication
+        if (-not $Script:WHDConnection.Session.IsExpired) {
+            $QueryParameters["sessionKey"] = $Script:WHDConnection.Session.sessionKey
+        } else {
+            throw "Session key has expired. Please connect to Web Help Desk again using Connect-WebHelpDesk."
+        }
     } elseif ($Script:WHDConnection.Authentication.apiKey) {
         $QueryParameters["apiKey"]  = $Script:WHDConnection.Authentication.apiKey
 
@@ -42,7 +47,7 @@ function Get-WHDResource {
             $QueryParameters["username"] = $Script:WHDConnection.Authentication.username
         }
     } else {
-        throw "No authentication method available. Please connect to Web Help Desk first using Connect-WebHelpDesk."
+        throw "No authentication method provided. Please connect to Web Help Desk first using Connect-WebHelpDesk."
     }
 
     # Add qualifier if we are using Search mode

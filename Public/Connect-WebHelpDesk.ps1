@@ -44,8 +44,12 @@ function Connect-WebHelpDesk {
     $Script:WHDConnection.WebSession = [Microsoft.PowerShell.Commands.WebRequestSession]::new()
 
     # Store the credentials temporarily in our state; we'll use them to get a session key
-    $Script:WHDConnection.Authentication.apiKey   = $ApiKey
-    $Script:WHDConnection.Authentication.username = $Username
+    $Script:WHDConnection.Authentication.apiKey = $ApiKey
+    if ($PSCmdlet.MyInvocation.BoundParameters.ContainsKey("Username")) {
+        $Script:WHDConnection.Authentication.username = $Username
+    } else {
+        $Script:WHDConnection.Authentication.username = $null
+    }
 
     if (-not $PersistCredentials) {
         # Get a session key and save it in our state
@@ -54,5 +58,7 @@ function Connect-WebHelpDesk {
         # Clear the temporary credentials from our state for security; we only need the session key going forward
         $Script:WHDConnection.Authentication.apiKey   = $null
         $Script:WHDConnection.Authentication.username = $null
+    } else {
+        $Script:WHDConnection.Session = $null
     }
 }

@@ -1,10 +1,12 @@
 <Types>
     <Type>
-        <Name>SolarWinds.WebHelpDesk.Assets</Name>
+        <Name>SolarWinds.WebHelpDesk.Session</Name>
         <Members>
             <ScriptProperty>
-                <Name>Status</Name>
-                <GetScriptBlock>$this.assetStatus</GetScriptBlock>
+                <Name>IsExpired</Name>
+                <GetScriptBlock>
+                    $this.ExpirationDate -le ([DateTime]::Now)
+                </GetScriptBlock>
             </ScriptProperty>
         </Members>
     </Type>

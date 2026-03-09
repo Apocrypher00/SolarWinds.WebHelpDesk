@@ -2,17 +2,18 @@
     .SYNOPSIS
     Disconnect from Web Help Desk and clear session state.
 
-    .NOTES
-    FIXME: This is a w.i.p.
+    .DESCRIPTION
+    This function removes the active session from WHD and clears any connection state from the module.
 #>
 function Disconnect-WebHelpDesk {
-    [CmdletBinding()] param ()
+    [CmdletBinding(SupportsShouldProcess, ConfirmImpact = "High")] param ()
 
-    # Remove the actual sesson from WHD
-    Remove-WHDSession -Session $Script:WHDConnection.Session -Confirm:$false
+    if ($PSCmdlet.ShouldProcess("Web Help Desk connection", "Disconnect and clear session state")) {
+        # Remove the actual sesson from WHD
+        if ($Script:WHDConnection.Session) {
+            Remove-WHDSession -Session $Script:WHDConnection.Session -Confirm:$false | Out-Null
+        }
 
-    #Remove the session from our state
-    # $Script:WHDConnection.BaseUrl = $null
-    # $Script:WHDConnection.Session = $null
-    # $Script:WHDConnection.WebSession = $null
+        Clear-WHDConnection
+    }
 }

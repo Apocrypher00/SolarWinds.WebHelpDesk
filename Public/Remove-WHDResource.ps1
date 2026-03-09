@@ -1,6 +1,10 @@
 <#
     .SYNOPSIS
-    Delete WHD Resource by ID only
+    Remove a resource from WHD via the API.
+
+    .DESCRIPTION
+    This function deletes a resource from WHD based on the resource type and ID.
+    Except in the case of Sessions, which must be removed via sessionKey.
 #>
 function Remove-WHDResource {
     [CmdletBinding(SupportsShouldProcess, ConfirmImpact = "High")]
@@ -12,14 +16,33 @@ function Remove-WHDResource {
         [int] $ResourceId
     )
 
+    # Build the authentication string; this is required for all requests
+    # FIXME: This is a little messy, we can do better.
+    if ($Script:WHDConnection.Session) {
+        # Check if we have a valid session key, if so use it for authentication
+        if (-not $Script:WHDConnection.Session.IsExpired) {
+            $AuthString = "sessionKey=$($Script:WHDConnection.Session.sessionKey)"
+        } else {
+            throw "Session key has expired. Please connect to Web Help Desk again using Connect-WebHelpDesk."
+        }
+    } elseif ($Script:WHDConnection.Authentication.apiKey) {
+        if ($Script:WHDConnection.Authentication.username) {
+            $AuthString = "username=$($Script:WHDConnection.Authentication.username)&"
+        }
+
+        $AuthString += "apiKey=$($Script:WHDConnection.Authentication.apiKey)"
+    } else {
+        throw "No authentication method provided. Please connect to Web Help Desk first using Connect-WebHelpDesk."
+    }
+
     # Build the Uri
     # FIXME: Do we need to put the sessionKey here, or can we use the body like the other functions?
-    # $Uri = "$BaseUrl/$ResourceType/$ResourceId`?sessionKey=$($WHDConnection.$SessionKey)"
-    $Uri = "$($WHDConnection.BaseUrl)/$ResourceType/$ResourceId"
-    $Uri += "?sessionKey=$($Script:WHDConnection.Session.sessionKey)"
+    $Uri = "$($WHDConnection.BaseUrl)/$ResourceType"
+    if ($ResourceType -ne [WHDResourceType]::Session) { $Uri += "/$ResourceId" }
+    $Uri += "?$AuthString"
 
     # Send the query and return the result
-    if ($PSCmdlet.ShouldProcess("$($WHDConnection.BaseUrl)/$ResourceType/$ResourceId")) {
+    if ($PSCmdlet.ShouldProcess("ResourceType=$ResourceType, ResourceId=$ResourceId")) {
         return Invoke-RestMethod `
             -Uri         $Uri `
             -Method      ([Microsoft.PowerShell.Commands.WebRequestMethod]::Delete) `
