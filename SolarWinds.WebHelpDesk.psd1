@@ -117,10 +117,10 @@
             Tags       = @("SolarWinds", "WHD", "WebHelpDesk", "REST", "API")
 
             # A URL to the license for this module.
-            LicenseUri = "https://your-license-url/"
+            LicenseUri = "https://raw.githubusercontent.com/Apocrypher00/SolarWinds.WebHelpDesk/refs/heads/master/LICENSE"
 
             # A URL to the main website for this project.
-            ProjectUri = "https://your-repo-url/"
+            ProjectUri = "https://github.com/Apocrypher00/SolarWinds.WebHelpDesk"
 
             # A URL to an icon representing this module.
             # IconUri = ""

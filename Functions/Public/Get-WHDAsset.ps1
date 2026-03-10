@@ -47,6 +47,9 @@ function Get-WHDAsset {
         [Parameter(ParameterSetName = "Search")]
         [string] $Status,
 
+        [Parameter(ParameterSetName = "Search")]
+        [string] $Model,
+
         [Parameter()]
         [switch] $Expand
     )
@@ -59,6 +62,8 @@ function Get-WHDAsset {
         Location     = "location.locationName"
         Room         = "room.roomName"
         Status       = "assetstatus.name"
+        Model        = "model.modelName"
+        # Manufacturer = "model.manufacturer.manufacturerName"
     }
 
     switch ($PSCmdlet.ParameterSetName) {
