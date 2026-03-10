@@ -81,6 +81,8 @@
         "Get-WHDAsset"
         "Get-WHDAssetStatus"
         "Get-WHDClient"
+        "Get-WHDManufacturer"
+        "Get-WHDModel"
         "Get-WHDSession"
         "Remove-WHDResource"
         "Remove-WHDClient"
