@@ -10,7 +10,7 @@ function Disconnect-WebHelpDesk {
 
     if ($PSCmdlet.ShouldProcess("Web Help Desk connection", "Disconnect and clear session state")) {
         # Remove the actual sesson from WHD
-        if ($Script:WHDConnection.Session) {
+        if ($null -ne $Script:WHDConnection.Session) {
             Remove-WHDSession -Session $Script:WHDConnection.Session -Confirm:$false | Out-Null
         }
 

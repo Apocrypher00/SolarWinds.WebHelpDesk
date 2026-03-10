@@ -27,7 +27,7 @@
     This can return 0, 1, or multiple Assets!
 #>
 function Get-WHDAsset {
-    [CmdletBinding()]
+    [CmdletBinding(DefaultParameterSetName = "Search")]
     param (
         [Parameter(ParameterSetName = "Single", Mandatory)]
         [int] $ResourceId,
@@ -76,7 +76,7 @@ function Get-WHDAsset {
                 -ResourceId   $ResourceId
         }
         "Search" {
-            # Build a search qualifier based on the provided parameters
+            # Build a search qualifier for eachof the provided parameters
             $Qualifiers = foreach ($Param in $PSCmdlet.MyInvocation.BoundParameters.Keys) {
                 if ($AssetAttributeMap.ContainsKey($Param)) {
                     New-WHDQualifier `
@@ -87,7 +87,7 @@ function Get-WHDAsset {
             }
 
             # Combine qualifiers with AND, if there are any
-            # Otherwise, if there are no qualifiers, we want to pass an empty string to get all assets
+            # If there are no qualifiers, we want to pass an empty string to get all assets
             $Qualifier = if ($Qualifiers.Count -eq 0) { "" } else {
                 Join-WHDQualifier `
                     -Qualifiers   $Qualifiers `

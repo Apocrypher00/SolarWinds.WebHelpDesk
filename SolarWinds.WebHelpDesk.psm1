@@ -1,19 +1,15 @@
 # Module state
-$Script:WHDConnection = @{
+$Script:WHDConnection = [PSCustomObject]@{
     BaseUrl        = $null
+    UriBuilder     = $null
     WebSession     = $null
     Session        = $null
     Authentication = @{
         apiKey   = $null
         username = $null
     }
-    # Cache          = @{ # TODO: We will store data here that replaces stub fields
-    #     AssetStatus = @{
-    #         Map     = @{}                           # [int] -> [string]
-    #         Fetched = $null                         # [datetime]
-    #         Ttl     = [timespan]::FromMinutes(5)    # default TTL
-    #     }
-    # }
+    # This will hold the query parameters we use for authentication, either sessionKey or apiKey/username
+    AuthParams     = [System.Web.HttpUtility]::ParseQueryString([string]::Empty)
 }
 
 # Import all functions in the Private and Public folders
