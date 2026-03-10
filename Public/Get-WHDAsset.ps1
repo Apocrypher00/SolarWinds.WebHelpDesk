@@ -17,6 +17,9 @@
     .PARAMETER Room
     The room name of the asset to retrieve.
 
+    .PARAMETER Status
+    The status name of the asset to retrieve.
+
     .PARAMETER Expand
     If specified, the function will expand the asset details to include additional.
 
@@ -41,9 +44,22 @@ function Get-WHDAsset {
         [Parameter(ParameterSetName = "Search")]
         [string] $Room,
 
+        [Parameter(ParameterSetName = "Search")]
+        [string] $Status,
+
         [Parameter()]
         [switch] $Expand
     )
+
+    # A mapping of parameter names to WHD attribute names, used for building qualifiers in the Search parameter set
+    # FIXME: Where is the best place for this?
+    $AssetAttributeMap = @{
+        AssetNumber  = "assetNumber"
+        SerialNumber = "serialNumber"
+        Location     = "location.locationName"
+        Room         = "room.roomName"
+        Status       = "assetstatus.name"
+    }
 
     switch ($PSCmdlet.ParameterSetName) {
         "Single" {
@@ -53,47 +69,13 @@ function Get-WHDAsset {
         }
         "Search" {
             # Build a search qualifier based on the provided parameters
-            # FIXME: I wanted this to be a loop, but the attribute names don't match the parameter names
-            $Qualifiers = [System.Collections.ArrayList]::new()
-            if ($PSCmdlet.MyInvocation.BoundParameters.ContainsKey("AssetNumber")) {
-                $Qualifiers.Add(
-                    (
-                        New-WHDQualifier `
-                            -Attribute "assetNumber" `
-                            -Operator  ([WHDQualifierOperator]::Equals) `
-                            -Value     $PSCmdlet.MyInvocation.BoundParameters["AssetNumber"]
-                    )
-                )
-            }
-            if ($PSCmdlet.MyInvocation.BoundParameters.ContainsKey("SerialNumber")) {
-                $Qualifiers.Add(
-                    (
-                        New-WHDQualifier `
-                            -Attribute "serialNumber" `
-                            -Operator  ([WHDQualifierOperator]::Equals) `
-                            -Value     $PSCmdlet.MyInvocation.BoundParameters["SerialNumber"]
-                    )
-                )
-            }
-            if ($PSCmdlet.MyInvocation.BoundParameters.ContainsKey("Location")) {
-                $Qualifiers.Add(
-                    (
-                        New-WHDQualifier `
-                            -Attribute "location.locationName" `
-                            -Operator  ([WHDQualifierOperator]::Equals) `
-                            -Value     $PSCmdlet.MyInvocation.BoundParameters["Location"]
-                    )
-                )
-            }
-            if ($PSCmdlet.MyInvocation.BoundParameters.ContainsKey("Room")) {
-                $Qualifiers.Add(
-                    (
-                        New-WHDQualifier `
-                            -Attribute "room.roomName" `
-                            -Operator  ([WHDQualifierOperator]::Equals) `
-                            -Value     $PSCmdlet.MyInvocation.BoundParameters["Room"]
-                    )
-                )
+            $Qualifiers = foreach ($Param in $PSCmdlet.MyInvocation.BoundParameters.Keys) {
+                if ($AssetAttributeMap.ContainsKey($Param)) {
+                    New-WHDQualifier `
+                        -Attribute $AssetAttributeMap[$Param] `
+                        -Operator  ([WHDQualifierOperator]::Equals) `
+                        -Value     $PSCmdlet.MyInvocation.BoundParameters[$Param]
+                }
             }
 
             # Combine qualifiers with AND, if there are any

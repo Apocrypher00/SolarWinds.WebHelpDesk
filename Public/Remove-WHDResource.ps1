@@ -5,6 +5,11 @@
     .DESCRIPTION
     This function deletes a resource from WHD based on the resource type and ID.
     Except in the case of Sessions, which must be removed via sessionKey.
+
+    .NOTES
+    FIXME: Add the option to pass the whole Resource to be deleted.
+    FIXME: Add ValueFromPipeline
+    FIXME: Once the above is added, we can delete arbitrary Sessions by replacing AuthString with the passed sessionKey
 #>
 function Remove-WHDResource {
     [CmdletBinding(SupportsShouldProcess, ConfirmImpact = "High")]
@@ -36,7 +41,7 @@ function Remove-WHDResource {
     }
 
     # Build the Uri
-    # FIXME: Do we need to put the sessionKey here, or can we use the body like the other functions?
+    # FIXME: Clean this up! I found out the hard way that if the check is wrong, you can delete mutliple objects
     $Uri = "$($WHDConnection.BaseUrl)/$ResourceType"
     if ($ResourceType -ne [WHDResourceType]::Session) { $Uri += "/$ResourceId" }
     $Uri += "?$AuthString"
