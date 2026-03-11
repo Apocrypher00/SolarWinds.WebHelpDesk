@@ -1,35 +1,17 @@
 <#
     .SYNOPSIS
-    Get an asset from WHD.
+    Get a company from WHD.
 
     .DESCRIPTION
-    This function retrieves assets from WHD based on a provided search parameter.
-
-    .PARAMETER AssetNumber
-    The asset number of the asset to be retrieved.
-
-    .PARAMETER SerialNumber
-    The serial number of the asset to be retrieved.
-
-    .PARAMETER Location
-    The location name of the asset to be retrieved.
-
-    .PARAMETER Room
-    The room name of the asset to be retrieved.
-
-    .PARAMETER Status
-    The status name of the asset to be retrieved.
-
-    .PARAMETER Model
-    The model name of the asset to be retrieved.
-
-    .PARAMETER Manufacturer
-    The manufacturer name of the asset to be retrieved.
+    This function retrieves companies from WHD based on a provided search parameter.
 
     .PARAMETER Expand
-    If specified, the function will expand the asset details to include additional.
+    If specified, the function will expand the company details to include additional information.
+
+    .NOTES
+    TODO: Needs expanding, I don't have any test objects yet.
 #>
-function Get-WHDAsset {
+function Get-WHDCompany {
     [CmdletBinding(DefaultParameterSetName = "Search")]
     param (
         [Parameter(ParameterSetName = "Single", Mandatory)]
@@ -39,42 +21,18 @@ function Get-WHDAsset {
         [string] $Qualifier,
 
         [Parameter(ParameterSetName = "Search")]
-        [string] $AssetNumber,
-
-        [Parameter(ParameterSetName = "Search")]
-        [string] $SerialNumber,
-
-        [Parameter(ParameterSetName = "Search")]
-        [string] $Location,
-
-        [Parameter(ParameterSetName = "Search")]
-        [string] $Room,
-
-        [Parameter(ParameterSetName = "Search")]
-        [string] $Status,
-
-        [Parameter(ParameterSetName = "Search")]
-        [string] $Model,
-
-        [Parameter(ParameterSetName = "Search")]
-        [string] $Manufacturer,
+        [string] $Name,
 
         [Parameter()]
         [switch] $Expand
     )
 
-    $ResourceType = [WHDResourceType]::Assets
+    $ResourceType = [WHDResourceType]::Companies
 
     # A mapping of parameter names to WHD attribute names, used for building qualifiers in the Search parameter set
     # FIXME: Where is the best place for this?
-    $AssetAttributeMap = @{
-        AssetNumber  = "assetNumber"
-        SerialNumber = "serialNumber"
-        Location     = "location.locationName"
-        Room         = "room.roomName"
-        Status       = "assetstatus.name"
-        Model        = "model.modelName"
-        Manufacturer = "model.manufacturer.name"
+    $CompanyAttributeMap = @{
+        Name  = "companyName"
     }
 
     switch ($PSCmdlet.ParameterSetName) {
@@ -92,23 +50,23 @@ function Get-WHDAsset {
         "Search" {
             # Build a search qualifier for each of the provided parameters
             $Qualifiers = foreach ($Param in $PSCmdlet.MyInvocation.BoundParameters.Keys) {
-                if ($AssetAttributeMap.ContainsKey($Param)) {
+                if ($CompanyAttributeMap.ContainsKey($Param)) {
                     New-WHDQualifier `
-                        -Attribute $AssetAttributeMap[$Param] `
+                        -Attribute $CompanyAttributeMap[$Param] `
                         -Operator  ([WHDQualifierOperator]::Equals) `
                         -Value     $PSCmdlet.MyInvocation.BoundParameters[$Param]
                 }
             }
 
             # Combine qualifiers with AND, if there are any
-            # If there are no qualifiers, we want to pass an empty string to get all assets
+            # If there are no qualifiers, we want to pass an empty string to get all companies
             $Qualifier = if ($Qualifiers.Count -eq 0) { [string]::Empty } else {
                 Join-WHDQualifier `
                     -Qualifiers   $Qualifiers `
                     -JoinOperator ([WHDQualifierLogicalOperator]::AND)
             }
 
-            # Get the assets
+            # Get the companies
             $Results = Get-WHDResource `
                 -ResourceType $ResourceType `
                 -Qualifier    $Qualifier `
@@ -116,6 +74,6 @@ function Get-WHDAsset {
         }
     }
 
-    # Return the asset
+    # Return the companies
     return $Results
 }

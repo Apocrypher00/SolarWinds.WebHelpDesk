@@ -82,6 +82,7 @@
         "Get-WHDAsset"
         "Get-WHDAssetStatus"
         "Get-WHDClient"
+        "Get-WHDCompany"
         "Get-WHDManufacturer"
         "Get-WHDModel"
         "Get-WHDSession"
