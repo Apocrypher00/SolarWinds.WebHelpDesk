@@ -12,10 +12,7 @@ function Remove-WHDClient {
     process {
         # Delete the Client by ID
         if ($PSCmdlet.ShouldProcess("Email=$($Client.email)", "Remove client from Web Help Desk")) {
-            Remove-WHDResource `
-                -ResourceType ([WHDResourceType]::Clients) `
-                -ResourceId   $Client.id `
-                -Confirm:$false
+            Remove-WHDResource -Resource $Client -Confirm:$false
         }
     }
 }

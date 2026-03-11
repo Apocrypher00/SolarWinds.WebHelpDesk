@@ -15,16 +15,13 @@
 function Remove-WHDSession {
     [CmdletBinding(SupportsShouldProcess, ConfirmImpact = "High")]
     param (
-        [Parameter(ParameterSetName = "Session", Mandatory)]
+        [Parameter(Mandatory, ValueFromPipeline)]
         [PSTypeName("SolarWinds.WebHelpDesk.Session")] $Session
     )
 
-    # FIXME: Should we add some validation for what session is being passed?
-
-    if ($PSCmdlet.ShouldProcess("SessionKey=$($Session.sessionKey)")) {
-        Remove-WHDResource `
-            -ResourceType ([WHDResourceType]::Session) `
-            -ResourceId   1 `
-            -Confirm:$false
+    process {
+        if ($PSCmdlet.ShouldProcess("SessionKey=$($Session.sessionKey)", "Remove session from Web Help Desk")) {
+            Remove-WHDResource -Resource $Session -Confirm:$false
+        }
     }
 }
