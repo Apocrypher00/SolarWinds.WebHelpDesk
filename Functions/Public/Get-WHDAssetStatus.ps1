@@ -4,9 +4,6 @@
 
     .DESCRIPTION
     This function retrieves all asset statuses from WHD.
-
-    .NOTES
-    WARNING: AssetStatuses don't support qualifiers, so they are actually ignored.
 #>
 function Get-WHDAssetStatus {
     [CmdletBinding(DefaultParameterSetName = "Qualifier")]
