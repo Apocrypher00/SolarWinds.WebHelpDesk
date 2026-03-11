@@ -2,9 +2,34 @@
     .SYNOPSIS
     Query the WHD API via REST GET
 
-    .NOTES
-    Qualifiers are case sensitive.
-    Not all Resources support qualifiers. Use the more specific functions when possible.
+    .DESCRIPTION
+    This function is a general purpose function for querying the WHD API via REST GET.
+    It is used by the more specific Get-WHD* functions, but can also be used directly if you prefer control.
+
+    .PARAMETER ResourceType
+    The type of resource to query, e.g. Assets, Clients, Manufacturers, etc.
+    Restricted by the [WHDResourceType] enum.
+
+    .PARAMETER SubType
+    The subtype of resource to query, used for CustomFieldDefinitions.
+    Restricted by the [WHDCustomFieldType] enum.
+
+    .PARAMETER ResourceId
+    The resource ID of the resource to retrieve.
+    If specified, only a single resource will be returned.
+
+    .PARAMETER Qualifier
+    A WHD API qualifier string to filter the results.
+    You can use New-WHDQualifier and Join-WHDQualifier to build these strings, or
+        you can write them manually if you prefer.
+    If not specified, all resources of the specified type will be returned.
+    Qualifiers are case sensitive and support is dependant on the ResourceType.
+    Full support: Assets, AssetTypes, Companies, Locations,
+        Manufacturers, Models, Tickets (limited support when the list parameter is used).
+    Limited support: Clients (predefined qualified is already used).
+
+    .PARAMETER Expand
+    If specified, the function will expand the resource details to include additional information.
 #>
 function Get-WHDResource {
     [CmdletBinding(DefaultParameterSetName = "Search")]
@@ -67,7 +92,7 @@ function Get-WHDResource {
     # Send the query
     $Results = Invoke-RestMethod @ParameterHash
 
-    # If we got a result, modify it with some additional properties and types to make it easier to work with
+    # If we got any results, modify them with some additional properties and types to make them easier to work with
     if ($null -ne $Results) {
         # Modify the resulting objects with a custom type
         $Results | Set-WHDTypeName -ResourceType $ResourceType
