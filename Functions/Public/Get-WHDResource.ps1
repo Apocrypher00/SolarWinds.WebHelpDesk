@@ -30,42 +30,42 @@ function Get-WHDResource {
         throw "SubType is only valid for the 'CustomFieldDefinitions' resource."
     }
 
-    # Start building the query parameters with our authentication; this is required for all requests
-    # FIXME: This is a little messy, we can do better.
-    $QueryParameters = @{}
-    if ($Script:WHDConnection.Session) {
-        # Check if we have a valid session key, if so use it for authentication
-        if (-not $Script:WHDConnection.Session.IsExpired) {
-            $QueryParameters["sessionKey"] = $Script:WHDConnection.Session.sessionKey
-        } else {
-            throw "Session key has expired. Please connect to Web Help Desk again using Connect-WebHelpDesk."
-        }
-    } elseif ($Script:WHDConnection.Authentication.apiKey) {
-        $QueryParameters["apiKey"]  = $Script:WHDConnection.Authentication.apiKey
+    Assert-WHDConnection
 
-        if ($Script:WHDConnection.Authentication.username) {
-            $QueryParameters["username"] = $Script:WHDConnection.Authentication.username
-        }
-    } else {
-        throw "No authentication method provided. Please connect to Web Help Desk first using Connect-WebHelpDesk."
-    }
+    # Create a copy of the Module level UriBuilder
+    $UriBuilder = [System.UriBuilder]::new($Script:WHDConnection.UriBuilder)
 
-    # Add qualifier if we are using Search mode
-    if ($PSCmdlet.ParameterSetName -eq "Search") { $QueryParameters["qualifier"] = $Qualifier }
+    # Add the authentication parameters to the query string; this is required for all requests
+    $UriBuilder.Query = $Script:WHDConnection.AuthParams.ToString()
 
     # Build the Uri, ignore Ticket SubType as it isn't used in the URI
-    # TODO: there must be a cleaner way to construct this string.
-    $Uri = "$($Script:WHDConnection.BaseUrl)/$ResourceType"
-    if (($null -ne $SubType) -and ($SubType -ne [WHDCustomFieldType]::Ticket)) { $Uri += "/$SubType" }
-    if ($PSCmdlet.ParameterSetName -eq "Single") { $Uri += "/$ResourceId" }
+    $UriBuilder.Path += "/$ResourceType"
+
+    if (($null -ne $SubType) -and ($SubType -ne [WHDCustomFieldType]::Ticket)) {
+        $UriBuilder.Path += "/$SubType"
+    }
+
+    if ($PSCmdlet.ParameterSetName -eq "Single") {
+        $UriBuilder.Path += "/$ResourceId"
+    }
+
+    # Parameters for Invoke-RestMethod
+    $ParameterHash = @{
+        Uri         = $UriBuilder.ToString()
+        Method      = [Microsoft.PowerShell.Commands.WebRequestMethod]::Get
+        ContentType = "application/json"
+        WebSession  = $Script:WHDConnection.WebSession
+    }
+
+    # Add qualifier to the body if we are using Search mode
+    if ($PSCmdlet.ParameterSetName -eq "Search") {
+        $ParameterHash["Body"] = @{
+            qualifier = $Qualifier
+        }
+    }
 
     # Send the query
-    $Results = Invoke-RestMethod `
-        -Uri         $Uri `
-        -Method      ([Microsoft.PowerShell.Commands.WebRequestMethod]::Get) `
-        -ContentType "application/json" `
-        -Body        $QueryParameters `
-        -WebSession  $Script:WHDConnection.WebSession
+    $Results = Invoke-RestMethod @ParameterHash
 
     # If we got a result, modify it with some additional properties and types to make it easier to work with
     if ($null -ne $Results) {

@@ -37,7 +37,7 @@ function Get-WHDClient {
             # Build a search qualifier based on the provided parameters
             # FIXME: I wanted this to be a loop, but the attribute names don't match the parameter names
             $Qualifiers = [System.Collections.ArrayList]::new()
-            if ($PSCmdlet.MyInvocation.BoundParameters.ContainsKey("AssetNumber")) {
+            if ($PSCmdlet.MyInvocation.BoundParameters.ContainsKey("Email")) {
                 $Qualifiers.Add(
                     (
                         New-WHDQualifier `
@@ -45,11 +45,11 @@ function Get-WHDClient {
                             -Operator  ([WHDQualifierOperator]::CaseInsensitiveLike) `
                             -Value     $Email
                     )
-                )
+                ) | Out-Null
             }
 
             # Combine qualifiers with AND, if there are any
-            # Otherwise, if there are no qualifiers, we want to pass an empty string to get all clienta
+            # Otherwise, if there are no qualifiers, we want to pass an empty string to get all clients
             $Qualifier = if ($Qualifiers.Count -eq 0) { "" } else {
                 Join-WHDQualifier `
                     -Qualifiers   $Qualifiers `

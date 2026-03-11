@@ -1,15 +1,10 @@
 # Module state
 $Script:WHDConnection = [PSCustomObject]@{
-    BaseUrl        = $null
-    UriBuilder     = $null
-    WebSession     = $null
-    Session        = $null
-    Authentication = @{
-        apiKey   = $null
-        username = $null
-    }
+    UriBuilder = $null
+    WebSession = $null
+    Session    = $null
     # This will hold the query parameters we use for authentication, either sessionKey or apiKey/username
-    AuthParams     = [System.Web.HttpUtility]::ParseQueryString([string]::Empty)
+    AuthParams = [System.Web.HttpUtility]::ParseQueryString([string]::Empty)
 }
 
 # Import all functions in the Private and Public folders

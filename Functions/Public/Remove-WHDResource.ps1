@@ -9,7 +9,7 @@
     .NOTES
     FIXME: Add the option to pass the whole Resource to be deleted.
     FIXME: Add ValueFromPipeline
-    FIXME: Once the above is added, we can delete arbitrary Sessions by replacing AuthString with the passed sessionKey
+    FIXME: Once the above is added, we can delete arbitrary Sessions by replacing AuthParams with the passed sessionKey
 #>
 function Remove-WHDResource {
     [CmdletBinding(SupportsShouldProcess, ConfirmImpact = "High")]
@@ -21,37 +21,36 @@ function Remove-WHDResource {
         [int] $ResourceId
     )
 
-    # Build the authentication string; this is required for all requests
-    # FIXME: This is a little messy, we can do better.
-    if ($Script:WHDConnection.Session) {
-        # Check if we have a valid session key, if so use it for authentication
-        if (-not $Script:WHDConnection.Session.IsExpired) {
-            $AuthString = "sessionKey=$($Script:WHDConnection.Session.sessionKey)"
-        } else {
-            throw "Session key has expired. Please connect to Web Help Desk again using Connect-WebHelpDesk."
-        }
-    } elseif ($Script:WHDConnection.Authentication.apiKey) {
-        if ($Script:WHDConnection.Authentication.username) {
-            $AuthString = "username=$($Script:WHDConnection.Authentication.username)&"
-        }
+    Assert-WHDConnection
 
-        $AuthString += "apiKey=$($Script:WHDConnection.Authentication.apiKey)"
-    } else {
-        throw "No authentication method provided. Please connect to Web Help Desk first using Connect-WebHelpDesk."
+    # Create a copy of the Module level UriBuilder
+    $UriBuilder = [System.UriBuilder]::new($Script:WHDConnection.UriBuilder)
+
+    # Add the authentication parameters to the query string; this is required for all requests
+    $UriBuilder.Query = $Script:WHDConnection.AuthParams.ToString()
+
+    # Add the ResourceType and ResourceId to the path; Sessions are an exception
+    <#
+        TODO: We only need /Session?sessionKey= for deleting sessions, and
+        the active sessionKey is already stored in the AuthParams, unless PersistCredentials was used.
+        If that's the case we actually need to replace AuthParams with the passed sessionKey.
+    #>
+    $UriBuilder.Path += "/$ResourceType"
+
+    if ($ResourceType -ne [WHDResourceType]::Session) {
+        $UriBuilder.Path += "/$ResourceId"
     }
 
-    # Build the Uri
-    # FIXME: Clean this up! I found out the hard way that if the check is wrong, you can delete mutliple objects
-    $Uri = "$($WHDConnection.BaseUrl)/$ResourceType"
-    if ($ResourceType -ne [WHDResourceType]::Session) { $Uri += "/$ResourceId" }
-    $Uri += "?$AuthString"
+    # Parameters for Invoke-RestMethod
+    $ParameterHash = @{
+        Uri         = $UriBuilder.ToString()
+        Method      = [Microsoft.PowerShell.Commands.WebRequestMethod]::Delete
+        ContentType = "application/json"
+        WebSession  = $Script:WHDConnection.WebSession
+    }
 
     # Send the query and return the result
     if ($PSCmdlet.ShouldProcess("ResourceType=$ResourceType, ResourceId=$ResourceId")) {
-        return Invoke-RestMethod `
-            -Uri         $Uri `
-            -Method      ([Microsoft.PowerShell.Commands.WebRequestMethod]::Delete) `
-            -ContentType "application/json" `
-            -WebSession  $Script:WHDConnection.WebSession
+        return Invoke-RestMethod @ParameterHash
     }
 }

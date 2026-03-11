@@ -78,6 +78,7 @@
         "New-WHDQualifier"
         "Join-WHDQualifier"
         "Get-WHDResource"
+        "Expand-WHDResource"
         "Get-WHDAsset"
         "Get-WHDAssetStatus"
         "Get-WHDClient"

@@ -8,12 +8,19 @@
 function Disconnect-WebHelpDesk {
     [CmdletBinding(SupportsShouldProcess, ConfirmImpact = "High")] param ()
 
-    if ($PSCmdlet.ShouldProcess("Web Help Desk connection", "Disconnect and clear session state")) {
+    if ($PSCmdlet.ShouldProcess("Web Help Desk", "Disconnect and clear session state")) {
         # Remove the actual sesson from WHD
-        if ($null -ne $Script:WHDConnection.Session) {
+        if (($null -ne $Script:WHDConnection.Session) -and (-not $Script:WHDConnection.Session.IsExpired)) {
             Remove-WHDSession -Session $Script:WHDConnection.Session -Confirm:$false | Out-Null
         }
 
+        # Dispose of the WebSession to clear cookies and free resources
+        # WARNING: This must happen AFTER deleting the Session
+        if ($Script:WHDConnection.WebSession) {
+            $Script:WHDConnection.WebSession.Dispose()
+        }
+
+        # Clear all connection state from our module
         Clear-WHDConnection
     }
 }
