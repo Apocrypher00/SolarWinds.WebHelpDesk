@@ -6,25 +6,37 @@
     This function retrieves all asset statuses from WHD.
 
     .NOTES
-    We could make this searchable or give some options, but it doesn't necessarily seem useful.
+    WARNING: AssetStatuses don't support qualifiers, so they are actually ignored.
 #>
 function Get-WHDAssetStatus {
-    [CmdletBinding()]
+    [CmdletBinding(DefaultParameterSetName = "Qualifier")]
     param (
-        [Parameter(ParameterSetName = "Single")]
+        [Parameter(ParameterSetName = "Single", Mandatory)]
         [int] $ResourceId,
+
+        [Parameter(ParameterSetName = "Qualifier")]
+        [string] $Qualifier = [string]::Empty,
 
         [Parameter()]
         [switch] $Expand
     )
 
-    # Get the AssetStatuses
-    $Results = if ($PSCmdlet.ParameterSetName -eq "Single") {
-        Get-WHDResource -ResourceType ([WHDResourceType]::AssetStatuses) -ResourceId $ResourceId Expand:$Expand
-    } else {
-        Get-WHDResource -ResourceType ([WHDResourceType]::AssetStatuses) -Expand:$Expand
+    $ResourceType = [WHDResourceType]::AssetStatuses
+
+    switch ($PSCmdlet.ParameterSetName) {
+        "Single" {
+            $Results = Get-WHDResource `
+                -ResourceType $ResourceType `
+                -ResourceId   $ResourceId
+        }
+        "Qualifier" {
+            $Results = Get-WHDResource `
+                -ResourceType $ResourceType `
+                -Qualifier    ([string]::Empty) `
+                -Expand:$Expand
+        }
     }
 
-    # Return the results
+    # Return the asset statuses
     return $Results
 }

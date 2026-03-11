@@ -15,10 +15,13 @@
     If specified, the function will expand the client details to include additional information.
 #>
 function Get-WHDClient {
-    [CmdletBinding()]
+    [CmdletBinding(DefaultParameterSetName = "Search")]
     param (
         [Parameter(ParameterSetName = "Single", Mandatory)]
         [int] $ResourceId,
+
+        [Parameter(ParameterSetName = "Qualifier", Mandatory)]
+        [string] $Qualifier,
 
         [Parameter(ParameterSetName = "Search")]
         [string] $Email,
@@ -27,43 +30,53 @@ function Get-WHDClient {
         [switch] $Expand
     )
 
+    $ResourceType = [WHDResourceType]::Clients
+
+    # A mapping of parameter names to WHD attribute names, used for building qualifiers in the Search parameter set
+    # FIXME: Where is the best place for this?
+    $ClientAttributeMap = @{
+        Email  = "email"
+    }
+
     switch ($PSCmdlet.ParameterSetName) {
         "Single" {
             $Results = Get-WHDResource `
-                -ResourceType ([WHDResourceType]::Clients) `
+                -ResourceType $ResourceType `
                 -ResourceId   $ResourceId
         }
+        "Qualifier" {
+            $Results = Get-WHDResource `
+                -ResourceType $ResourceType `
+                -Qualifier    $Qualifier `
+                -Expand:$Expand
+        }
         "Search" {
-            # Build a search qualifier based on the provided parameters
-            # FIXME: I wanted this to be a loop, but the attribute names don't match the parameter names
-            $Qualifiers = [System.Collections.ArrayList]::new()
-            if ($PSCmdlet.MyInvocation.BoundParameters.ContainsKey("Email")) {
-                $Qualifiers.Add(
-                    (
-                        New-WHDQualifier `
-                            -Attribute "email" `
-                            -Operator  ([WHDQualifierOperator]::CaseInsensitiveLike) `
-                            -Value     $Email
-                    )
-                ) | Out-Null
+            # Build a search qualifier for each of the provided parameters
+            $Qualifiers = foreach ($Param in $PSCmdlet.MyInvocation.BoundParameters.Keys) {
+                if ($ClientAttributeMap.ContainsKey($Param)) {
+                    New-WHDQualifier `
+                        -Attribute $ClientAttributeMap[$Param] `
+                        -Operator  ([WHDQualifierOperator]::Equals) `
+                        -Value     $PSCmdlet.MyInvocation.BoundParameters[$Param]
+                }
             }
 
             # Combine qualifiers with AND, if there are any
-            # Otherwise, if there are no qualifiers, we want to pass an empty string to get all clients
-            $Qualifier = if ($Qualifiers.Count -eq 0) { "" } else {
+            # If there are no qualifiers, we want to pass an empty string to get all clients
+            $Qualifier = if ($Qualifiers.Count -eq 0) { [string]::Empty } else {
                 Join-WHDQualifier `
                     -Qualifiers   $Qualifiers `
                     -JoinOperator ([WHDQualifierLogicalOperator]::AND)
             }
 
-            # Get the assets
+            # Get the clients
             $Results = Get-WHDResource `
-                -ResourceType ([WHDResourceType]::Clients) `
+                -ResourceType $ResourceType `
                 -Qualifier    $Qualifier `
                 -Expand:$Expand
         }
     }
 
-    # Return the asset
+    # Return the client
     return $Results
 }

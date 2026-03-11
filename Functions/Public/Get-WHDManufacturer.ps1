@@ -5,6 +5,9 @@
     .DESCRIPTION
     This function retrieves manufacturers from WHD based on a provided search parameter.
 
+    .PARAMETER ResourceId
+    The resource ID of the manufacturer to retrieve.
+
     .PARAMETER Expand
     If specified, the function will expand the manufacturer details to include additional.
 

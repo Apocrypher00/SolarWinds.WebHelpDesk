@@ -5,6 +5,9 @@
     .DESCRIPTION
     This function retrieves models from WHD based on a provided search parameter.
 
+    .PARAMETER Name
+    The name of the model to retrieve.
+
     .PARAMETER Expand
     If specified, the function will expand the model details to include additional.
 
@@ -17,18 +20,67 @@ function Get-WHDModel {
         [Parameter(ParameterSetName = "Single", Mandatory)]
         [int] $ResourceId,
 
+        [Parameter(ParameterSetName = "Qualifier", Mandatory)]
+        [string] $Qualifier,
+
+        [Parameter(ParameterSetName = "Search")]
+        [string] $Name,
+
+        [Parameter(ParameterSetName = "Search")]
+        [string] $Manufacturer,
+
         [Parameter()]
         [switch] $Expand
     )
 
+    $ResourceType = [WHDResourceType]::Models
+
+    # A mapping of parameter names to WHD attribute names, used for building qualifiers in the Search parameter set
+    # FIXME: Where is the best place for this?
+    $ModelAttributeMap = @{
+        Name         = "modelName"
+        Manufacturer = "manufacturer.name"
+    }
+
     switch ($PSCmdlet.ParameterSetName) {
         "Single" {
             $Results = Get-WHDResource `
-                -ResourceType ([WHDResourceType]::Models) `
+                -ResourceType $ResourceType `
                 -ResourceId   $ResourceId
+        }
+        "Qualifier" {
+            $Results = Get-WHDResource `
+                -ResourceType $ResourceType `
+                -Qualifier    $Qualifier `
+                -Expand:$Expand
+        }
+        "Search" {
+            # Build a search qualifier for eachof the provided parameters
+            $Qualifiers = foreach ($Param in $PSCmdlet.MyInvocation.BoundParameters.Keys) {
+                if ($ModelAttributeMap.ContainsKey($Param)) {
+                    New-WHDQualifier `
+                        -Attribute $ModelAttributeMap[$Param] `
+                        -Operator  ([WHDQualifierOperator]::Equals) `
+                        -Value     $PSCmdlet.MyInvocation.BoundParameters[$Param]
+                }
+            }
+
+            # Combine qualifiers with AND, if there are any
+            # If there are no qualifiers, we want to pass an empty string to get all models
+            $Qualifier = if ($Qualifiers.Count -eq 0) { [string]::Empty } else {
+                Join-WHDQualifier `
+                    -Qualifiers   $Qualifiers `
+                    -JoinOperator ([WHDQualifierLogicalOperator]::AND)
+            }
+
+            # Get the models
+            $Results = Get-WHDResource `
+                -ResourceType $ResourceType `
+                -Qualifier    $Qualifier `
+                -Expand:$Expand
         }
     }
 
-    # Return the models
+    # Return the model
     return $Results
 }

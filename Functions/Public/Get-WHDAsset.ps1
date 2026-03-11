@@ -20,6 +20,12 @@
     .PARAMETER Status
     The status name of the asset to retrieve.
 
+    .PARAMETER Model
+    The model name of the asset to retrieve.
+
+    .PARAMETER Manufacturer
+    The manufacturer name of the asset to retrieve.
+
     .PARAMETER Expand
     If specified, the function will expand the asset details to include additional.
 
@@ -31,6 +37,9 @@ function Get-WHDAsset {
     param (
         [Parameter(ParameterSetName = "Single", Mandatory)]
         [int] $ResourceId,
+
+        [Parameter(ParameterSetName = "Qualifier", Mandatory)]
+        [string] $Qualifier,
 
         [Parameter(ParameterSetName = "Search")]
         [string] $AssetNumber,
@@ -57,6 +66,8 @@ function Get-WHDAsset {
         [switch] $Expand
     )
 
+    $ResourceType = [WHDResourceType]::Assets
+
     # A mapping of parameter names to WHD attribute names, used for building qualifiers in the Search parameter set
     # FIXME: Where is the best place for this?
     $AssetAttributeMap = @{
@@ -72,8 +83,14 @@ function Get-WHDAsset {
     switch ($PSCmdlet.ParameterSetName) {
         "Single" {
             $Results = Get-WHDResource `
-                -ResourceType ([WHDResourceType]::Assets) `
+                -ResourceType $ResourceType `
                 -ResourceId   $ResourceId
+        }
+        "Qualifier" {
+            $Results = Get-WHDResource `
+                -ResourceType $ResourceType `
+                -Qualifier    $Qualifier `
+                -Expand:$Expand
         }
         "Search" {
             # Build a search qualifier for eachof the provided parameters
@@ -88,7 +105,7 @@ function Get-WHDAsset {
 
             # Combine qualifiers with AND, if there are any
             # If there are no qualifiers, we want to pass an empty string to get all assets
-            $Qualifier = if ($Qualifiers.Count -eq 0) { "" } else {
+            $Qualifier = if ($Qualifiers.Count -eq 0) { [string]::Empty } else {
                 Join-WHDQualifier `
                     -Qualifiers   $Qualifiers `
                     -JoinOperator ([WHDQualifierLogicalOperator]::AND)
@@ -96,7 +113,7 @@ function Get-WHDAsset {
 
             # Get the assets
             $Results = Get-WHDResource `
-                -ResourceType ([WHDResourceType]::Assets) `
+                -ResourceType $ResourceType `
                 -Qualifier    $Qualifier `
                 -Expand:$Expand
         }

@@ -86,6 +86,7 @@
         "Get-WHDModel"
         "Get-WHDSession"
         "Remove-WHDResource"
+        "Remove-WHDAsset"
         "Remove-WHDClient"
         "Remove-WHDSession"
     )

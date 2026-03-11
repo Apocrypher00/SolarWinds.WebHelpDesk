@@ -19,7 +19,7 @@ function Get-WHDResource {
         [int] $ResourceId,
 
         [Parameter(ParameterSetName = "Search")]
-        [string] $Qualifier = "",
+        [string] $Qualifier = [string]::Empty,
 
         [Parameter()]
         [switch] $Expand
