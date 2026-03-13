@@ -34,6 +34,17 @@
         </Members>
     </Type>
     <Type>
+        <Name>SolarWinds.WebHelpDesk.Locations</Name>
+        <Members>
+            <ScriptProperty>
+                <Name>Name</Name>
+                <GetScriptBlock>
+                    $this.locationName
+                </GetScriptBlock>
+            </ScriptProperty>
+        </Members>
+    </Type>
+    <Type>
         <Name>SolarWinds.WebHelpDesk.Models</Name>
         <Members>
             <ScriptProperty>

@@ -166,6 +166,34 @@
             </TableControl>
         </View>
         <View>
+            <Name>SolarWinds.WebHelpDesk.Locations</Name>
+            <ViewSelectedBy>
+                <TypeName>SolarWinds.WebHelpDesk.Locations</TypeName>
+            </ViewSelectedBy>
+            <TableControl>
+                <TableHeaders>
+                    <TableColumnHeader />
+                    <TableColumnHeader />
+                    <TableColumnHeader />
+                </TableHeaders>
+                <TableRowEntries>
+                    <TableRowEntry>
+                        <TableColumnItems>
+                            <TableColumnItem>
+                                <PropertyName>ResourceType</PropertyName>
+                            </TableColumnItem>
+                            <TableColumnItem>
+                                <PropertyName>id</PropertyName>
+                            </TableColumnItem>
+                            <TableColumnItem>
+                                <PropertyName>Name</PropertyName>
+                            </TableColumnItem>
+                        </TableColumnItems>
+                    </TableRowEntry>
+                </TableRowEntries>
+            </TableControl>
+        </View>
+        <View>
             <Name>SolarWinds.WebHelpDesk.Manufacturers</Name>
             <ViewSelectedBy>
                 <TypeName>SolarWinds.WebHelpDesk.Manufacturers</TypeName>
