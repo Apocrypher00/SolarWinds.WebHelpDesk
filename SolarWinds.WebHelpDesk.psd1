@@ -81,6 +81,7 @@
         "Expand-WHDResource"
         "Get-WHDAsset"
         "Get-WHDAssetStatus"
+        "Get-WHDAssetType"
         "Get-WHDClient"
         "Get-WHDCompany"
         "Get-WHDManufacturer"

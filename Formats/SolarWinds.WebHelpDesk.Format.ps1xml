@@ -70,6 +70,38 @@
             </TableControl>
         </View>
         <View>
+            <Name>SolarWinds.WebHelpDesk.AssetTypes</Name>
+            <ViewSelectedBy>
+                <TypeName>SolarWinds.WebHelpDesk.AssetTypes</TypeName>
+            </ViewSelectedBy>
+            <TableControl>
+                <TableHeaders>
+                    <TableColumnHeader />
+                    <TableColumnHeader />
+                    <TableColumnHeader />
+                    <TableColumnHeader />
+                </TableHeaders>
+                <TableRowEntries>
+                    <TableRowEntry>
+                        <TableColumnItems>
+                            <TableColumnItem>
+                                <PropertyName>ResourceType</PropertyName>
+                            </TableColumnItem>
+                            <TableColumnItem>
+                                <PropertyName>id</PropertyName>
+                            </TableColumnItem>
+                            <TableColumnItem>
+                                <PropertyName>assetType</PropertyName>
+                            </TableColumnItem>
+                            <TableColumnItem>
+                                <PropertyName>hasSpecificCustomFields</PropertyName>
+                            </TableColumnItem>
+                        </TableColumnItems>
+                    </TableRowEntry>
+                </TableRowEntries>
+            </TableControl>
+        </View>
+        <View>
             <Name>SolarWinds.WebHelpDesk.Manufacturers</Name>
             <ViewSelectedBy>
                 <TypeName>SolarWinds.WebHelpDesk.Manufacturers</TypeName>
