@@ -21,8 +21,7 @@
 
     .PARAMETER Value
     The value to filter on.
-        - When using the Like or CaseInsensitiveLike operators, you can use * as a wildcard placeholder in the value.
-        - String and date values must be enclosed with single quotes (for example, 'some string value').
+    When using the Like or CaseInsensitiveLike operators, you can use * as a wildcard placeholder in the value.
 
     .EXAMPLE
     $Qualifier = New-WHDQualifier -Attribute "email" -Operator CaseInsensitiveLike -Value "*@example.com"

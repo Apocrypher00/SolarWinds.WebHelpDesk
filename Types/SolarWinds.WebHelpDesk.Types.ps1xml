@@ -12,6 +12,39 @@
         </Members>
     </Type>
     <Type>
+        <Name>SolarWinds.WebHelpDesk.AssetTypes</Name>
+        <Members>
+            <ScriptProperty>
+                <Name>Name</Name>
+                <GetScriptBlock>
+                    $this.assetType
+                </GetScriptBlock>
+            </ScriptProperty>
+        </Members>
+    </Type>
+    <Type>
+        <Name>SolarWinds.WebHelpDesk.Clients</Name>
+        <Members>
+            <ScriptProperty>
+                <Name>LocationName</Name>
+                <GetScriptBlock>
+                    $this.location.locationName
+                </GetScriptBlock>
+            </ScriptProperty>
+        </Members>
+    </Type>
+    <Type>
+        <Name>SolarWinds.WebHelpDesk.Models</Name>
+        <Members>
+            <ScriptProperty>
+                <Name>Name</Name>
+                <GetScriptBlock>
+                    $this.modelName
+                </GetScriptBlock>
+            </ScriptProperty>
+        </Members>
+    </Type>
+    <Type>
         <Name>SolarWinds.WebHelpDesk.Session</Name>
         <Members>
             <ScriptProperty>
