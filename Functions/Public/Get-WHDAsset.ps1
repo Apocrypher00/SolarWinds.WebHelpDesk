@@ -91,12 +91,12 @@ function Get-WHDAsset {
         }
         "Search" {
             # Build a search qualifier for each of the provided parameters
-            $Qualifiers = foreach ($Param in $PSCmdlet.MyInvocation.BoundParameters.Keys) {
+            $Qualifiers = foreach ($Param in $PSBoundParameters.Keys) {
                 if ($AssetAttributeMap.ContainsKey($Param)) {
                     New-WHDQualifier `
                         -Attribute $AssetAttributeMap[$Param] `
                         -Operator  ([WHDQualifierOperator]::Equals) `
-                        -Value     $PSCmdlet.MyInvocation.BoundParameters[$Param]
+                        -Value     $PSBoundParameters[$Param]
                 }
             }
 

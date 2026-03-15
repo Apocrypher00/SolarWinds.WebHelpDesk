@@ -40,6 +40,9 @@ function Get-WHDResource {
         [Parameter()]
         [WHDCustomFieldType] $SubType,
 
+        [Parameter()]
+        [WHDTicketListType] $ListType,
+
         [Parameter(ParameterSetName = "Single", Mandatory)]
         [int] $ResourceId,
 
@@ -50,9 +53,22 @@ function Get-WHDResource {
         [switch] $Expand
     )
 
+    $SubTypeSpecified  = $PSBoundParameters.ContainsKey("SubType")
+    $ListTypeSpecified = $PSBoundParameters.ContainsKey("ListType")
+
     # Only allow SubType for CustomFieldDefinitions
-    if ($SubType -and ($ResourceType -ne [WHDResourceType]::CustomFieldDefinitions)) {
+    if ($SubTypeSpecified -and ($ResourceType -ne [WHDResourceType]::CustomFieldDefinitions)) {
         throw "SubType is only valid for the 'CustomFieldDefinitions' resource."
+    }
+
+    # Only allow ListType for Tickets
+    if ($ListTypeSpecified -and ($ResourceType -ne [WHDResourceType]::Tickets)) {
+        throw "ListType is only valid for the 'Tickets' resource."
+    }
+
+    # Require ListType when querying Tickets without a qualifier
+    if (($ResourceType -eq [WHDResourceType]::Tickets) -and (-not $Qualifier) -and (-not $ListTypeSpecified)) {
+        throw "ListType is required for the 'Tickets' resource when no Qualifier is specified."
     }
 
     Assert-WHDConnection
@@ -66,12 +82,16 @@ function Get-WHDResource {
     # Build the Uri, ignore Ticket SubType as it isn't used in the URI
     $UriBuilder.Path += "/$ResourceType"
 
-    if (($null -ne $SubType) -and ($SubType -ne [WHDCustomFieldType]::Ticket)) {
+    if ($SubTypeSpecified -and ($SubType -ne [WHDCustomFieldType]::Ticket)) {
         $UriBuilder.Path += "/$SubType"
     }
 
     if ($PSCmdlet.ParameterSetName -eq "Single") {
         $UriBuilder.Path += "/$ResourceId"
+    }
+
+    if (($ResourceType -eq [WHDResourceType]::Tickets) -and ($ListTypeSpecified)) {
+        $UriBuilder.Query += "&list=$ListType"
     }
 
     # Parameters for Invoke-RestMethod

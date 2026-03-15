@@ -49,12 +49,12 @@ function Get-WHDCompany {
         }
         "Search" {
             # Build a search qualifier for each of the provided parameters
-            $Qualifiers = foreach ($Param in $PSCmdlet.MyInvocation.BoundParameters.Keys) {
+            $Qualifiers = foreach ($Param in $PSBoundParameters.Keys) {
                 if ($CompanyAttributeMap.ContainsKey($Param)) {
                     New-WHDQualifier `
                         -Attribute $CompanyAttributeMap[$Param] `
                         -Operator  ([WHDQualifierOperator]::Equals) `
-                        -Value     $PSCmdlet.MyInvocation.BoundParameters[$Param]
+                        -Value     $PSBoundParameters[$Param]
                 }
             }
 

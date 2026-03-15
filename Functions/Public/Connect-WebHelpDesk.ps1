@@ -54,7 +54,7 @@ function Connect-WebHelpDesk {
 
     # Store the credentials temporarily in our state; we'll use them to get a session key
     $Script:WHDConnection.AuthParams.Add("apiKey", $ApiKey)
-    if ($PSCmdlet.MyInvocation.BoundParameters.ContainsKey("Username")) {
+    if ($PSBoundParameters.ContainsKey("Username")) {
         $Script:WHDConnection.AuthParams.Add("username", $Username)
     }
 
