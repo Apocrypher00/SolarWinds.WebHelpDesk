@@ -21,6 +21,9 @@ function Get-WHDTicket {
         [string] $Qualifier,
 
         [Parameter(ParameterSetName = "Search")]
+        [string] $Status,
+
+        [Parameter(ParameterSetName = "Search")]
         [string] $Location,
 
         [Parameter()]
@@ -32,6 +35,7 @@ function Get-WHDTicket {
     # A mapping of parameter names to WHD attribute names, used for building qualifiers in the Search parameter set
     # FIXME: Where is the best place for this?
     $LocationAttributeMap = @{
+        Status   = "statustype.statusTypeName"
         Location = "location.locationName"
     }
 
