@@ -7,9 +7,6 @@
 
     .PARAMETER Expand
     If specified, the function will expand the asset type details to include additional information.
-
-    .NOTES
-    TODO: Needs expanding, I don't have any test objects yet.
 #>
 function Get-WHDAssetType {
     [CmdletBinding(DefaultParameterSetName = "Search")]
