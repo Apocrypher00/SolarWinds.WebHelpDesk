@@ -1,6 +1,6 @@
 <#
     .SYNOPSIS
-    Remove an asset from WHD.
+    Remove an Asset from WHD.
 #>
 function Remove-WHDAsset {
     [CmdletBinding(SupportsShouldProcess, ConfirmImpact = "High")]
@@ -10,7 +10,7 @@ function Remove-WHDAsset {
     )
 
     process {
-        if ($PSCmdlet.ShouldProcess("AssetNumber=$($Asset.assetNumber)", "Remove asset from Web Help Desk")) {
+        if ($PSCmdlet.ShouldProcess("AssetNumber=$($Asset.assetNumber)", "Remove Asset from Web Help Desk")) {
             Remove-WHDResource -Resource $Asset -Confirm:$false
         }
     }

@@ -1,6 +1,6 @@
 <#
     .SYNOPSIS
-    Remove a client from WHD.
+    Remove a Client from WHD.
 #>
 function Remove-WHDClient {
     [CmdletBinding(SupportsShouldProcess, ConfirmImpact = "High")]
@@ -10,8 +10,7 @@ function Remove-WHDClient {
     )
 
     process {
-        # Delete the Client by ID
-        if ($PSCmdlet.ShouldProcess("Email=$($Client.email)", "Remove client from Web Help Desk")) {
+        if ($PSCmdlet.ShouldProcess("Email=$($Client.email)", "Remove Client from Web Help Desk")) {
             Remove-WHDResource -Resource $Client -Confirm:$false
         }
     }

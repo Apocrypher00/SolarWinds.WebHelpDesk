@@ -91,7 +91,10 @@
         "Get-WHDTicket"
         "Remove-WHDResource"
         "Remove-WHDAsset"
+        "Remove-WHDAssetStatus"
+        "Remove-WHDAssetType"
         "Remove-WHDClient"
+        "Remove-WHDCompany"
         "Remove-WHDSession"
     )
 
