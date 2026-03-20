@@ -95,7 +95,11 @@
         "Remove-WHDAssetType"
         "Remove-WHDClient"
         "Remove-WHDCompany"
+        "Remove-WHDLocation"
+        "Remove-WHDManufacturer"
+        "Remove-WHDModel"
         "Remove-WHDSession"
+        "Remove-WHDTicket"
     )
 
     # Cmdlets to export from this module, for best performance,
