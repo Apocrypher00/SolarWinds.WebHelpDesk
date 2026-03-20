@@ -94,6 +94,20 @@ function Get-WHDResource {
         $UriBuilder.Query += "&list=$ListType"
     }
 
+    # Choose to retrieve detailed objects or short objects based on the Expand switch
+    <#
+        TODO: This deserves a bit more attention.
+        The API guide says that if style=short or not provided, it returns short objects.
+        If ANY OTHER style is provided, it returns long objects, but the guide uses style=details.
+        The guide also specifies which ResourceTypes support the style parameter.
+    #>
+    if ($Expand) {
+        # $UriBuilder.Query += "&style=details"
+        $UriBuilder.Query += "&style=long"
+    } else {
+        # $UriBuilder.Query += "&style=short"
+    }
+
     # Parameters for Invoke-RestMethod
     $ParameterHash = @{
         Uri         = $UriBuilder.ToString()
@@ -125,7 +139,7 @@ function Get-WHDResource {
             -Force
 
         # Expand if requested, but if this is a single resource query, it's already expanded
-        if ($Expand -and ($PSCmdlet.ParameterSetName -ne "Single")) { $Results = $Results | Expand-WHDResource }
+        # if ($Expand -and ($PSCmdlet.ParameterSetName -ne "Single")) { $Results = $Results | Expand-WHDResource }
     }
 
     return $Results
