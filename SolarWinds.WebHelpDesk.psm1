@@ -17,7 +17,7 @@ $Script:WHDConnection = [PSCustomObject]@{
     UriBuilder = $null
     WebSession = $null
     Session    = $null
-    AuthParams = [System.Web.HttpUtility]::ParseQueryString([string]::Empty)
+    AuthParams = New-HttpQSCollection
 }
 
 # Register type accelerators for enums?
