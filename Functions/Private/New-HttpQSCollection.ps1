@@ -5,5 +5,6 @@
 function New-HttpQSCollection {
     [CmdletBinding()] param ()
 
-    return [System.Web.HttpUtility]::ParseQueryString([string]::Empty)
+    # The leading comma prevents unwrapping the collection when returned
+    return ,[System.Web.HttpUtility]::ParseQueryString([string]::Empty)
 }
