@@ -67,7 +67,13 @@ function Get-WHDResource {
     }
 
     # Require ListType when querying Tickets without a qualifier
-    if (($ResourceType -eq [WHDResourceType]::Tickets) -and (-not $Qualifier) -and (-not $ListTypeSpecified)) {
+    # TODO: Clean this up
+    if (
+        ($ResourceType -eq [WHDResourceType]::Tickets) -and `
+        ($PSCmdlet.ParameterSetName -eq "Search") -and `
+        (-not $Qualifier) -and `
+        (-not $ListTypeSpecified)
+        ) {
         throw "ListType is required for the 'Tickets' resource when no Qualifier is specified."
     }
 
