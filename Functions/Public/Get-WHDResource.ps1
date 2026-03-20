@@ -80,10 +80,11 @@ function Get-WHDResource {
     Assert-WHDConnection
 
     # Create a copy of the Module level UriBuilder
+    # # TODO: Is there a better way to make a copy?
     $UriBuilder = [System.UriBuilder]::new($Script:WHDConnection.UriBuilder)
 
-    # Add the authentication parameters to the query string; this is required for all requests
-    $UriBuilder.Query = $Script:WHDConnection.AuthParams.ToString()
+    # Create a copy of the Module level authentication parameters
+    $QueryParams = Copy-WHDAuthentication
 
     # Build the Uri, ignore Ticket SubType as it isn't used in the URI
     $UriBuilder.Path += "/$ResourceType"
@@ -97,7 +98,7 @@ function Get-WHDResource {
     }
 
     if (($ResourceType -eq [WHDResourceType]::Tickets) -and ($ListTypeSpecified)) {
-        $UriBuilder.Query += "&list=$ListType"
+        $QueryParams.Add("list", $ListType)
     }
 
     # Choose to retrieve detailed objects or short objects based on the Expand switch
@@ -108,11 +109,14 @@ function Get-WHDResource {
         The guide also specifies which ResourceTypes support the style parameter.
     #>
     if ($Expand) {
-        # $UriBuilder.Query += "&style=details"
-        $UriBuilder.Query += "&style=long"
+        # $QueryParams.Add("style", "details")
+        $QueryParams.Add("style", "long")
     } else {
-        # $UriBuilder.Query += "&style=short"
+        # $QueryParams.Add("style", "short")
     }
+
+    # Add the query parameters to the UriBuilder, this will handle encoding and formatting for us
+    $UriBuilder.Query = $QueryParams.ToString()
 
     # Parameters for Invoke-RestMethod
     $ParameterHash = @{
