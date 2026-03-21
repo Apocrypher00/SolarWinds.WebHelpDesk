@@ -65,7 +65,18 @@
     TypesToProcess       = @("Types\SolarWinds.WebHelpDesk.Types.ps1xml")
 
     # Format files (.ps1xml) to be loaded when importing this module
-    FormatsToProcess     = @("Formats\SolarWinds.WebHelpDesk.Format.ps1xml")
+    FormatsToProcess     = @(
+        "Formats\Assets.Format.ps1xml"
+        "Formats\AssetStatuses.Format.ps1xml"
+        "Formats\AssetTypes.Format.ps1xml"
+        "Formats\Clients.Format.ps1xml"
+        "Formats\Departments.Format.ps1xml"
+        "Formats\Locations.Format.ps1xml"
+        "Formats\Manufacturers.Format.ps1xml"
+        "Formats\Models.Format.ps1xml"
+        "Formats\Session.Format.ps1xml"
+        "Formats\Tickets.Format.ps1xml"
+    )
 
     # Modules to import as nested modules of the module specified in RootModule/ModuleToProcess
     # NestedModules = @()

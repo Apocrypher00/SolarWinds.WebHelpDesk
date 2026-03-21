@@ -66,4 +66,33 @@
             </ScriptProperty>
         </Members>
     </Type>
+    <Type>
+        <Name>SolarWinds.WebHelpDesk.Tickets</Name>
+        <Members>
+            <ScriptProperty>
+                <Name>TicketSubject</Name>
+                <GetScriptBlock>
+                    if ($this.PSObject.Properties["subject"]) {
+                        $this.subject
+                    } elseif ($this.PSObject.Properties["shortSubject"]) {
+                        $this.shortSubject
+                    } else {
+                        $null
+                    }
+                </GetScriptBlock>
+            </ScriptProperty>
+            <ScriptProperty>
+                <Name>TicketDetail</Name>
+                <GetScriptBlock>
+                    if ($this.PSObject.Properties["detail"]) {
+                        $this.detail
+                    } elseif ($this.PSObject.Properties["shortDetail"]) {
+                        $this.shortDetail
+                    } else {
+                        $null
+                    }
+                </GetScriptBlock>
+            </ScriptProperty>
+        </Members>
+    </Type>
 </Types>
