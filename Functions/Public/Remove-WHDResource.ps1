@@ -24,6 +24,7 @@ function Remove-WHDResource {
         $UriBuilder = [System.UriBuilder]::new($Script:WHDConnection.UriBuilder)
 
         # Add the authentication parameters to the query string; this is required for all requests
+        # FIXME: Switch to a copy of AuthParams
         $UriBuilder.Query = $Script:WHDConnection.AuthParams.ToString()
 
         $ResourceType = $Resource.ResourceType
@@ -36,12 +37,12 @@ function Remove-WHDResource {
         #>
         $UriBuilder.Path += "/$ResourceType"
 
-        if ($Resource.ResourceType -ne [WHDResourceType]::Session) {
-            $UriBuilder.Path += "/$($Resource.ResourceId)"
-            $ShouldProcessMessage = "ResourceType=$ResourceType, ResourceId=$($Resource.ResourceId)"
-        } else {
+        if ($ResourceType -eq [WHDResourceType]::Session) {
             $UriBuilder.Query = "sessionKey=$($Resource.sessionKey)" # FIXME: Should we use [System.Web.HttpUtility]?
             $ShouldProcessMessage = "ResourceType=$ResourceType, SessionKey=$($Resource.sessionKey)"
+        } else {
+            $UriBuilder.Path += "/$($Resource.id)"
+            $ShouldProcessMessage = "ResourceType=$ResourceType, ResourceId=$($Resource.ResourceId)"
         }
 
         # Parameters for Invoke-RestMethod

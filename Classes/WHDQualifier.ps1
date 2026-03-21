@@ -1,6 +1,8 @@
 class WHDQualifier {
     [bool] $Negate = $false
 
+    hidden static [string] $DateTimeOffsetFormat = "yyyy-MM-ddTHH:mm:sszzz"
+
     hidden [string] RenderCore() {
         throw "WHDQualifier.RenderCore() must be implemented by a derived qualifier type."
     }
@@ -34,30 +36,62 @@ class WHDQualifier {
         return $op
     }
 
-    hidden static [string] EscapeValue([string] $Value) {
+    hidden static [void] ValidateClauseValue([psobject] $Value) {
         if ($null -eq $Value) {
-            return ""
+            throw "Qualifier value cannot be null."
         }
 
-        return $Value.Replace("'", "''")
+        if (
+            $Value -is [array] -or
+            $Value -is [System.Collections.IDictionary] -or
+            ($Value -is [System.Collections.IEnumerable] -and $Value -isnot [string])
+        ) {
+            throw "Qualifier value must be a scalar/basic type, not a collection or complex object."
+        }
+    }
+
+    hidden static [string] FormatClauseValue([psobject] $Value) {
+        $baseValue = $Value.PSObject.BaseObject
+        $valueType = $baseValue.GetType()
+
+        if ($valueType -eq [bool]) {
+            return [int] $baseValue
+        }
+
+        if ($valueType -eq [datetime] -or $valueType -eq [datetimeoffset]) {
+            $dateOffset = [datetimeoffset] $baseValue
+            $dateString = $dateOffset.ToString(
+                [WHDQualifier]::DateTimeOffsetFormat,
+                [System.Globalization.CultureInfo]::InvariantCulture
+            )
+
+            return "'$dateString'"
+        }
+
+        $stringValue = [string] $baseValue
+        $escapedValue = $stringValue.Replace('\\', '\\\\').Replace("'", "\'")
+        return "'$escapedValue'"
     }
 }
 
 class WHDClauseQualifier : WHDQualifier {
     [string] $Attribute
     [WHDQualifierOperator] $Operator
-    [string] $Value
+    [psobject] $Value
 
-    WHDClauseQualifier([string] $Attribute, [WHDQualifierOperator] $Operator, [string] $Value) {
+    WHDClauseQualifier([string] $Attribute, [WHDQualifierOperator] $Operator, [psobject] $Value) {
         $this.Attribute = $Attribute
-        $this.Operator = $Operator
-        $this.Value = $Value
+        $this.Operator  = $Operator
+        [WHDQualifier]::ValidateClauseValue($Value)
+        $this.Value     = $Value
     }
 
     hidden [string] RenderCore() {
-        $opString = [WHDQualifier]::GetOperatorToken($this.Operator)
-        $escapedValue = [WHDQualifier]::EscapeValue($this.Value)
-        return "($($this.Attribute) $opString '$escapedValue')"
+        $attributeName  = $this.Attribute
+        $OperatorString = [WHDQualifier]::GetOperatorToken($this.Operator)
+        $ValueString    = [WHDQualifier]::FormatClauseValue($this.Value)
+
+        return "($attributeName $OperatorString $ValueString)"
     }
 }
 
@@ -66,8 +100,8 @@ class WHDGroupQualifier : WHDQualifier {
     [WHDQualifierLogicalOperator] $JoinOperator
 
     WHDGroupQualifier([WHDQualifier[]] $Qualifiers, [WHDQualifierLogicalOperator] $JoinOperator) {
-        if ($null -eq $Qualifiers -or $Qualifiers.Count -eq 0) {
-            throw "A qualifier group must include at least one child qualifier."
+        if ($Qualifiers.Count -lt 2) {
+            throw "A qualifier group must include at least two child qualifiers."
         }
 
         $this.Qualifiers = $Qualifiers
@@ -75,10 +109,6 @@ class WHDGroupQualifier : WHDQualifier {
     }
 
     hidden [string] RenderCore() {
-        if ($this.Qualifiers.Count -eq 1) {
-            return $this.Qualifiers[0].ToString()
-        }
-
         $joinToken = [string] $this.JoinOperator
         $childStrings = foreach ($Qualifier in $this.Qualifiers) {
             $Qualifier.ToString()
