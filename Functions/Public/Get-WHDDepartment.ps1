@@ -1,25 +1,25 @@
 <#
     .SYNOPSIS
-    Get an AssetStatus from WHD.
+    Get a department from WHD.
 
     .DESCRIPTION
-    This function retrieves all asset statuses from WHD.
+    This function retrieves departments from WHD based on a provided search parameter.
 
     .PARAMETER ResourceId
-    The resource ID of the asset status to retrieve.
+    The resource ID of the department to retrieve.
 
     .PARAMETER Qualifier
-    A WHD qualifier string to filter the asset statuses to retrieve.
+    A WHD qualifier string to filter the departments to retrieve.
     This parameter is not actually supported for this ResourceType, but
     is included for consistency with other Get-WHD* functions.
 
     .PARAMETER Expand
-    If specified, the function will expand the asset status details to include additional information.
+    If specified, the function will expand the department details to include additional information.
 
     .NOTES
     This ResourceType doesn't actually support qualifiers.
 #>
-function Get-WHDAssetStatus {
+function Get-WHDDepartment {
     [CmdletBinding(DefaultParameterSetName = "Qualifier")]
     param (
         [Parameter(ParameterSetName = "Single", Mandatory)]
@@ -32,7 +32,7 @@ function Get-WHDAssetStatus {
         [switch] $Expand
     )
 
-    $ResourceType = [WHDResourceType]::AssetStatuses
+    $ResourceType = [WHDResourceType]::Departments
 
     # This ResourceType doesn't actually support qualifiers, so
     # ignore the provided qualifier and use an empty string instead.
