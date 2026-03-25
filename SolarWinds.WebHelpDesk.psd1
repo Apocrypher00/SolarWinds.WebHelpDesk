@@ -62,7 +62,19 @@
     # ScriptsToProcess     = @()
 
     # Type files (.ps1xml) to be loaded when importing this module
-    TypesToProcess       = @("Types\SolarWinds.WebHelpDesk.Types.ps1xml")
+    TypesToProcess       = @(
+        "Types\Assets.Types.ps1xml"
+        "Types\AssetStatuses.Types.ps1xml"
+        "Types\AssetTypes.Types.ps1xml"
+        "Types\Clients.Types.ps1xml"
+        "Types\Companies.Types.ps1xml"
+        "Types\Departments.Types.ps1xml"
+        "Types\Locations.Types.ps1xml"
+        "Types\Manufacturers.Types.ps1xml"
+        "Types\Models.Types.ps1xml"
+        "Types\Session.Types.ps1xml"
+        "Types\Tickets.Types.ps1xml"
+    )
 
     # Format files (.ps1xml) to be loaded when importing this module
     FormatsToProcess     = @(
@@ -70,6 +82,7 @@
         "Formats\AssetStatuses.Format.ps1xml"
         "Formats\AssetTypes.Format.ps1xml"
         "Formats\Clients.Format.ps1xml"
+        "Formats\Companies.Format.ps1xml"
         "Formats\Departments.Format.ps1xml"
         "Formats\Locations.Format.ps1xml"
         "Formats\Manufacturers.Format.ps1xml"
