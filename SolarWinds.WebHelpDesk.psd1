@@ -84,35 +84,35 @@
     # Functions to export from this module, for best performance,
     # do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
     FunctionsToExport    = @(
-        "Connect-WebHelpDesk"
-        "Disconnect-WebHelpDesk"
-        "New-WHDQualifier"
-        "Join-WHDQualifier"
-        "Get-WHDResource"
-        "Expand-WHDResource"
-        "Get-WHDAsset"
-        "Get-WHDAssetStatus"
-        "Get-WHDAssetType"
-        "Get-WHDClient"
-        "Get-WHDCompany"
-        "Get-WHDDepartment"
-        "Get-WHDLocation"
-        "Get-WHDManufacturer"
-        "Get-WHDModel"
-        "Get-WHDSession"
-        "Get-WHDTicket"
-        "Remove-WHDResource"
-        "Remove-WHDAsset"
-        "Remove-WHDAssetStatus"
-        "Remove-WHDAssetType"
-        "Remove-WHDClient"
-        "Remove-WHDCompany"
-        "Remove-WHDDepartment"
-        "Remove-WHDLocation"
-        "Remove-WHDManufacturer"
-        "Remove-WHDModel"
-        "Remove-WHDSession"
-        "Remove-WHDTicket"
+        "Connect-Server"
+        "Disconnect-Server"
+        "New-Qualifier"
+        "Join-Qualifier"
+        "Get-Resource"
+        "Expand-Resource"
+        "Get-Asset"
+        "Get-AssetStatus"
+        "Get-AssetType"
+        "Get-Client"
+        "Get-Company"
+        "Get-Department"
+        "Get-Location"
+        "Get-Manufacturer"
+        "Get-Model"
+        "Get-Session"
+        "Get-Ticket"
+        "Remove-Resource"
+        "Remove-Asset"
+        "Remove-AssetStatus"
+        "Remove-AssetType"
+        "Remove-Client"
+        "Remove-Company"
+        "Remove-Department"
+        "Remove-Location"
+        "Remove-Manufacturer"
+        "Remove-Model"
+        "Remove-Session"
+        "Remove-Ticket"
     )
 
     # Cmdlets to export from this module, for best performance,
@@ -160,7 +160,7 @@
             # Prerelease = ""
 
             # Flag to indicate whether the module requires explicit user acceptance for install/update/save
-            # RequireLicenseAcceptance = $false
+            RequireLicenseAcceptance = $false
 
             # External dependent modules of this module
             # ExternalModuleDependencies = @()
@@ -173,6 +173,6 @@
     # HelpInfoURI = ""
 
     # Default prefix for commands exported from this module. Override the default prefix using Import-Module -Prefix.
-    # DefaultCommandPrefix = ""
+    DefaultCommandPrefix = "WHD"
 
 }
