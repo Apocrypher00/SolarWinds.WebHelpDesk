@@ -32,7 +32,7 @@
     If specified, the function will expand the resource details to include additional information.
 #>
 function Get-Resource {
-    [CmdletBinding(DefaultParameterSetName = "Search")]
+    [CmdletBinding(DefaultParameterSetName = "Qualifier")]
     param (
         [Parameter(Mandatory)]
         [WHDResourceType] $ResourceType,
@@ -46,8 +46,11 @@ function Get-Resource {
         [Parameter(ParameterSetName = "Single", Mandatory)]
         [int] $ResourceId,
 
-        [Parameter(ParameterSetName = "Search")]
-        [string] $Qualifier = [string]::Empty,
+        [Parameter(ParameterSetName = "Qualifier")]
+        [WHDQualifier] $Qualifier,
+
+        [Parameter(ParameterSetName = "QualifierString")]
+        [string] $QualifierString,
 
         [Parameter()]
         [switch] $Expand
@@ -55,6 +58,11 @@ function Get-Resource {
 
     $SubTypeSpecified  = $PSBoundParameters.ContainsKey("SubType")
     $ListTypeSpecified = $PSBoundParameters.ContainsKey("ListType")
+
+    # If a Qualifier object was provided, convert it to a string for use in the API call
+    if ($null -ne $Qualifier) { $QualifierString = $Qualifier.ToString() }
+    $QualifierSpecified = (-not [string]::IsNullOrEmpty($QualifierString))
+
 
     # Only allow SubType for CustomFieldDefinitions
     if ($SubTypeSpecified -and ($ResourceType -ne [WHDResourceType]::CustomFieldDefinitions)) {
@@ -66,14 +74,13 @@ function Get-Resource {
         throw "ListType is only valid for the 'Tickets' resource."
     }
 
-    # Require ListType when querying Tickets without a qualifier
-    # TODO: Clean this up
+    # Require ListType when searching for Tickets without a Qualifier
     if (
         ($ResourceType -eq [WHDResourceType]::Tickets) -and `
-        ($PSCmdlet.ParameterSetName -eq "Search") -and `
-        (-not $Qualifier) -and `
+        ($PSCmdlet.ParameterSetName -ne "Single") -and `
+        (-not $QualifierSpecified) -and `
         (-not $ListTypeSpecified)
-        ) {
+    ) {
         throw "ListType is required for the 'Tickets' resource when no Qualifier is specified."
     }
 
@@ -126,11 +133,8 @@ function Get-Resource {
         WebSession  = $Script:WHDConnection.WebSession
     }
 
-    # Add qualifier to the body if we are using Search mode
-    if ($PSCmdlet.ParameterSetName -eq "Search") {
-        $ParameterHash["Body"] = @{
-            qualifier = $Qualifier
-        }
+    if ($QualifierSpecified) {
+        $ParameterHash["Body"] = @{ qualifier = $QualifierString }
     }
 
     # Send the query
@@ -148,8 +152,6 @@ function Get-Resource {
             -Value      $ResourceType `
             -Force
 
-        # Expand if requested, but if this is a single resource query, it's already expanded
-        # if ($Expand -and ($PSCmdlet.ParameterSetName -ne "Single")) { $Results = $Results | Expand-Resource }
     }
 
     return $Results

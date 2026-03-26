@@ -5,6 +5,10 @@ Add-Type -AssemblyName "System.Web" -ErrorAction Stop
 $Enums = Join-Path -Path $PSScriptRoot -ChildPath 'Enums'
 Get-ChildItem -Path $Enums -Filter '*.ps1' -File | ForEach-Object { . $_.FullName }
 
+# Import all classes in the Classes folder
+$Classes = Join-Path -Path $PSScriptRoot -ChildPath 'Classes'
+Get-ChildItem -Path $Classes -Filter '*.ps1' -File | ForEach-Object { . $_.FullName }
+
 # Import all functions in the Private and Public folders
 $Functions        = Join-Path -Path $PSScriptRoot -ChildPath 'Functions'
 $PrivateFunctions = Join-Path -Path $Functions -ChildPath 'Private'

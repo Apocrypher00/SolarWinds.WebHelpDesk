@@ -42,35 +42,38 @@ class WHDQualifier {
         }
 
         if (
-            $Value -is [array] -or
-            $Value -is [System.Collections.IDictionary] -or
-            ($Value -is [System.Collections.IEnumerable] -and $Value -isnot [string])
+            ($Value -is [array]) -or
+            ($Value -is [System.Collections.IDictionary]) -or
+            (($Value -is [System.Collections.IEnumerable]) -and ($Value -isnot [string]))
         ) {
             throw "Qualifier value must be a scalar/basic type, not a collection or complex object."
         }
     }
 
     hidden static [string] FormatClauseValue([psobject] $Value) {
-        $baseValue = $Value.PSObject.BaseObject
-        $valueType = $baseValue.GetType()
+        $BaseValue = $Value.PSObject.BaseObject
+        $BaseType = $BaseValue.GetType()
 
-        if ($valueType -eq [bool]) {
-            return [int] $baseValue
+        if ($BaseType -eq [bool]) {
+            return [int] $BaseValue
         }
 
-        if ($valueType -eq [datetime] -or $valueType -eq [datetimeoffset]) {
-            $dateOffset = [datetimeoffset] $baseValue
-            $dateString = $dateOffset.ToString(
+        if (($BaseType -eq [datetime]) -or ($BaseType -eq [datetimeoffset])) {
+            $DateOffset = [datetimeoffset] $BaseValue
+            $DateString = $DateOffset.ToString(
                 [WHDQualifier]::DateTimeOffsetFormat,
                 [System.Globalization.CultureInfo]::InvariantCulture
             )
 
-            return "'$dateString'"
+            return "'$DateString'"
         }
 
-        $stringValue = [string] $baseValue
-        $escapedValue = $stringValue.Replace('\\', '\\\\').Replace("'", "\'")
-        return "'$escapedValue'"
+        $StringValue = [string] $BaseValue
+
+        # Escape backslashes and single quotes for the qualifier syntax
+        $EscapedValue = $StringValue.Replace('\\', '\\\\').Replace("'", "\'")
+
+        return "'$EscapedValue'"
     }
 }
 

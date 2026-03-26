@@ -1,33 +1,44 @@
 <#
     .SYNOPSIS
-    Get an asset from WHD.
+    Get an Asset from WHD.
 
     .DESCRIPTION
-    This function retrieves assets from WHD based on a provided search parameter.
+    This function retrieves a specific Asset from WHD, or a list of Assets based on a provided search parameter.
+
+    .PARAMETER ResourceId
+    The resource ID of the Asset to be retrieved.
+
+    .PARAMETER Qualifier
+    A WHDQualifier object to filter the results.
+    Use New-Qualifier and Join-Qualifier to build these objects.
+
+    .PARAMETER QualifierString
+    A WHD API qualifier string to filter the results.
+    This is an alternative to using the Qualifier parameter if you prefer to build the qualifier string manually.
 
     .PARAMETER AssetNumber
-    The asset number of the asset to be retrieved.
+    An assetNumber to search for.
 
     .PARAMETER SerialNumber
-    The serial number of the asset to be retrieved.
+    A serialNumber to search for.
 
     .PARAMETER Location
-    The location name of the asset to be retrieved.
+    A location.locationName to search for.
 
     .PARAMETER Room
-    The room name of the asset to be retrieved.
+    A room.roomName to search for.
 
     .PARAMETER Status
-    The status name of the asset to be retrieved.
+    An assetstatus.name to search for.
 
     .PARAMETER Model
-    The model name of the asset to be retrieved.
+    A model.modelName to search for.
 
     .PARAMETER Manufacturer
-    The manufacturer name of the asset to be retrieved.
+    A model.manufacturer.name to search for.
 
     .PARAMETER Expand
-    If specified, the function will expand the asset details to include additional.
+    If specified, all results will be in the detailed format.
 #>
 function Get-Asset {
     [CmdletBinding(DefaultParameterSetName = "Search")]
@@ -35,8 +46,11 @@ function Get-Asset {
         [Parameter(ParameterSetName = "Single", Mandatory)]
         [int] $ResourceId,
 
-        [Parameter(ParameterSetName = "Qualifier", Mandatory)]
-        [string] $Qualifier,
+        [Parameter(ParameterSetName = "Qualifier")]
+        [WHDQualifier] $Qualifier,
+
+        [Parameter(ParameterSetName = "QualifierString")]
+        [string] $QualifierString,
 
         [Parameter(ParameterSetName = "Search")]
         [string] $AssetNumber,
@@ -63,59 +77,35 @@ function Get-Asset {
         [switch] $Expand
     )
 
-    $ResourceType = [WHDResourceType]::Assets
-
-    # A mapping of parameter names to WHD attribute names, used for building qualifiers in the Search parameter set
-    # FIXME: Where is the best place for this?
-    $AssetAttributeMap = @{
-        AssetNumber  = "assetNumber"
-        SerialNumber = "serialNumber"
-        Location     = "location.locationName"
-        Room         = "room.roomName"
-        Status       = "assetstatus.name"
-        Model        = "model.modelName"
-        Manufacturer = "model.manufacturer.name"
+    $QueryParameters = @{
+        ResourceType = [WHDResourceType]::Assets
+        Expand       = $Expand.IsPresent
     }
 
     switch ($PSCmdlet.ParameterSetName) {
         "Single" {
-            $Results = Get-Resource `
-                -ResourceType $ResourceType `
-                -ResourceId   $ResourceId
+            $QueryParameters["ResourceId"] = $ResourceId
         }
         "Qualifier" {
-            $Results = Get-Resource `
-                -ResourceType $ResourceType `
-                -Qualifier    $Qualifier `
-                -Expand:$Expand
+            $QueryParameters["Qualifier"] = $Qualifier
+        }
+        "QualifierString" {
+            $QueryParameters["QualifierString"] = $QualifierString
         }
         "Search" {
-            # Build a search qualifier for each of the provided parameters
-            $Qualifiers = foreach ($Param in $PSBoundParameters.Keys) {
-                if ($AssetAttributeMap.ContainsKey($Param)) {
-                    New-Qualifier `
-                        -Attribute $AssetAttributeMap[$Param] `
-                        -Operator  ([WHDQualifierOperator]::Equals) `
-                        -Value     $PSBoundParameters[$Param]
+            $QueryParameters["Qualifier"] = ConvertTo-Qualifier `
+                -BoundParameters $PSBoundParameters `
+                -AttributeMap    @{
+                    AssetNumber  = "assetNumber"
+                    SerialNumber = "serialNumber"
+                    Location     = "location.locationName"
+                    Room         = "room.roomName"
+                    Status       = "assetstatus.name"
+                    Model        = "model.modelName"
+                    Manufacturer = "model.manufacturer.name"
                 }
-            }
-
-            # Combine qualifiers with AND, if there are any
-            # If there are no qualifiers, we want to pass an empty string to get all assets
-            $Qualifier = if ($Qualifiers.Count -eq 0) { [string]::Empty } else {
-                Join-Qualifier `
-                    -Qualifiers   $Qualifiers `
-                    -JoinOperator ([WHDQualifierLogicalOperator]::AND)
-            }
-
-            # Get the assets
-            $Results = Get-Resource `
-                -ResourceType $ResourceType `
-                -Qualifier    $Qualifier `
-                -Expand:$Expand
         }
     }
 
-    # Return the asset
-    return $Results
+    return Get-Resource @QueryParameters
 }

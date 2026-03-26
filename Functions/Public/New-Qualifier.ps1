@@ -50,7 +50,7 @@
 #>
 function New-Qualifier {
     [CmdletBinding()]
-    [OutputType([string])]
+    [OutputType([WHDQualifier])]
     param (
         [Parameter(Mandatory, Position = 0)]
         [string] $Attribute,
@@ -59,30 +59,17 @@ function New-Qualifier {
         [WHDQualifierOperator] $Operator,
 
         [Parameter(Mandatory, Position = 2)]
-        [string] $Value,
+        [psobject] $Value,
 
         [Parameter()]
         [switch] $Negate
     )
 
-    $OpString = switch ($Operator) {
-        ([WHDQualifierOperator]::Equals)              { "=" }
-        ([WHDQualifierOperator]::NotEquals)           { "!=" }
-        ([WHDQualifierOperator]::LessThan)            { "<" }
-        ([WHDQualifierOperator]::GreaterThan)         { ">" }
-        ([WHDQualifierOperator]::LessThanOrEqual)     { "<=" }
-        ([WHDQualifierOperator]::GreaterThanOrEqual)  { ">=" }
-        ([WHDQualifierOperator]::Like)                { "like" }
-        ([WHDQualifierOperator]::CaseInsensitiveLike) { "caseInsensitiveLike" }
-    }
-
-    # FIXME: This is a very naive approach.
-    # FIXME: Find out when escaping is necessary and implement it properly.
-    # FIXME: WHEN do we need to wrap the value in quotes?
-    $Qualifier = "($Attribute $OpString '$Value')"
+    $Qualifier = [WHDClauseQualifier]::new($Attribute, $Operator, $Value)
 
     # FIXME: Let's add an option that only negates the passed qualifier
-    if ($Negate) { $Qualifier = "(not $Qualifier)" }
+    # FIXME: Maybe we should have another constructor with negate built-in?
+    if ($Negate) { $Qualifier.Negate = $true }
 
     return $Qualifier
 }
