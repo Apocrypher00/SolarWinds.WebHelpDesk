@@ -10,8 +10,8 @@
     The type of resource to query, e.g. Assets, Clients, Manufacturers, etc.
     Restricted by the [WHDResourceType] enum.
 
-    .PARAMETER SubType
-    The subtype of resource to query, used for CustomFieldDefinitions.
+    .PARAMETER CustomFieldType
+    The subtype of CustomFieldDefinition to query, e.g. Asset, Location, or Ticket.
     Restricted by the [WHDCustomFieldType] enum.
 
     .PARAMETER ResourceId
@@ -38,10 +38,10 @@ function Get-Resource {
         [WHDResourceType] $ResourceType,
 
         [Parameter()]
-        [WHDCustomFieldType] $SubType,
+        [WHDCustomFieldType] $CustomFieldType,
 
         [Parameter()]
-        [WHDTicketListType] $ListType,
+        [WHDTicketListType] $TicketListType,
 
         [Parameter(ParameterSetName = "Single", Mandatory)]
         [int] $ResourceId,
@@ -56,32 +56,32 @@ function Get-Resource {
         [switch] $Expand
     )
 
-    $SubTypeSpecified  = $PSBoundParameters.ContainsKey("SubType")
-    $ListTypeSpecified = $PSBoundParameters.ContainsKey("ListType")
+    $CustomFieldTypeSpecified  = $PSBoundParameters.ContainsKey("CustomFieldType")
+    $TicketListTypeSpecified = $PSBoundParameters.ContainsKey("TicketListType")
 
     # If a Qualifier object was provided, convert it to a string for use in the API call
     if ($null -ne $Qualifier) { $QualifierString = $Qualifier.ToString() }
     $QualifierSpecified = (-not [string]::IsNullOrEmpty($QualifierString))
 
 
-    # Only allow SubType for CustomFieldDefinitions
-    if ($SubTypeSpecified -and ($ResourceType -ne [WHDResourceType]::CustomFieldDefinitions)) {
-        throw "SubType is only valid for the 'CustomFieldDefinitions' resource."
+    # Only allow CustomFieldType for CustomFieldDefinitions
+    if ($CustomFieldTypeSpecified -and ($ResourceType -ne [WHDResourceType]::CustomFieldDefinitions)) {
+        throw "CustomFieldType is only valid for the 'CustomFieldDefinitions' resource."
     }
 
-    # Only allow ListType for Tickets
-    if ($ListTypeSpecified -and ($ResourceType -ne [WHDResourceType]::Tickets)) {
-        throw "ListType is only valid for the 'Tickets' resource."
+    # Only allow TicketListType for Tickets
+    if ($TicketListTypeSpecified -and ($ResourceType -ne [WHDResourceType]::Tickets)) {
+        throw "TicketListType is only valid for the 'Tickets' resource."
     }
 
-    # Require ListType when searching for Tickets without a Qualifier
+    # Require TicketListType when searching for Tickets without a Qualifier
     if (
         ($ResourceType -eq [WHDResourceType]::Tickets) -and `
         ($PSCmdlet.ParameterSetName -ne "Single") -and `
         (-not $QualifierSpecified) -and `
-        (-not $ListTypeSpecified)
+        (-not $TicketListTypeSpecified)
     ) {
-        throw "ListType is required for the 'Tickets' resource when no Qualifier is specified."
+        throw "TicketListType is required for the 'Tickets' resource when no Qualifier is specified."
     }
 
     Assert-Connection
@@ -96,16 +96,16 @@ function Get-Resource {
     # Build the Uri, ignore Ticket SubType as it isn't used in the URI
     $UriBuilder.Path += "/$ResourceType"
 
-    if ($SubTypeSpecified -and ($SubType -ne [WHDCustomFieldType]::Ticket)) {
-        $UriBuilder.Path += "/$SubType"
+    if ($CustomFieldTypeSpecified -and ($CustomFieldType -ne [WHDCustomFieldType]::Ticket)) {
+        $UriBuilder.Path += "/$CustomFieldType"
     }
 
     if ($PSCmdlet.ParameterSetName -eq "Single") {
         $UriBuilder.Path += "/$ResourceId"
     }
 
-    if (($ResourceType -eq [WHDResourceType]::Tickets) -and ($ListTypeSpecified)) {
-        $QueryParams.Add("list", $ListType)
+    if (($ResourceType -eq [WHDResourceType]::Tickets) -and ($TicketListTypeSpecified)) {
+        $QueryParams.Add("list", $TicketListType)
     }
 
     # Choose to retrieve detailed objects or short objects based on the Expand switch

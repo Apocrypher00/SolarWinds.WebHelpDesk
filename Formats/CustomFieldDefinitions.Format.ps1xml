@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/PowerShell/PowerShell/master/src/Schemas/Format.xsd">
+    <ViewDefinitions>
+        <View>
+            <Name>SolarWinds.WebHelpDesk.CustomFieldDefinitions</Name>
+            <ViewSelectedBy>
+                <TypeName>SolarWinds.WebHelpDesk.CustomFieldDefinitions</TypeName>
+            </ViewSelectedBy>
+            <TableControl>
+                <TableHeaders>
+                    <TableColumnHeader />
+                    <TableColumnHeader />
+                    <TableColumnHeader />
+                    <TableColumnHeader />
+                    <TableColumnHeader />
+                    <TableColumnHeader />
+                    <TableColumnHeader />
+                    <TableColumnHeader />
+                </TableHeaders>
+                <TableRowEntries>
+                    <TableRowEntry>
+                        <TableColumnItems>
+                            <TableColumnItem>
+                                <PropertyName>ResourceType</PropertyName>
+                            </TableColumnItem>
+                            <TableColumnItem>
+                                <PropertyName>id</PropertyName>
+                            </TableColumnItem>
+                            <TableColumnItem>
+                                <PropertyName>label</PropertyName>
+                            </TableColumnItem>
+                            <TableColumnItem>
+                                <PropertyName>Options</PropertyName>
+                            </TableColumnItem>
+                            <TableColumnItem>
+                                <PropertyName>visible</PropertyName>
+                            </TableColumnItem>
+                            <TableColumnItem>
+                                <PropertyName>editable</PropertyName>
+                            </TableColumnItem>
+                            <TableColumnItem>
+                                <PropertyName>required</PropertyName>
+                            </TableColumnItem>
+                            <TableColumnItem>
+                                <PropertyName>displayStyleStorableValue</PropertyName>
+                            </TableColumnItem>
+                        </TableColumnItems>
+                    </TableRowEntry>
+                </TableRowEntries>
+            </TableControl>
+        </View>
+    </ViewDefinitions>
+</Configuration>
