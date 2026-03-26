@@ -5,9 +5,11 @@ Add-Type -AssemblyName "System.Web" -ErrorAction Stop
 $Enums = Join-Path -Path $PSScriptRoot -ChildPath 'Enums'
 Get-ChildItem -Path $Enums -Filter '*.ps1' -File | ForEach-Object { . $_.FullName }
 
-# Import all classes in the Classes folder
+# Import classes in dependency order
 $Classes = Join-Path -Path $PSScriptRoot -ChildPath 'Classes'
-Get-ChildItem -Path $Classes -Filter '*.ps1' -File | ForEach-Object { . $_.FullName }
+. (Join-Path -Path $Classes -ChildPath 'WHDQualifier.ps1')
+. (Join-Path -Path $Classes -ChildPath 'WHDClauseQualifier.ps1')
+. (Join-Path -Path $Classes -ChildPath 'WHDGroupQualifier.ps1')
 
 # Import all functions in the Private and Public folders
 $Functions        = Join-Path -Path $PSScriptRoot -ChildPath 'Functions'
