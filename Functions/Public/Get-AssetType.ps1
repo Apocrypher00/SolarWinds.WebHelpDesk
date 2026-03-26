@@ -1,12 +1,26 @@
 <#
     .SYNOPSIS
-    Get an asset type from WHD.
+    Get an AssetType from WHD.
 
     .DESCRIPTION
-    This function retrieves asset types from WHD based on a provided search parameter.
+    This function retrieves a specific AssetType from WHD, or a list of AssetTypes based on a provided search parameter.
+
+    .PARAMETER ResourceId
+    The id of the AssetType to be retrieved.
+
+    .PARAMETER Qualifier
+    A WHDQualifier object to filter the results.
+    Use New-Qualifier and Join-Qualifier to build these objects.
+
+    .PARAMETER QualifierString
+    A WHD API qualifier string to filter the results.
+    This is an alternative to using the Qualifier parameter if you prefer to build the qualifier string manually.
+
+    .PARAMETER Name
+    An assetType to search for.
 
     .PARAMETER Expand
-    If specified, the function will expand the asset type details to include additional information.
+    If specified, all results will be in the detailed format.
 #>
 function Get-AssetType {
     [CmdletBinding(DefaultParameterSetName = "Search")]
@@ -14,8 +28,11 @@ function Get-AssetType {
         [Parameter(ParameterSetName = "Single", Mandatory)]
         [int] $ResourceId,
 
-        [Parameter(ParameterSetName = "Qualifier", Mandatory)]
-        [string] $Qualifier,
+        [Parameter(ParameterSetName = "Qualifier")]
+        [WHDQualifier] $Qualifier,
+
+        [Parameter(ParameterSetName = "QualifierString")]
+        [string] $QualifierString,
 
         [Parameter(ParameterSetName = "Search")]
         [string] $Name,
@@ -24,53 +41,29 @@ function Get-AssetType {
         [switch] $Expand
     )
 
-    $ResourceType = [WHDResourceType]::AssetTypes
-
-    # A mapping of parameter names to WHD attribute names, used for building qualifiers in the Search parameter set
-    # FIXME: Where is the best place for this?
-    $AssetTypeAttributeMap = @{
-        Name = "assetType"
+    $QueryParameters = @{
+        ResourceType = [WHDResourceType]::AssetTypes
+        Expand       = $Expand.IsPresent
     }
 
     switch ($PSCmdlet.ParameterSetName) {
         "Single" {
-            $Results = Get-Resource `
-                -ResourceType $ResourceType `
-                -ResourceId   $ResourceId
+            $QueryParameters["ResourceId"] = $ResourceId
         }
         "Qualifier" {
-            $Results = Get-Resource `
-                -ResourceType $ResourceType `
-                -Qualifier    $Qualifier `
-                -Expand:$Expand
+            $QueryParameters["Qualifier"] = $Qualifier
+        }
+        "QualifierString" {
+            $QueryParameters["QualifierString"] = $QualifierString
         }
         "Search" {
-            # Build a search qualifier for each of the provided parameters
-            $Qualifiers = foreach ($Param in $PSBoundParameters.Keys) {
-                if ($AssetTypeAttributeMap.ContainsKey($Param)) {
-                    New-Qualifier `
-                        -Attribute $AssetTypeAttributeMap[$Param] `
-                        -Operator  ([WHDQualifierOperator]::Equals) `
-                        -Value     $PSBoundParameters[$Param]
+            $QueryParameters["Qualifier"] = ConvertTo-Qualifier `
+                -BoundParameters $PSBoundParameters `
+                -AttributeMap    @{
+                    Name = "assetType"
                 }
-            }
-
-            # Combine qualifiers with AND, if there are any
-            # If there are no qualifiers, we want to pass an empty string to get all asset types
-            $Qualifier = if ($Qualifiers.Count -eq 0) { [string]::Empty } else {
-                Join-Qualifier `
-                    -Qualifiers   $Qualifiers `
-                    -JoinOperator ([WHDQualifierLogicalOperator]::AND)
-            }
-
-            # Get the asset types
-            $Results = Get-Resource `
-                -ResourceType $ResourceType `
-                -Qualifier    $Qualifier `
-                -Expand:$Expand
         }
     }
 
-    # Return the asset types
-    return $Results
+    return Get-Resource @QueryParameters
 }

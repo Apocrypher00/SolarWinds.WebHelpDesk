@@ -1,18 +1,26 @@
 <#
     .SYNOPSIS
-    Get a client from WHD.
+    Get a Client from WHD.
 
     .DESCRIPTION
-    This function retrieves clients from WHD based on a provided search parameter.
+    This function retrieves a specific Client from WHD, or a list of Clients based on a provided search parameter.
 
     .PARAMETER ResourceId
-    The resource ID of the client to retrieve.
+    The id of the Client to be retrieved.
+
+    .PARAMETER Qualifier
+    A WHDQualifier object to filter the results.
+    Use New-Qualifier and Join-Qualifier to build these objects.
+
+    .PARAMETER QualifierString
+    A WHD API qualifier string to filter the results.
+    This is an alternative to using the Qualifier parameter if you prefer to build the qualifier string manually.
 
     .PARAMETER Email
-    The email address of the client to retrieve.
+    An email to search for.
 
     .PARAMETER Expand
-    If specified, the function will expand the client details to include additional information.
+    If specified, all results will be in the detailed format.
 #>
 function Get-Client {
     [CmdletBinding(DefaultParameterSetName = "Search")]
@@ -21,7 +29,10 @@ function Get-Client {
         [int] $ResourceId,
 
         [Parameter(ParameterSetName = "Qualifier", Mandatory)]
-        [string] $Qualifier,
+        [WHDQualifier] $Qualifier,
+
+        [Parameter(ParameterSetName = "QualifierString", Mandatory)]
+        [string] $QualifierString,
 
         [Parameter(ParameterSetName = "Search")]
         [string] $Email,
@@ -30,53 +41,29 @@ function Get-Client {
         [switch] $Expand
     )
 
-    $ResourceType = [WHDResourceType]::Clients
-
-    # A mapping of parameter names to WHD attribute names, used for building qualifiers in the Search parameter set
-    # FIXME: Where is the best place for this?
-    $ClientAttributeMap = @{
-        Email  = "email"
+    $QueryParameters = @{
+        ResourceType = [WHDResourceType]::Clients
+        Expand       = $Expand
     }
 
     switch ($PSCmdlet.ParameterSetName) {
         "Single" {
-            $Results = Get-Resource `
-                -ResourceType $ResourceType `
-                -ResourceId   $ResourceId
+            $QueryParameters["ResourceId"] = $ResourceId
         }
         "Qualifier" {
-            $Results = Get-Resource `
-                -ResourceType $ResourceType `
-                -Qualifier    $Qualifier `
-                -Expand:$Expand
+            $QueryParameters["Qualifier"] = $Qualifier
+        }
+        "QualifierString" {
+            $QueryParameters["QualifierString"] = $QualifierString
         }
         "Search" {
-            # Build a search qualifier for each of the provided parameters
-            $Qualifiers = foreach ($Param in $PSBoundParameters.Keys) {
-                if ($ClientAttributeMap.ContainsKey($Param)) {
-                    New-Qualifier `
-                        -Attribute $ClientAttributeMap[$Param] `
-                        -Operator  ([WHDQualifierOperator]::Equals) `
-                        -Value     $PSBoundParameters[$Param]
+            $QueryParameters["Qualifier"] = ConvertTo-Qualifier `
+                -BoundParameters $PSBoundParameters `
+                -AttributeMap    @{
+                    Email = "email"
                 }
-            }
-
-            # Combine qualifiers with AND, if there are any
-            # If there are no qualifiers, we want to pass an empty string to get all clients
-            $Qualifier = if ($Qualifiers.Count -eq 0) { [string]::Empty } else {
-                Join-Qualifier `
-                    -Qualifiers   $Qualifiers `
-                    -JoinOperator ([WHDQualifierLogicalOperator]::AND)
-            }
-
-            # Get the clients
-            $Results = Get-Resource `
-                -ResourceType $ResourceType `
-                -Qualifier    $Qualifier `
-                -Expand:$Expand
         }
     }
 
-    # Return the client
-    return $Results
+    return Get-Resource @QueryParameters
 }

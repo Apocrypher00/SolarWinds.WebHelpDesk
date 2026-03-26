@@ -1,15 +1,29 @@
 <#
     .SYNOPSIS
-    Get a ticket from WHD.
+    Get a Ticket from WHD.
 
     .DESCRIPTION
-    This function retrieves tickets from WHD based on a provided search parameter.
+    This function retrieves a specific Ticket from WHD, or a list of Tickets based on a provided search parameter.
 
     .PARAMETER ResourceId
-    The resource ID of the ticket to retrieve.
+    The id of the Ticket to be retrieved.
+
+    .PARAMETER Qualifier
+    A WHDQualifier object to filter the results.
+    Use New-Qualifier and Join-Qualifier to build these objects.
+
+    .PARAMETER QualifierString
+    A WHD API qualifier string to filter the results.
+    This is an alternative to using the Qualifier parameter if you prefer to build the qualifier string manually.
+
+    .PARAMETER Status
+    A statustype.statusTypeName to search for.
+
+    .PARAMETER Location
+    A location.locationName to search for.
 
     .PARAMETER Expand
-    If specified, the function will expand the ticket details to include additional information.
+    If specified, all results will be in the detailed format.
 #>
 function Get-Ticket {
     [CmdletBinding()]
@@ -18,7 +32,10 @@ function Get-Ticket {
         [int] $ResourceId,
 
         [Parameter(ParameterSetName = "Qualifier", Mandatory)]
-        [string] $Qualifier,
+        [WHDQualifier] $Qualifier,
+
+        [Parameter(ParameterSetName = "QualifierString", Mandatory)]
+        [string] $QualifierString,
 
         [Parameter(ParameterSetName = "Search")]
         [string] $Status,
@@ -30,54 +47,30 @@ function Get-Ticket {
         [switch] $Expand
     )
 
-    $ResourceType = [WHDResourceType]::Tickets
-
-    # A mapping of parameter names to WHD attribute names, used for building qualifiers in the Search parameter set
-    # FIXME: Where is the best place for this?
-    $LocationAttributeMap = @{
-        Status   = "statustype.statusTypeName"
-        Location = "location.locationName"
+    $QueryParameters = @{
+        ResourceType = [WHDResourceType]::Tickets
+        Expand       = $Expand.IsPresent
     }
 
     switch ($PSCmdlet.ParameterSetName) {
         "Single" {
-            $Results = Get-Resource `
-                -ResourceType $ResourceType `
-                -ResourceId   $ResourceId
+            $QueryParameters["ResourceId"] = $ResourceId
         }
         "Qualifier" {
-            $Results = Get-Resource `
-                -ResourceType $ResourceType `
-                -Qualifier    $Qualifier `
-                -Expand:$Expand
+            $QueryParameters["Qualifier"] = $Qualifier
+        }
+        "QualifierString" {
+            $QueryParameters["QualifierString"] = $QualifierString
         }
         "Search" {
-            # Build a search qualifier for each of the provided parameters
-            $Qualifiers = foreach ($Param in $PSBoundParameters.Keys) {
-                if ($LocationAttributeMap.ContainsKey($Param)) {
-                    New-Qualifier `
-                        -Attribute $LocationAttributeMap[$Param] `
-                        -Operator  ([WHDQualifierOperator]::Equals) `
-                        -Value     $PSBoundParameters[$Param]
+            $QueryParameters["Qualifier"] = ConvertTo-Qualifier `
+                -BoundParameters $PSBoundParameters `
+                -AttributeMap    @{
+                    Status   = "statustype.statusTypeName"
+                    Location = "location.locationName"
                 }
-            }
-
-            # Combine qualifiers with AND, if there are any
-            # If there are no qualifiers, we want to pass an empty string to get all tickets
-            $Qualifier = if ($Qualifiers.Count -eq 0) { [string]::Empty } else {
-                Join-Qualifier `
-                    -Qualifiers   $Qualifiers `
-                    -JoinOperator ([WHDQualifierLogicalOperator]::AND)
-            }
-
-            # Get the tickets
-            $Results = Get-Resource `
-                -ResourceType $ResourceType `
-                -Qualifier    $Qualifier `
-                -Expand:$Expand
         }
     }
 
-    # Return the tickets
-    return $Results
+    return Get-Resource @QueryParameters
 }

@@ -1,27 +1,38 @@
 <#
     .SYNOPSIS
-    Get a location from WHD.
+    Get a Location from WHD.
 
     .DESCRIPTION
-    This function retrieves locations from WHD based on a provided search parameter.
+    This function retrieves a specific Location from WHD, or a list of Locations based on a provided search parameter.
 
     .PARAMETER ResourceId
-    The resource ID of the location to retrieve.
+    The id of the Location to be retrieved.
+
+    .PARAMETER Qualifier
+    A WHDQualifier object to filter the results.
+    Use New-Qualifier and Join-Qualifier to build these objects.
+
+    .PARAMETER QualifierString
+    A WHD API qualifier string to filter the results.
+    This is an alternative to using the Qualifier parameter if you prefer to build the qualifier string manually.
 
     .PARAMETER Name
-    The short name of the location to retrieve.
+    A locationName to search for.
 
     .PARAMETER Expand
-    If specified, the function will expand the location details to include additional information.
+    If specified, all results will be in the detailed format.
 #>
 function Get-Location {
-    [CmdletBinding()]
+    [CmdletBinding(DefaultParameterSetName = "Search")]
     param (
         [Parameter(ParameterSetName = "Single", Mandatory)]
         [int] $ResourceId,
 
         [Parameter(ParameterSetName = "Qualifier", Mandatory)]
-        [string] $Qualifier,
+        [WHDQualifier] $Qualifier,
+
+        [Parameter(ParameterSetName = "QualifierString", Mandatory)]
+        [string] $QualifierString,
 
         [Parameter(ParameterSetName = "Search")]
         [string] $Name,
@@ -30,53 +41,29 @@ function Get-Location {
         [switch] $Expand
     )
 
-    $ResourceType = [WHDResourceType]::Locations
-
-    # A mapping of parameter names to WHD attribute names, used for building qualifiers in the Search parameter set
-    # FIXME: Where is the best place for this?
-    $LocationAttributeMap = @{
-        Name = "locationName"
+    $QueryParameters = @{
+        ResourceType = [WHDResourceType]::Locations
+        Expand       = $Expand.IsPresent
     }
 
     switch ($PSCmdlet.ParameterSetName) {
         "Single" {
-            $Results = Get-Resource `
-                -ResourceType $ResourceType `
-                -ResourceId   $ResourceId
+            $QueryParameters["ResourceId"] = $ResourceId
         }
         "Qualifier" {
-            $Results = Get-Resource `
-                -ResourceType $ResourceType `
-                -Qualifier    $Qualifier `
-                -Expand:$Expand
+            $QueryParameters["Qualifier"] = $Qualifier
+        }
+        "QualifierString" {
+            $QueryParameters["QualifierString"] = $QualifierString
         }
         "Search" {
-            # Build a search qualifier for each of the provided parameters
-            $Qualifiers = foreach ($Param in $PSBoundParameters.Keys) {
-                if ($LocationAttributeMap.ContainsKey($Param)) {
-                    New-Qualifier `
-                        -Attribute $LocationAttributeMap[$Param] `
-                        -Operator  ([WHDQualifierOperator]::Equals) `
-                        -Value     $PSBoundParameters[$Param]
+            $QueryParameters["Qualifier"] = ConvertTo-Qualifier `
+                -BoundParameters $PSBoundParameters `
+                -AttributeMap    @{
+                    Name = "locationName"
                 }
-            }
-
-            # Combine qualifiers with AND, if there are any
-            # If there are no qualifiers, we want to pass an empty string to get all locations
-            $Qualifier = if ($Qualifiers.Count -eq 0) { [string]::Empty } else {
-                Join-Qualifier `
-                    -Qualifiers   $Qualifiers `
-                    -JoinOperator ([WHDQualifierLogicalOperator]::AND)
-            }
-
-            # Get the locations
-            $Results = Get-Resource `
-                -ResourceType $ResourceType `
-                -Qualifier    $Qualifier `
-                -Expand:$Expand
         }
     }
 
-    # Return the locations
-    return $Results
+    return Get-Resource @QueryParameters
 }

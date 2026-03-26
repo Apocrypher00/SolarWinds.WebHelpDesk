@@ -6,7 +6,7 @@
     This function retrieves a specific Asset from WHD, or a list of Assets based on a provided search parameter.
 
     .PARAMETER ResourceId
-    The resource ID of the Asset to be retrieved.
+    The id of the Asset to be retrieved.
 
     .PARAMETER Qualifier
     A WHDQualifier object to filter the results.

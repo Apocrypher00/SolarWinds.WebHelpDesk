@@ -1,6 +1,6 @@
 <#
     .SYNOPSIS
-    Get a session from WHD.
+    Get a Session from WHD.
 
     .DESCRIPTION
     This function retrieves a session key from WHD based on the stored credentials.
