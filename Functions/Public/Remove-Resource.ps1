@@ -20,14 +20,22 @@ function Remove-Resource {
     process {
         Assert-Connection
 
+        $ResourceType = $Resource.ResourceType
+
+        if ($ResourceType -in @(
+                [WHDResourceType]::CustomFieldDefinitions,
+                [WHDResourceType]::Preferences
+            )
+        ) {
+            throw "The '$($Resource.ResourceType)' resource type doesn't support deletion."
+        }
+
         # Create a copy of the Module level UriBuilder
         $UriBuilder = [System.UriBuilder]::new($Script:WHDConnection.UriBuilder)
 
         # Add the authentication parameters to the query string; this is required for all requests
         # FIXME: Switch to a copy of AuthParams
         $UriBuilder.Query = $Script:WHDConnection.AuthParams.ToString()
-
-        $ResourceType = $Resource.ResourceType
 
         # Add the ResourceType and ResourceId to the path; Sessions are an exception
         <#
