@@ -75,6 +75,7 @@
         "Types\Models.Types.ps1xml"
         "Types\Rooms.Types.ps1xml"
         "Types\Session.Types.ps1xml"
+        "Types\StatusTypes.Types.ps1xml"
         "Types\Tickets.Types.ps1xml"
     )
 
@@ -92,6 +93,7 @@
         "Formats\Models.Format.ps1xml"
         "Formats\Rooms.Format.ps1xml"
         "Formats\Session.Format.ps1xml"
+        "Formats\StatusTypes.Format.ps1xml"
         "Formats\Tickets.Format.ps1xml"
     )
 
@@ -118,6 +120,7 @@
         "Get-Model"
         "Get-Room"
         "Get-Session"
+        "Get-StatusType"
         "Get-Ticket"
         "Remove-Resource"
         "Remove-Asset"
@@ -131,6 +134,7 @@
         "Remove-Model"
         "Remove-Room"
         "Remove-Session"
+        "Remove-StatusType"
         "Remove-Ticket"
     )
 
