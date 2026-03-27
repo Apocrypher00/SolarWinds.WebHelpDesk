@@ -40,7 +40,7 @@
                                 <PropertyName>LocationName</PropertyName>
                             </TableColumnItem>
                             <TableColumnItem>
-                                <PropertyName>room</PropertyName>
+                                <PropertyName>RoomName</PropertyName>
                             </TableColumnItem>
                             <TableColumnItem>
                                 <PropertyName>companyName</PropertyName>

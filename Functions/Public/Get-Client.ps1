@@ -16,6 +16,15 @@
     A WHD API qualifier string to filter the results.
     This is an alternative to using the Qualifier parameter if you prefer to build the qualifier string manually.
 
+    .PARAMETER FirstName
+    A firstName to search for.
+
+    .PARAMETER LastName
+    A lastName to search for.
+
+    .PARAMETER Location
+    A location.locationName to search for.
+
     .PARAMETER Email
     An email to search for.
 
@@ -33,6 +42,15 @@ function Get-Client {
 
         [Parameter(ParameterSetName = "QualifierString", Mandatory)]
         [string] $QualifierString,
+
+        [Parameter(ParameterSetName = "Search")]
+        [string] $FirstName,
+
+        [Parameter(ParameterSetName = "Search")]
+        [string] $LastName,
+
+        [Parameter(ParameterSetName = "Search")]
+        [string] $Location,
 
         [Parameter(ParameterSetName = "Search")]
         [string] $Email,
@@ -60,7 +78,10 @@ function Get-Client {
             $QueryParameters["Qualifier"] = ConvertTo-Qualifier `
                 -BoundParameters $PSBoundParameters `
                 -AttributeMap    @{
-                    Email = "email"
+                    FirstName = "firstName"
+                    LastName  = "lastName"
+                    Location  = "location.locationName"
+                    Email     = "email"
                 }
         }
     }

@@ -9,6 +9,12 @@
                     $this.location.locationName
                 </GetScriptBlock>
             </ScriptProperty>
+            <ScriptProperty>
+                <Name>RoomName</Name>
+                <GetScriptBlock>
+                    $this.room.roomName
+                </GetScriptBlock>
+            </ScriptProperty>
         </Members>
     </Type>
 </Types>
