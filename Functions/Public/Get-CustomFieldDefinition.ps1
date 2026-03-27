@@ -19,8 +19,8 @@
 function Get-CustomFieldDefinition {
     [CmdletBinding()]
     param (
-        [Parameter()]
-        [WHDCustomFieldType] $CustomFieldType = [WHDCustomFieldType]::Ticket,
+        [Parameter(Mandatory)]
+        [WHDCustomFieldType] $CustomFieldType,
 
         [Parameter()]
         [switch] $Expand

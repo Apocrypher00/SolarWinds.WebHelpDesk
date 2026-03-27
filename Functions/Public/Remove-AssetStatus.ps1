@@ -6,7 +6,7 @@ function Remove-AssetStatus {
     [CmdletBinding(SupportsShouldProcess, ConfirmImpact = "High")]
     param (
         [Parameter(Mandatory, ValueFromPipeline)]
-        [PSTypeName("SolarWinds.WebHelpDesk.AssetStatus")] $AssetStatus
+        [PSTypeName("SolarWinds.WebHelpDesk.AssetStatuses")] $AssetStatus
     )
 
     process {

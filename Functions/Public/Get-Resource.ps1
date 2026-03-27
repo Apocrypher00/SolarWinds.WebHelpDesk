@@ -1,35 +1,39 @@
 <#
     .SYNOPSIS
-    Query the WHD API via REST GET
+    Retrieve Resources from the WHD API.
 
     .DESCRIPTION
-    This function is a general purpose function for querying the WHD API via REST GET.
-    It is used by the more specific Get-* functions, but can also be used directly if you prefer control.
+    This function retrieves Resources from the WHD API. It can be used directly for advanced queries,
+    or indirectly through the more specific Get-* functions (Get-Asset, Get-Ticket, etc.).
 
     .PARAMETER ResourceType
-    The type of resource to query, e.g. Assets, Clients, Manufacturers, etc.
-    Restricted by the [WHDResourceType] enum.
+    The type of Resource to retrieve (Assets, Clients, Manufacturers, Tickets, etc.).
 
     .PARAMETER CustomFieldType
     The subtype of CustomFieldDefinition to query, e.g. Asset, Location, or Ticket.
     Restricted by the [WHDCustomFieldType] enum.
 
     .PARAMETER ResourceId
-    The resource ID of the resource to retrieve.
-    If specified, only a single resource will be returned.
+    The id of a specific Resource to retrieve.
+    When specified, only that single Resource will be returned.
 
     .PARAMETER Qualifier
+    A WHDQualifier object to filter the results.
+    Use New-Qualifier and Join-Qualifier to build these objects.
+
+    .PARAMETER QualifierString
     A WHD API qualifier string to filter the results.
-    You can use New-Qualifier and Join-Qualifier to build these strings, or
-        you can write them manually if you prefer.
-    If not specified, all resources of the specified type will be returned.
+    This is an alternative to using the Qualifier parameter if you prefer to build the qualifier string manually.
     Qualifiers are case sensitive and support is dependant on the ResourceType.
     Full support: Assets, AssetTypes, Companies, Locations,
         Manufacturers, Models, Tickets (limited support when the list parameter is used).
-    Limited support: Clients (predefined qualified is already used).
+    Limited support: Clients (predefined Qualifier is already applied).
 
     .PARAMETER Expand
-    If specified, the function will expand the resource details to include additional information.
+    If specified, all results will be in the detailed format.
+
+    .NOTES
+    If no ResourceId or Qualifier/QualifierString is provided, all resources of the specified type will be returned.
 #>
 function Get-Resource {
     [CmdletBinding(DefaultParameterSetName = "Qualifier")]
