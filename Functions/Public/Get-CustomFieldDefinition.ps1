@@ -1,6 +1,6 @@
 <#
     .SYNOPSIS
-    Get a CustomFieldDefinition from WHD.
+    Get the CustomFieldDefinitions from WHD.
 
     .DESCRIPTION
     This function retrieves a list of CustomFieldDefinitions based on the specified CustomFieldType.
