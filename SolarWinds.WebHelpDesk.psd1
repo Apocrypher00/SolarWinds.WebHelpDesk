@@ -134,17 +134,13 @@
         "Get-Ticket"
         "Remove-Resource"
         "Remove-Asset"
-        "Remove-AssetStatus"
         "Remove-AssetType"
         "Remove-Client"
         "Remove-Company"
-        "Remove-Department"
         "Remove-Location"
         "Remove-Manufacturer"
         "Remove-Model"
-        "Remove-Room"
         "Remove-Session"
-        "Remove-StatusType"
         "Remove-Ticket"
     )
 
