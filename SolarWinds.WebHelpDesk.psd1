@@ -79,6 +79,7 @@
         "Types\Session.Types.ps1xml"
         "Types\StatusTypes.Types.ps1xml"
         "Types\Techs.Types.ps1xml"
+        "Types\TicketBulkActions.Types.ps1xml"
         "Types\Tickets.Types.ps1xml"
     )
 
@@ -100,6 +101,7 @@
         "Formats\Session.Format.ps1xml"
         "Formats\StatusTypes.Format.ps1xml"
         "Formats\Techs.Format.ps1xml"
+        "Formats\TicketBulkActions.Format.ps1xml"
         "Formats\Tickets.Format.ps1xml"
     )
 
@@ -132,6 +134,7 @@
         "Get-StatusType"
         "Get-Tech"
         "Get-Ticket"
+        "Get-TicketBulkAction"
         "Remove-Resource"
         "Remove-Asset"
         "Remove-AssetType"

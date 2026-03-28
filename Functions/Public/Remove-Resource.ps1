@@ -22,7 +22,8 @@ function Remove-Resource {
 
         $ResourceType = $Resource.ResourceType
 
-        # The API guide doesn't indicate that these can be deleted
+        # The API guide doesn't indicate whether these can/can't be deleted
+        # But it explcitly states that others can be, so we'll assume these can't
         if ($ResourceType -in @(
                 [WHDResourceType]::AssetStatuses,
                 [WHDResourceType]::CustomFieldDefinitions,
@@ -32,7 +33,8 @@ function Remove-Resource {
                 [WHDResourceType]::RequestTypes,
                 [WHDResourceType]::Rooms,
                 [WHDResourceType]::StatusTypes,
-                [WHDResourceType]::Techs
+                [WHDResourceType]::Techs,
+                [WHDResourceType]::TicketBulkActions
             )
         ) {
             throw "The '$($Resource.ResourceType)' resource type doesn't support deletion."
