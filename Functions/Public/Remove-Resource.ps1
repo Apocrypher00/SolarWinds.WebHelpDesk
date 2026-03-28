@@ -42,7 +42,7 @@ function Remove-Resource {
                 [WHDResourceType]::TicketNotes
             )
         ) {
-            throw "The '$($Resource.ResourceType)' resource type doesn't support deletion."
+            throw "The '$($Resource.ResourceType)' ResourceType doesn't support DELETE."
         }
 
         # Create a copy of the Module level UriBuilder

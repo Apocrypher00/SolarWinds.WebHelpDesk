@@ -67,6 +67,15 @@ function Get-Resource {
     if ($null -ne $Qualifier) { $QualifierString = $Qualifier.ToString() }
     $QualifierSpecified = (-not [string]::IsNullOrEmpty($QualifierString))
 
+    # The API guide doesn't indicate whether these can/can't be fetched
+    # But it explicitly states that others can be, so we'll assume these can't
+    if ($ResourceType -in @(
+            [WHDResourceType]::Email
+            [WHDResourceType]::TechNotes
+        )
+    ) {
+        throw "The '$($Resource.ResourceType)' ResourceType doesn't support GET."
+    }
 
     # Only allow CustomFieldType for CustomFieldDefinitions
     if ($CustomFieldTypeSpecified -and ($ResourceType -ne [WHDResourceType]::CustomFieldDefinitions)) {
@@ -141,8 +150,17 @@ function Get-Resource {
         $ParameterHash["Body"] = @{ qualifier = $QualifierString }
     }
 
-    # Send the query
-    $Results = Invoke-RestMethod @ParameterHash
+    # Send the query to the API and store the results
+    # TicketAttachments returns application/octet-stream binary data, not JSON.
+    # Use Invoke-WebRequest, but continue through the shared type augmentation below.
+    if ($ResourceType -eq [WHDResourceType]::TicketAttachments) {
+        $Results = [PSCustomObject]@{
+            Id       = $ResourceId
+            Response = (Invoke-WebRequest @ParameterHash)
+        }
+    } else {
+        $Results = Invoke-RestMethod @ParameterHash
+    }
 
     # If we got any results, modify them with some additional properties and types to make them easier to work with
     if ($null -ne $Results) {
@@ -155,7 +173,6 @@ function Get-Resource {
             -Name       "ResourceType" `
             -Value      $ResourceType `
             -Force
-
     }
 
     return $Results
