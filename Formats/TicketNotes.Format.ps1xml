@@ -2,12 +2,15 @@
 <Configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/PowerShell/PowerShell/master/src/Schemas/Format.xsd">
     <ViewDefinitions>
         <View>
-            <Name>SolarWinds.WebHelpDesk.Tickets</Name>
+            <Name>SolarWinds.WebHelpDesk.TicketNotes</Name>
             <ViewSelectedBy>
-                <TypeName>SolarWinds.WebHelpDesk.Tickets</TypeName>
+                <TypeName>SolarWinds.WebHelpDesk.TicketNotes</TypeName>
             </ViewSelectedBy>
             <TableControl>
                 <TableHeaders>
+                    <TableColumnHeader />
+                    <TableColumnHeader />
+                    <TableColumnHeader />
                     <TableColumnHeader />
                     <TableColumnHeader />
                     <TableColumnHeader />
@@ -23,10 +26,19 @@
                                 <PropertyName>id</PropertyName>
                             </TableColumnItem>
                             <TableColumnItem>
-                                <PropertyName>TicketSubject</PropertyName>
+                                <PropertyName>prettyUpdatedString</PropertyName>
                             </TableColumnItem>
                             <TableColumnItem>
-                                <PropertyName>TicketDetail</PropertyName>
+                                <PropertyName>mobileNoteText</PropertyName>
+                            </TableColumnItem>
+                            <TableColumnItem>
+                                <PropertyName>isSolution</PropertyName>
+                            </TableColumnItem>
+                            <TableColumnItem>
+                                <PropertyName>isTechNote</PropertyName>
+                            </TableColumnItem>
+                            <TableColumnItem>
+                                <PropertyName>isHidden</PropertyName>
                             </TableColumnItem>
                         </TableColumnItems>
                     </TableRowEntry>

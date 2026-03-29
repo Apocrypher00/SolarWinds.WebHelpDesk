@@ -13,6 +13,10 @@
     The subtype of CustomFieldDefinition to query, e.g. Asset, Location, or Ticket.
     Restricted by the [WHDCustomFieldType] enum.
 
+    .PARAMETER TicketListType
+    The type of list to query when retrieving Tickets, e.g. mine, group, flagged, or recent.
+    Restricted by the [WHDTicketListType] enum.
+
     .PARAMETER ResourceId
     The id of a specific Resource to retrieve.
     When specified, only that single Resource will be returned.
@@ -57,6 +61,9 @@ function Get-Resource {
         [string] $QualifierString,
 
         [Parameter()]
+        [hashtable] $AdditionalParameters,
+
+        [Parameter()]
         [switch] $Expand
     )
 
@@ -74,7 +81,7 @@ function Get-Resource {
             [WHDResourceType]::TechNotes
         )
     ) {
-        throw "The '$($Resource.ResourceType)' ResourceType doesn't support GET."
+        throw "The '$($ResourceType)' ResourceType doesn't support GET."
     }
 
     # Only allow CustomFieldType for CustomFieldDefinitions
@@ -113,12 +120,25 @@ function Get-Resource {
         $UriBuilder.Path += "/$CustomFieldType"
     }
 
-    if ($PSCmdlet.ParameterSetName -eq "Single") {
+    if ($PSCmdlet.ParameterSetName -eq "Single" -and `
+        ($ResourceType -notin @(
+                [WHDResourceType]::CustomFieldDefinitions
+                [WHDResourceType]::Session
+                [WHDResourceType]::TicketNotes
+            )
+        )
+    ) {
         $UriBuilder.Path += "/$ResourceId"
     }
 
     if (($ResourceType -eq [WHDResourceType]::Tickets) -and ($TicketListTypeSpecified)) {
         $QueryParams.Add("list", $TicketListType)
+    }
+
+    if ($AdditionalParameters) {
+        foreach ($Key in $AdditionalParameters.Keys) {
+            $QueryParams.Add($Key, $AdditionalParameters[$Key])
+        }
     }
 
     # Choose to retrieve detailed objects or short objects based on the Expand switch

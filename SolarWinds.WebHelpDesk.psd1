@@ -82,6 +82,7 @@
         "Types\Techs.Types.ps1xml"
         "Types\TicketAttachments.Types.ps1xml"
         "Types\TicketBulkActions.Types.ps1xml"
+        "Types\TicketNotes.Types.ps1xml"
         "Types\Tickets.Types.ps1xml"
     )
 
@@ -106,6 +107,7 @@
         "Formats\Techs.Format.ps1xml"
         "Formats\TicketAttachments.Format.ps1xml"
         "Formats\TicketBulkActions.Format.ps1xml"
+        "Formats\TicketNotes.Format.ps1xml"
         "Formats\Tickets.Format.ps1xml"
     )
 
@@ -141,6 +143,7 @@
         "Get-Ticket"
         "Get-TicketAttachment"
         "Get-TicketBulkAction"
+        "Get-TicketNote"
         "Remove-Resource"
         "Remove-Asset"
         "Remove-AssetType"
