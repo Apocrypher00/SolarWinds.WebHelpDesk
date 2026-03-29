@@ -76,7 +76,7 @@ function Get-Ticket {
             $QueryParameters["QualifierString"] = $QualifierString
         }
         "Search" {
-            Location["Qualifier"] = ConvertTo-Qualifier `
+            $QueryParameters["Qualifier"] = ConvertTo-Qualifier `
                 -BoundParameters $PSBoundParameters `
                 -AttributeMap    (
                 @{
