@@ -50,7 +50,7 @@
 #>
 function New-Qualifier {
     [CmdletBinding()]
-    [OutputType([WHDQualifier])]
+    [OutputType([object])]
     param (
         [Parameter(Mandatory, Position = 0)]
         [string] $Attribute,

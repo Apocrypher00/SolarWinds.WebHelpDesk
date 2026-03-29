@@ -40,10 +40,10 @@ function Get-Ticket {
         [Parameter(ParameterSetName = "Search")]
         [WHDTicketListType] $ListType,
 
-        [Parameter(ParameterSetName = "Qualifier", Mandatory)]
+        [Parameter(ParameterSetName = "Qualifier")]
         [WHDQualifier] $Qualifier,
 
-        [Parameter(ParameterSetName = "QualifierString", Mandatory)]
+        [Parameter(ParameterSetName = "QualifierString")]
         [string] $QualifierString,
 
         [Parameter(ParameterSetName = "Search")]
@@ -85,6 +85,15 @@ function Get-Ticket {
                 }
             )
         }
+    }
+
+    if (
+        ($PSCmdlet.ParameterSetName -ne "Single") -and
+        ($null -eq $QueryParameters["Qualifier"]) -and
+        [string]::IsNullOrWhiteSpace($QueryParameters["QualifierString"]) -and
+        (-not $PSBoundParameters.ContainsKey("ListType"))
+    ) {
+        throw "ListType is required when no Qualifier, QualifierString, Search options are specified."
     }
 
     return Get-Resource @QueryParameters

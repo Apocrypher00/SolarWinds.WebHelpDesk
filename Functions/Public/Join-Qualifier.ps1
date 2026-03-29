@@ -19,7 +19,7 @@
 #>
 function Join-Qualifier {
     [CmdletBinding()]
-    [OutputType([WHDQualifier])]
+    [OutputType([object])]
     param (
         [Parameter(Mandatory, Position = 0)]
         [WHDQualifier[]] $Qualifiers,
