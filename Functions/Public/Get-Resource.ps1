@@ -13,10 +13,6 @@
     The subtype of CustomFieldDefinition to query, e.g. Asset, Location, or Ticket.
     Restricted by the [WHDCustomFieldType] enum.
 
-    .PARAMETER TicketListType
-    The type of list to query when retrieving Tickets, e.g. mine, group, flagged, or recent.
-    Restricted by the [WHDTicketListType] enum.
-
     .PARAMETER ResourceId
     The id of a specific Resource to retrieve.
     When specified, only that single Resource will be returned.
@@ -48,9 +44,6 @@ function Get-Resource {
         [Parameter()]
         [WHDCustomFieldType] $CustomFieldType,
 
-        [Parameter()]
-        [WHDTicketListType] $TicketListType,
-
         [Parameter(ParameterSetName = "Single", Mandatory)]
         [int] $ResourceId,
 
@@ -67,8 +60,7 @@ function Get-Resource {
         [switch] $Expand
     )
 
-    $CustomFieldTypeSpecified  = $PSBoundParameters.ContainsKey("CustomFieldType")
-    $TicketListTypeSpecified = $PSBoundParameters.ContainsKey("TicketListType")
+    $CustomFieldTypeSpecified = $PSBoundParameters.ContainsKey("CustomFieldType")
 
     # If a Qualifier object was provided, convert it to a string for use in the API call
     if ($null -ne $Qualifier) { $QualifierString = $Qualifier.ToString() }
@@ -87,21 +79,6 @@ function Get-Resource {
     # Only allow CustomFieldType for CustomFieldDefinitions
     if ($CustomFieldTypeSpecified -and ($ResourceType -ne [WHDResourceType]::CustomFieldDefinitions)) {
         throw "CustomFieldType is only valid for the 'CustomFieldDefinitions' resource."
-    }
-
-    # Only allow TicketListType for Tickets
-    if ($TicketListTypeSpecified -and ($ResourceType -ne [WHDResourceType]::Tickets)) {
-        throw "TicketListType is only valid for the 'Tickets' resource."
-    }
-
-    # Require TicketListType when searching for Tickets without a Qualifier
-    if (
-        ($ResourceType -eq [WHDResourceType]::Tickets) -and `
-        ($PSCmdlet.ParameterSetName -ne "Single") -and `
-        (-not $QualifierSpecified) -and `
-        (-not $TicketListTypeSpecified)
-    ) {
-        throw "TicketListType is required for the 'Tickets' resource when no Qualifier is specified."
     }
 
     Assert-Connection
@@ -129,10 +106,6 @@ function Get-Resource {
         )
     ) {
         $UriBuilder.Path += "/$ResourceId"
-    }
-
-    if (($ResourceType -eq [WHDResourceType]::Tickets) -and ($TicketListTypeSpecified)) {
-        $QueryParams.Add("list", $TicketListType)
     }
 
     if ($AdditionalParameters) {

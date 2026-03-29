@@ -8,6 +8,10 @@
     .PARAMETER ResourceId
     The id of the Ticket to be retrieved.
 
+    .PARAMETER ListType
+    A WHDTicketListType to filter the results.
+    Required if no Qualifier, QualifierString, or Search options are provided.
+
     .PARAMETER Qualifier
     A WHDQualifier object to filter the results.
     Use New-Qualifier and Join-Qualifier to build these objects.
@@ -26,10 +30,15 @@
     If specified, all results will be in the detailed format.
 #>
 function Get-Ticket {
-    [CmdletBinding()]
+    [CmdletBinding(DefaultParameterSetName = "Search")]
     param (
         [Parameter(ParameterSetName = "Single", Mandatory)]
         [int] $ResourceId,
+
+        [Parameter(ParameterSetName = "Qualifier")]
+        [Parameter(ParameterSetName = "QualifierString")]
+        [Parameter(ParameterSetName = "Search")]
+        [WHDTicketListType] $ListType,
 
         [Parameter(ParameterSetName = "Qualifier", Mandatory)]
         [WHDQualifier] $Qualifier,
@@ -52,6 +61,10 @@ function Get-Ticket {
         Expand       = $Expand.IsPresent
     }
 
+    if ($PSBoundParameters.ContainsKey("ListType")) {
+        $QueryParameters["AdditionalParameters"] = @{ list = $ListType }
+    }
+
     switch ($PSCmdlet.ParameterSetName) {
         "Single" {
             $QueryParameters["ResourceId"] = $ResourceId
@@ -63,12 +76,14 @@ function Get-Ticket {
             $QueryParameters["QualifierString"] = $QualifierString
         }
         "Search" {
-            $QueryParameters["Qualifier"] = ConvertTo-Qualifier `
+            Location["Qualifier"] = ConvertTo-Qualifier `
                 -BoundParameters $PSBoundParameters `
-                -AttributeMap    @{
+                -AttributeMap    (
+                @{
                     Status   = "statustype.statusTypeName"
                     Location = "location.locationName"
                 }
+            )
         }
     }
 
