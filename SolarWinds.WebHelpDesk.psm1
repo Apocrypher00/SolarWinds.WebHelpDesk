@@ -2,21 +2,21 @@
 Add-Type -AssemblyName "System.Web" -ErrorAction Stop
 
 # Import all enums in the Enums folder
-$Enums = Join-Path -Path $PSScriptRoot -ChildPath 'Enums'
-Get-ChildItem -Path $Enums -Filter '*.ps1' -File | ForEach-Object { . $_.FullName }
+$Enums = Join-Path -Path $PSScriptRoot -ChildPath "Enums"
+Get-ChildItem -Path $Enums -Filter "*.ps1" -File | ForEach-Object { . $_.FullName }
 
 # Import classes in dependency order
-$Classes = Join-Path -Path $PSScriptRoot -ChildPath 'Classes'
-. (Join-Path -Path $Classes -ChildPath 'WHDQualifier.ps1')
-. (Join-Path -Path $Classes -ChildPath 'WHDClauseQualifier.ps1')
-. (Join-Path -Path $Classes -ChildPath 'WHDGroupQualifier.ps1')
+$Classes = Join-Path -Path $PSScriptRoot -ChildPath "Classes"
+. (Join-Path -Path $Classes -ChildPath "WHDQualifier.ps1")
+. (Join-Path -Path $Classes -ChildPath "WHDClauseQualifier.ps1")
+. (Join-Path -Path $Classes -ChildPath "WHDGroupQualifier.ps1")
 
 # Import all functions in the Private and Public folders
-$Functions        = Join-Path -Path $PSScriptRoot -ChildPath 'Functions'
-$PrivateFunctions = Join-Path -Path $Functions -ChildPath 'Private'
-$PublicFunctions  = Join-Path -Path $Functions -ChildPath 'Public'
-Get-ChildItem -Path $PrivateFunctions -Filter '*.ps1' -File | ForEach-Object { . $_.FullName }
-Get-ChildItem -Path $PublicFunctions  -Filter '*.ps1' -File | ForEach-Object { . $_.FullName }
+$Functions        = Join-Path -Path $PSScriptRoot -ChildPath "Functions"
+$PrivateFunctions = Join-Path -Path $Functions -ChildPath "Private"
+$PublicFunctions  = Join-Path -Path $Functions -ChildPath "Public"
+Get-ChildItem -Path $PrivateFunctions -Filter "*.ps1" -File | ForEach-Object { . $_.FullName }
+Get-ChildItem -Path $PublicFunctions  -Filter "*.ps1" -File | ForEach-Object { . $_.FullName }
 
 # Module State
 $Script:WHDConnection = [PSCustomObject]@{
