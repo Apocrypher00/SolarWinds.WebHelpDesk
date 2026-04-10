@@ -60,11 +60,15 @@ function Remove-Resource {
 
         $UriBuilder.Query = $QueryParams.ToString()
 
+        # Build the parameter hash for Invoke-Method
+        $ParameterHash = @{
+            UriBuilder = $UriBuilder
+            Method     = [Microsoft.PowerShell.Commands.WebRequestMethod]::Delete
+        }
+
         # Send the request and return the result
         if ($PSCmdlet.ShouldProcess($ShouldProcessMessage, "Remove Resource from Web Help Desk")) {
-            return Invoke-Method `
-                -UriBuilder $UriBuilder `
-                -Method     [Microsoft.PowerShell.Commands.WebRequestMethod]::Delete
+            return Invoke-Method @ParameterHash
         }
     }
 }
