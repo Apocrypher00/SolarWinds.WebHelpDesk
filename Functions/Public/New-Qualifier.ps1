@@ -30,23 +30,26 @@
     $Qualifier = New-Qualifier "assetNumber" Equals "12345"
 
     .NOTES
-    Snippet from the docs:
+    Snippet from the API Guide:
 
-        Qualifier clauses are in the following format:
-        (<attribute> <op> <value>)
-        where:
+    Qualifier clauses are in the following format:
+    (<attribute> <op> <value>)
+    where:
         - <attribute> is the attribute name.
         - <op> is one of the following operations: =, !=, <, >, <=, >=, like, or caseInsensitiveLike.
-        When like or caseInsensitiveLike is used, <value> may contain asterisks (*) as wildcard
-        placeholders.
+    When like or caseInsensitiveLike is used, <value> may contain asterisks (*) as wildcard
+    placeholders.
         - <value> is the attribute value. It could be a number, string, date, and so on. String and date
-        values must be enclosed with single quotes (for example, 'some string value').
-        Qualifier clauses can be joined and nested with the keywords and, or, and not. Additionally, left and
-        right brackets - '(' and ')' - can be used to create more complex qualifiers.
-        To reference nested attributes, use a period to join the components of the attribute path (for example,
-        location.locationName).
-        When providing the qualifier as a GET query parameter, remember to percent-encode it:
-        https://en.wikipedia.org/wiki/Percent-encoding#Percent-encoding_reserved_characters
+    values must be enclosed with single quotes (for example, 'some string value').
+
+    Qualifier clauses can be joined and nested with the keywords and, or, and not. Additionally, left and
+    right brackets - '(' and ')' - can be used to create more complex qualifiers.
+
+    To reference nested attributes, use a period to join the components of the attribute path (for example,
+    location.locationName).
+
+    When providing the qualifier as a GET query parameter, remember to percent-encode it:
+    https://en.wikipedia.org/wiki/Percent-encoding#Percent-encoding_reserved_characters
 #>
 function New-Qualifier {
     [CmdletBinding()]
@@ -67,8 +70,6 @@ function New-Qualifier {
 
     $Qualifier = [WHDClauseQualifier]::new($Attribute, $Operator, $Value)
 
-    # FIXME: Let's add an option that only negates the passed qualifier
-    # FIXME: Maybe we should have another constructor with negate built-in?
     if ($Negate) { $Qualifier.Negate = $true }
 
     return $Qualifier

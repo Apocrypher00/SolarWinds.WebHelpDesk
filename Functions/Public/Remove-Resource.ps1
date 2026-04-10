@@ -5,10 +5,6 @@
     .DESCRIPTION
     This function deletes a resource from WHD based on the resource type and ID.
     Except in the case of Sessions, which must be removed via sessionKey.
-
-    .NOTES
-    TODO: Extract the common logic into Invoke-WHDRequest and use that for all API calls, including deletes.
-    FIXME: Once the above is added, we can delete arbitrary Sessions by replacing AuthParams with the passed sessionKey
 #>
 function Remove-Resource {
     [CmdletBinding(SupportsShouldProcess, ConfirmImpact = "High")]
@@ -48,37 +44,27 @@ function Remove-Resource {
         # Create a copy of the Module level UriBuilder
         $UriBuilder = [System.UriBuilder]::new($Script:WHDConnection.UriBuilder)
 
-        # Add the authentication parameters to the query string; this is required for all requests
-        # FIXME: Switch to a copy of AuthParams
-        $UriBuilder.Query = $Script:WHDConnection.AuthParams.ToString()
-
-        # Add the ResourceType and ResourceId to the path; Sessions are an exception
-        <#
-            TODO: We only need /Session?sessionKey= for deleting sessions, and
-            the active sessionKey is already stored in the AuthParams, unless PersistCredentials was used.
-            If that's the case we actually need to replace AuthParams with the passed sessionKey.
-        #>
+        # Add the ResourceType to the path
         $UriBuilder.Path += "/$ResourceType"
 
+        # Add the ResourceId to the path; Sessions are an exception
         if ($ResourceType -eq [WHDResourceType]::Session) {
-            $UriBuilder.Query = "sessionKey=$($Resource.sessionKey)" # FIXME: Should we use [System.Web.HttpUtility]?
+            $QueryParams = New-HttpQSCollection
+            $QueryParams.Add("sessionKey", $Resource.sessionKey)
             $ShouldProcessMessage = "ResourceType=$ResourceType, SessionKey=$($Resource.sessionKey)"
         } else {
+            $QueryParams = Copy-Authentication
             $UriBuilder.Path += "/$($Resource.id)"
-            $ShouldProcessMessage = "ResourceType=$ResourceType, ResourceId=$($Resource.ResourceId)"
+            $ShouldProcessMessage = "ResourceType=$ResourceType, ResourceId=$($Resource.id)"
         }
 
-        # Parameters for Invoke-RestMethod
-        $ParameterHash = @{
-            Uri         = $UriBuilder.ToString()
-            Method      = [Microsoft.PowerShell.Commands.WebRequestMethod]::Delete
-            ContentType = "application/json"
-            WebSession  = $Script:WHDConnection.WebSession
-        }
+        $UriBuilder.Query = $QueryParams.ToString()
 
-        # Send the query and return the result
-        if ($PSCmdlet.ShouldProcess($ShouldProcessMessage, "Remove resource from Web Help Desk")) {
-            return Invoke-RestMethod @ParameterHash
+        # Send the request and return the result
+        if ($PSCmdlet.ShouldProcess($ShouldProcessMessage, "Remove Resource from Web Help Desk")) {
+            return Invoke-Method `
+                -UriBuilder $UriBuilder `
+                -Method     [Microsoft.PowerShell.Commands.WebRequestMethod]::Delete
         }
     }
 }

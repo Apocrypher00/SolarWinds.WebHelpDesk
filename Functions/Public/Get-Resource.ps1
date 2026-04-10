@@ -60,11 +60,7 @@ function Get-Resource {
         [switch] $Expand
     )
 
-    $CustomFieldTypeSpecified = $PSBoundParameters.ContainsKey("CustomFieldType")
-
-    # If a Qualifier object was provided, convert it to a string for use in the API call
-    if ($null -ne $Qualifier) { $QualifierString = $Qualifier.ToString() }
-    $QualifierSpecified = (-not [string]::IsNullOrEmpty($QualifierString))
+    Assert-Connection
 
     # The API guide doesn't indicate whether these can/can't be fetched
     # But it explicitly states that others can be, so we'll assume these can't
@@ -77,11 +73,14 @@ function Get-Resource {
     }
 
     # Only allow CustomFieldType for CustomFieldDefinitions
+    $CustomFieldTypeSpecified = $PSBoundParameters.ContainsKey("CustomFieldType")
     if ($CustomFieldTypeSpecified -and ($ResourceType -ne [WHDResourceType]::CustomFieldDefinitions)) {
         throw "CustomFieldType is only valid for the 'CustomFieldDefinitions' resource."
     }
 
-    Assert-Connection
+    # If a Qualifier object was provided, convert it to a string for use in the API call
+    if ($null -ne $Qualifier) { $QualifierString = $Qualifier.ToString() }
+    $QualifierSpecified = (-not [string]::IsNullOrEmpty($QualifierString))
 
     # Create a copy of the Module level UriBuilder
     # # TODO: Is there a better way to make a copy?
@@ -93,6 +92,7 @@ function Get-Resource {
     # Build the Uri, ignore Ticket SubType as it isn't used in the URI
     $UriBuilder.Path += "/$ResourceType"
 
+    # CustomFieldDefinitions have a second-level endpoint for the CustomFieldType, except for the Ticket type.
     if ($CustomFieldTypeSpecified -and ($CustomFieldType -ne [WHDCustomFieldType]::Ticket)) {
         $UriBuilder.Path += "/$CustomFieldType"
     }
@@ -114,29 +114,16 @@ function Get-Resource {
         }
     }
 
-    # Choose to retrieve detailed objects or short objects based on the Expand switch
-    <#
-        TODO: This deserves a bit more attention.
-        The API guide says that if style=short or not provided, it returns short objects.
-        If ANY OTHER style is provided, it returns long objects, but the guide uses style=details.
-        The guide also specifies which ResourceTypes support the style parameter.
-    #>
-    if ($Expand) {
-        # $QueryParams.Add("style", "details")
-        $QueryParams.Add("style", "long")
-    } else {
-        # $QueryParams.Add("style", "short")
-    }
+    # Omit style unless Expand is requested; the API defaults to short.
+    if ($Expand) { $QueryParams.Add("style", "details") }
 
     # Add the query parameters to the UriBuilder, this will handle encoding and formatting for us
     $UriBuilder.Query = $QueryParams.ToString()
 
-    # Parameters for Invoke-RestMethod
+    # Parameters for Invoke-Method
     $ParameterHash = @{
-        Uri         = $UriBuilder.ToString()
-        Method      = [Microsoft.PowerShell.Commands.WebRequestMethod]::Get
-        ContentType = "application/json"
-        WebSession  = $Script:WHDConnection.WebSession
+        UriBuilder = $UriBuilder
+        Method     = [Microsoft.PowerShell.Commands.WebRequestMethod]::Get
     }
 
     if ($QualifierSpecified) {
@@ -149,10 +136,10 @@ function Get-Resource {
     if ($ResourceType -eq [WHDResourceType]::TicketAttachments) {
         $Results = [PSCustomObject]@{
             Id       = $ResourceId
-            Response = (Invoke-WebRequest @ParameterHash)
+            Response = (Invoke-Method @ParameterHash -AsWebResponse)
         }
     } else {
-        $Results = Invoke-RestMethod @ParameterHash
+        $Results = Invoke-Method @ParameterHash
     }
 
     # If we got any results, modify them with some additional properties and types to make them easier to work with

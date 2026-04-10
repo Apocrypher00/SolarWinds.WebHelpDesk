@@ -22,7 +22,8 @@
     By default, credentials are only used to obtain a session key and are not stored.
 #>
 function Connect-Server {
-    [CmdletBinding()] # TODO: Should we add SupportsShouldProcess?
+    [CmdletBinding()]
+    [OutputType([void])]
     param (
         [Parameter(Mandatory)]
         [string] $BaseUrl,
