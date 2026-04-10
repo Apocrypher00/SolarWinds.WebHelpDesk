@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Types xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/PowerShell/PowerShell/master/src/Schemas/Types.xsd">
+<Types>
     <Type>
         <Name>SolarWinds.WebHelpDesk.CustomFieldDefinitions</Name>
         <Members>
