@@ -13,12 +13,9 @@
     .PARAMETER ResourceType
     The type of WHD resource that the input object represents.
     This should be one of the values from the WHDResourceType enum.
-
-    .NOTES
-    TODO: We could return the processed object, but callers need to be updated for that.
 #>
 
-function Set-TypeName {
+function Add-TypeName {
     [CmdletBinding()]
     [OutputType([PSCustomObject])]
     param(
@@ -31,6 +28,6 @@ function Set-TypeName {
     process {
         $InputObject.PSObject.TypeNames.Insert(0, "SolarWinds.WebHelpDesk.Resource")
         $InputObject.PSObject.TypeNames.Insert(0, "SolarWinds.WebHelpDesk.$ResourceType")
-        # return $InputObject
+        return $InputObject
     }
 }

@@ -158,7 +158,7 @@ function Get-Resource {
     # If we got any results, modify them with some additional properties and types to make them easier to work with
     if ($null -ne $Results) {
         # Modify the resulting objects with a custom type
-        $Results | Set-TypeName -ResourceType $ResourceType
+        $Results | Add-TypeName -ResourceType $ResourceType | Out-Null
 
         # Add a type field with the types we use
         $Results | Add-Member `

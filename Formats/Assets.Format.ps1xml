@@ -28,13 +28,13 @@
                                 <PropertyName>assetNumber</PropertyName>
                             </TableColumnItem>
                             <TableColumnItem>
-                                <PropertyName>macAddress</PropertyName>
+                                <PropertyName>ModelName</PropertyName>
                             </TableColumnItem>
                             <TableColumnItem>
                                 <PropertyName>networkName</PropertyName>
                             </TableColumnItem>
                             <TableColumnItem>
-                                <PropertyName>ModelName</PropertyName>
+                                <PropertyName>macAddress</PropertyName>
                             </TableColumnItem>
                         </TableColumnItems>
                     </TableRowEntry>
