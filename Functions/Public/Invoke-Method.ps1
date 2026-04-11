@@ -5,7 +5,7 @@
     .DESCRIPTION
     Builds and sends a request to the Web Help Desk REST API using the current module connection.
     This helper centralizes the shared web request behavior used by the *-Resource commands,
-    including reuse of the current web session and JSON serialization for request bodies.
+    including reuse of the current web session.
 
     .PARAMETER UriBuilder
     The fully prepared UriBuilder for the target API endpoint.
@@ -15,7 +15,6 @@
 
     .PARAMETER Body
     Optional request body to send to the API.
-    Non-string values are serialized to compressed JSON before the request is sent.
 
     .PARAMETER AsWebResponse
     If specified, uses Invoke-WebRequest and returns the web response object.
@@ -33,7 +32,7 @@
     .EXAMPLE
     $Response = Invoke-Method -UriBuilder $UriBuilder -Method Get -Body @{ qualifier = $QualifierString }
 
-    Sends a GET request with a JSON request body.
+    Sends a GET request with a request body.
 
     .EXAMPLE
     $Response = Invoke-Method -UriBuilder $UriBuilder -Method Get -AsWebResponse
@@ -65,7 +64,7 @@ function Invoke-Method {
 
     if ($null -ne $Body) {
         $ParameterHash["ContentType"] = "application/json"
-        $ParameterHash["Body"] = $Body | ConvertTo-Json -Depth 100 -Compress # FIXME: Depth 100 seems excessive
+        $ParameterHash["Body"] = $Body
     }
 
     if ($AsWebResponse) {

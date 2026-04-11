@@ -93,7 +93,7 @@ function Get-Ticket {
         [string]::IsNullOrWhiteSpace($QueryParameters["QualifierString"]) -and
         (-not $PSBoundParameters.ContainsKey("ListType"))
     ) {
-        throw "ListType is required when no Qualifier, QualifierString, Search options are specified."
+        throw "ListType is required when no Qualifier, QualifierString, or Search options are specified."
     }
 
     return Get-Resource @QueryParameters
