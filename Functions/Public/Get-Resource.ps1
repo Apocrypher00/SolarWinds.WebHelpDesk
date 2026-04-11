@@ -83,8 +83,8 @@ function Get-Resource {
     $QualifierSpecified = (-not [string]::IsNullOrEmpty($QualifierString))
 
     # Create a copy of the Module level UriBuilder
-    # # TODO: Is there a better way to make a copy?
-    $UriBuilder = [System.UriBuilder]::new($Script:WHDConnection.UriBuilder)
+    # FIXME: We should minimize direct references to module-level state
+    $UriBuilder = Copy-UriBuilder -UriBuilder $Script:WHDConnection.UriBuilder
 
     # Create a copy of the Module level authentication parameters
     $QueryParams = Copy-Authentication
@@ -97,15 +97,17 @@ function Get-Resource {
         $UriBuilder.Path += "/$CustomFieldType"
     }
 
-    if ($PSCmdlet.ParameterSetName -eq "Single" -and `
-        ($ResourceType -notin @(
+    if ($PSCmdlet.ParameterSetName -eq "Single") {
+        if ($ResourceType -in @(
                 [WHDResourceType]::CustomFieldDefinitions
                 [WHDResourceType]::Session
                 [WHDResourceType]::TicketNotes
             )
-        )
-    ) {
-        $UriBuilder.Path += "/$ResourceId"
+        ) {
+            throw "The '$ResourceType' ResourceType doesn't support retrieval by id."
+        } else {
+            $UriBuilder.Path += "/$ResourceId"
+        }
     }
 
     if ($AdditionalParameters) {

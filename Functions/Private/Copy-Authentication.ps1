@@ -3,10 +3,12 @@
     Copy the current authentication parameters.
 #>
 function Copy-Authentication {
-    [CmdletBinding()] param ()
+    [CmdletBinding()]
+    [OutputType([System.Collections.Specialized.NameValueCollection])]
+    param ()
 
     $Copy = Copy-HttpQSCollection -Source $Script:WHDConnection.AuthParams
 
     # The leading comma forces this to be returned as a single object rather than unrolling the collection
-    return ,$Copy
+    return , $Copy
 }

@@ -42,7 +42,8 @@ function Remove-Resource {
         }
 
         # Create a copy of the Module level UriBuilder
-        $UriBuilder = [System.UriBuilder]::new($Script:WHDConnection.UriBuilder)
+        # FIXME: We should minimize direct references to module-level state
+        $UriBuilder = Copy-UriBuilder -UriBuilder $Script:WHDConnection.UriBuilder
 
         # Add the ResourceType to the path
         $UriBuilder.Path += "/$ResourceType"
