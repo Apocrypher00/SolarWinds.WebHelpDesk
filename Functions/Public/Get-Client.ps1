@@ -59,9 +59,16 @@ function Get-Client {
         [switch] $Expand
     )
 
+    $AttributeMap = @{
+        FirstName = "firstName"
+        LastName  = "lastName"
+        Location  = "location.locationName"
+        Email     = "email"
+    }
+
     $QueryParameters = @{
         ResourceType = [WHDResourceType]::Clients
-        Expand       = $Expand
+        Expand       = $Expand.IsPresent
     }
 
     switch ($PSCmdlet.ParameterSetName) {
@@ -77,12 +84,7 @@ function Get-Client {
         "Search" {
             $QueryParameters["Qualifier"] = ConvertTo-Qualifier `
                 -BoundParameters $PSBoundParameters `
-                -AttributeMap    @{
-                    FirstName = "firstName"
-                    LastName  = "lastName"
-                    Location  = "location.locationName"
-                    Email     = "email"
-                }
+                -AttributeMap $AttributeMap
         }
     }
 

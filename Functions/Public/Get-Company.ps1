@@ -3,10 +3,10 @@
     Get a Company from WHD.
 
     .DESCRIPTION
-    This function retrieves a specific Asset from WHD, or a list of Assets based on a provided search parameter.
+    This function retrieves a specific Company from WHD, or a list of Companies based on a provided search parameter.
 
     .PARAMETER ResourceId
-    The id of the Asset to be retrieved.
+    The id of the Company to be retrieved.
 
     .PARAMETER Qualifier
     A WHDQualifier object to filter the results.
@@ -44,6 +44,10 @@ function Get-Company {
         [switch] $Expand
     )
 
+    $AttributeMap = @{
+        Name = "companyName"
+    }
+
     $QueryParameters = @{
         ResourceType = [WHDResourceType]::Companies
         Expand       = $Expand.IsPresent
@@ -57,14 +61,12 @@ function Get-Company {
             $QueryParameters["Qualifier"] = $Qualifier
         }
         "QualifierString" {
-            $QueryParameters["Qualifier"] = $QualifierString
+            $QueryParameters["QualifierString"] = $QualifierString
         }
         "Search" {
             $QueryParameters["Qualifier"] = ConvertTo-Qualifier `
                 -BoundParameters $PSBoundParameters `
-                -AttributeMap    @{
-                    Name = "companyName"
-                }
+                -AttributeMap $AttributeMap
         }
     }
 

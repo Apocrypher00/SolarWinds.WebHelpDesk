@@ -56,6 +56,11 @@ function Get-Ticket {
         [switch] $Expand
     )
 
+    $AttributeMap = @{
+        Status   = "statustype.statusTypeName"
+        Location = "location.locationName"
+    }
+
     $QueryParameters = @{
         ResourceType = [WHDResourceType]::Tickets
         Expand       = $Expand.IsPresent
@@ -78,12 +83,7 @@ function Get-Ticket {
         "Search" {
             $QueryParameters["Qualifier"] = ConvertTo-Qualifier `
                 -BoundParameters $PSBoundParameters `
-                -AttributeMap (
-                @{
-                    Status   = "statustype.statusTypeName"
-                    Location = "location.locationName"
-                }
-            )
+                -AttributeMap $AttributeMap
         }
     }
 

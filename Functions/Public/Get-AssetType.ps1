@@ -41,6 +41,10 @@ function Get-AssetType {
         [switch] $Expand
     )
 
+    $AttributeMap = @{
+        Name = "assetType"
+    }
+
     $QueryParameters = @{
         ResourceType = [WHDResourceType]::AssetTypes
         Expand       = $Expand.IsPresent
@@ -59,9 +63,7 @@ function Get-AssetType {
         "Search" {
             $QueryParameters["Qualifier"] = ConvertTo-Qualifier `
                 -BoundParameters $PSBoundParameters `
-                -AttributeMap    @{
-                    Name = "assetType"
-                }
+                -AttributeMap $AttributeMap
         }
     }
 

@@ -3,7 +3,8 @@
     Get a Manufacturer from WHD.
 
     .DESCRIPTION
-    This function retrieves a specific Manufacturer from WHD, or a list of Manufacturers based on a provided search parameter.
+    This function retrieves a specific Manufacturer from WHD, or a list of Manufacturers based on
+    a provided search parameter.
 
     .PARAMETER ResourceId
     The id of the Manufacturer to be retrieved.
@@ -95,6 +96,19 @@ function Get-Manufacturer {
         [switch] $Expand
     )
 
+    $AttributeMap = @{
+        Name       = "name"
+        FullName   = "fullName"
+        PostalCode = "postalCode"
+        Address    = "address"
+        City       = "city"
+        State      = "state"
+        Country    = "country"
+        Phone      = "phone"
+        Fax        = "fax"
+        Url        = "url"
+    }
+
     $QueryParameters = @{
         ResourceType = [WHDResourceType]::Manufacturers
         Expand       = $Expand.IsPresent
@@ -113,18 +127,7 @@ function Get-Manufacturer {
         "Search" {
             $QueryParameters["Qualifier"] = ConvertTo-Qualifier `
                 -BoundParameters $PSBoundParameters `
-                -AttributeMap    @{
-                    Name       = "name"
-                    FullName   = "fullName"
-                    PostalCode = "postalCode"
-                    Address    = "address"
-                    City       = "city"
-                    State      = "state"
-                    Country    = "country"
-                    Phone      = "phone"
-                    Fax        = "fax"
-                    Url        = "url"
-                }
+                -AttributeMap $AttributeMap
         }
     }
 

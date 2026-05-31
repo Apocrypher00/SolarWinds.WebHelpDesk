@@ -47,6 +47,11 @@ function Get-Model {
         [switch] $Expand
     )
 
+    $AttributeMap = @{
+        Name         = "modelName"
+        Manufacturer = "manufacturer.name"
+    }
+
     $QueryParameters = @{
         ResourceType = [WHDResourceType]::Models
         Expand       = $Expand.IsPresent
@@ -65,10 +70,7 @@ function Get-Model {
         "Search" {
             $QueryParameters["Qualifier"] = ConvertTo-Qualifier `
                 -BoundParameters $PSBoundParameters `
-                -AttributeMap    @{
-                    Name         = "modelName"
-                    Manufacturer = "manufacturer.name"
-                }
+                -AttributeMap $AttributeMap
         }
     }
 

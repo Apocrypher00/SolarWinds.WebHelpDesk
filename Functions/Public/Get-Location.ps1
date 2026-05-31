@@ -41,6 +41,10 @@ function Get-Location {
         [switch] $Expand
     )
 
+    $AttributeMap = @{
+        Name = "locationName"
+    }
+
     $QueryParameters = @{
         ResourceType = [WHDResourceType]::Locations
         Expand       = $Expand.IsPresent
@@ -59,9 +63,7 @@ function Get-Location {
         "Search" {
             $QueryParameters["Qualifier"] = ConvertTo-Qualifier `
                 -BoundParameters $PSBoundParameters `
-                -AttributeMap    @{
-                    Name = "locationName"
-                }
+                -AttributeMap $AttributeMap
         }
     }
 

@@ -77,6 +77,16 @@ function Get-Asset {
         [switch] $Expand
     )
 
+    $AttributeMap = @{
+        AssetNumber  = "assetNumber"
+        SerialNumber = "serialNumber"
+        Location     = "location.locationName"
+        Room         = "room.roomName"
+        Status       = "assetstatus.name"
+        Model        = "model.modelName"
+        Manufacturer = "model.manufacturer.name"
+    }
+
     $QueryParameters = @{
         ResourceType = [WHDResourceType]::Assets
         Expand       = $Expand.IsPresent
@@ -95,15 +105,7 @@ function Get-Asset {
         "Search" {
             $QueryParameters["Qualifier"] = ConvertTo-Qualifier `
                 -BoundParameters $PSBoundParameters `
-                -AttributeMap    @{
-                    AssetNumber  = "assetNumber"
-                    SerialNumber = "serialNumber"
-                    Location     = "location.locationName"
-                    Room         = "room.roomName"
-                    Status       = "assetstatus.name"
-                    Model        = "model.modelName"
-                    Manufacturer = "model.manufacturer.name"
-                }
+                -AttributeMap $AttributeMap
         }
     }
 
