@@ -42,6 +42,9 @@ function Get-Resource {
         [WHDResourceType] $ResourceType,
 
         [Parameter()]
+        [WHDTicketListType] $TicketListType,
+
+        [Parameter()]
         [WHDCustomFieldType] $CustomFieldType,
 
         [Parameter(ParameterSetName = "Single", Mandatory)]
@@ -72,6 +75,12 @@ function Get-Resource {
         throw "The '$($ResourceType)' ResourceType doesn't support GET."
     }
 
+    # Only allow TicketListType for Tickets
+    $TicketListTypeSpecified = $PSBoundParameters.ContainsKey("TicketListType")
+    if ($TicketListTypeSpecified -and ($ResourceType -ne [WHDResourceType]::Tickets)) {
+        throw "TicketListType is only valid for the 'Tickets' resource."
+    }
+
     # Only allow CustomFieldType for CustomFieldDefinitions
     $CustomFieldTypeSpecified = $PSBoundParameters.ContainsKey("CustomFieldType")
     if ($CustomFieldTypeSpecified -and ($ResourceType -ne [WHDResourceType]::CustomFieldDefinitions)) {
@@ -89,14 +98,21 @@ function Get-Resource {
     # Create a copy of the Module level authentication parameters
     $QueryParams = Copy-Authentication
 
-    # Build the Uri, ignore Ticket SubType as it isn't used in the URI
+    # Add the ResourceType to the UriBuilder path to build the endpoint URI
     $UriBuilder.Path += "/$ResourceType"
 
-    # CustomFieldDefinitions have a second-level endpoint for the CustomFieldType, except for the Ticket type.
+    # Tickets have a second-level endpoint for the TicketListType.
+    if ($TicketListTypeSpecified) {
+        $UriBuilder.Path += "/$TicketListType"
+    }
+
+    # CustomFieldDefinitions have a second-level endpoint for the CustomFieldType, except for the Ticket sub-type.
     if ($CustomFieldTypeSpecified -and ($CustomFieldType -ne [WHDCustomFieldType]::Ticket)) {
         $UriBuilder.Path += "/$CustomFieldType"
     }
 
+    # If a ResourceId was provided, add it to the UriBuilder path to target that specific resource.
+    # Some ResourceTypes don't support retrieval by id, so throw an error if that's the case.
     if ($PSCmdlet.ParameterSetName -eq "Single") {
         if ($ResourceType -in @(
                 [WHDResourceType]::CustomFieldDefinitions
@@ -110,13 +126,14 @@ function Get-Resource {
         }
     }
 
+    # If any additional parameters were provided, add them to the query parameters
     if ($AdditionalParameters) {
         foreach ($Key in $AdditionalParameters.Keys) {
             $QueryParams.Add($Key, $AdditionalParameters[$Key])
         }
     }
 
-    # Omit style unless Expand is requested; the API defaults to short.
+    # Omit style unless Expand is requested; the API defaults to 'short'.
     if ($Expand) { $QueryParams.Add("style", "details") }
 
     # Add the query parameters to the UriBuilder, this will handle encoding and formatting for us
@@ -128,6 +145,7 @@ function Get-Resource {
         Method     = [Microsoft.PowerShell.Commands.WebRequestMethod]::Get
     }
 
+    # If a qualifier was specified, add it to the body of the request as JSON.
     if ($QualifierSpecified) {
         $ParameterHash["Body"] = @{ qualifier = $QualifierString }
     }

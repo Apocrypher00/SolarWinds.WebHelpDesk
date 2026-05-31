@@ -8,7 +8,7 @@
     .PARAMETER ResourceId
     The id of the Ticket to be retrieved.
 
-    .PARAMETER ListType
+    .PARAMETER TicketListType
     A WHDTicketListType to filter the results.
     Required if no Qualifier, QualifierString, or Search options are provided.
 
@@ -38,7 +38,7 @@ function Get-Ticket {
         [Parameter(ParameterSetName = "Qualifier")]
         [Parameter(ParameterSetName = "QualifierString")]
         [Parameter(ParameterSetName = "Search")]
-        [WHDTicketListType] $ListType,
+        [WHDTicketListType] $TicketListType,
 
         [Parameter(ParameterSetName = "Qualifier")]
         [WHDQualifier] $Qualifier,
@@ -61,8 +61,8 @@ function Get-Ticket {
         Expand       = $Expand.IsPresent
     }
 
-    if ($PSBoundParameters.ContainsKey("ListType")) {
-        $QueryParameters["AdditionalParameters"] = @{ list = $ListType }
+    if ($PSBoundParameters.ContainsKey("TicketListType")) {
+        $QueryParameters["TicketListType"] = $TicketListType
     }
 
     switch ($PSCmdlet.ParameterSetName) {
@@ -78,7 +78,7 @@ function Get-Ticket {
         "Search" {
             $QueryParameters["Qualifier"] = ConvertTo-Qualifier `
                 -BoundParameters $PSBoundParameters `
-                -AttributeMap    (
+                -AttributeMap (
                 @{
                     Status   = "statustype.statusTypeName"
                     Location = "location.locationName"
@@ -91,9 +91,9 @@ function Get-Ticket {
         ($PSCmdlet.ParameterSetName -ne "Single") -and
         ($null -eq $QueryParameters["Qualifier"]) -and
         [string]::IsNullOrWhiteSpace($QueryParameters["QualifierString"]) -and
-        (-not $PSBoundParameters.ContainsKey("ListType"))
+        (-not $PSBoundParameters.ContainsKey("TicketListType"))
     ) {
-        throw "ListType is required when no Qualifier, QualifierString, or Search options are specified."
+        throw "TicketListType is required when no Qualifier, QualifierString, or Search options are specified."
     }
 
     return Get-Resource @QueryParameters

@@ -30,10 +30,3 @@ $Script:WHDConnection = [PSCustomObject]@{
     Session    = $null
     AuthParams = New-HttpQSCollection
 }
-
-# Register type accelerators for enums?
-# $accelerators = [psobject].Assembly.GetType("System.Management.Automation.TypeAccelerators")
-# $accelerators::Add("WHDResourceType", [WHDResourceType])
-# $accelerators::Add("WHDCustomFieldType", [WHDCustomFieldType])
-# $accelerators::Add("WHDQualifierOperator", [WHDQualifierOperator])
-# $accelerators::Add("WHDQualifierLogicalOperator", [WHDQualifierLogicalOperator])
