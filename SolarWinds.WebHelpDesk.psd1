@@ -22,7 +22,7 @@
     Copyright            = "(c) Apocrypher00. All rights reserved."
 
     # Description of the functionality provided by this module
-    Description          = "PowerShell module for SolarWinds Web Help Desk (WHD) REST API"
+    Description          = "Final legacy snapshot for SolarWinds Web Help Desk 2026.1 and earlier. Unmaintained; does not support the 2026.4.0 NextGen API."
 
     # Minimum version of the PowerShell engine required by this module
     PowerShellVersion    = "5.1"
