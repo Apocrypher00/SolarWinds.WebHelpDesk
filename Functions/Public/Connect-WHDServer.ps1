@@ -4,11 +4,11 @@
 
     .DESCRIPTION
     This function establishes a connection to the WHD API by obtaining a session key using the provided credentials.
-    The session key and base URL are stored in a global variable for use in subsequent API calls.
+    The session key and base URL are stored in module state for use in subsequent API calls.
 
     .PARAMETER BaseUrl
     The base URL of the WebHelpDesk instance (e.g., "https://whd.mydomain.com").
-    This can include the "/helpdesk/WebObjects/Helpdesk.woa/ra" or some other suffix, as it will be replaced anyway.
+    Targets the WHD 2026.4.0 NextGen API. Any supplied path is replaced with "/api/v1/ra".
 
     .PARAMETER ApiKey
     The API key for authentication.
@@ -43,7 +43,7 @@ function Connect-WHDServer {
 
     # Store the base URL, used by other helper functions when building endpoints
     $Script:WHDConnection.UriBuilder          = [System.UriBuilder]::new($BaseUrl)
-    $Script:WHDConnection.UriBuilder.Path     = "helpdesk/WebObjects/Helpdesk.woa/ra"
+    $Script:WHDConnection.UriBuilder.Path     = "api/v1/ra"
     $Script:WHDConnection.UriBuilder.UserName = $null
     $Script:WHDConnection.UriBuilder.Password = $null
     $Script:WHDConnection.UriBuilder.Query    = $null
