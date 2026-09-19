@@ -160,6 +160,17 @@ function Get-WHDResource {
         }
     } else {
         $Results = Invoke-WHDMethod @ParameterHash
+
+        # List responses wrap the resources in a result array with paging metadata.
+        # Extract the resources before adding their types and convenience properties.
+        if (
+            ($null -ne $Results) -and
+            ($null -ne $Results.PSObject.Properties["result"]) -and
+            ($null -ne $Results.PSObject.Properties["batch"]) -and
+            ($null -ne $Results.PSObject.Properties["batchSize"])
+        ) {
+            $Results = $Results.result
+        }
     }
 
     # If we got any results, modify them with some additional properties and types to make them easier to work with
