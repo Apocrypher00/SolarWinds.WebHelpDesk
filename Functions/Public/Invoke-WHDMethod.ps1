@@ -68,8 +68,15 @@ function Invoke-WHDMethod {
     }
 
     if ($AsWebResponse) {
-        return Invoke-WebRequest @ParameterHash
+        $Response = Invoke-WebRequest @ParameterHash
     } else {
-        return Invoke-RestMethod @ParameterHash
+        $Response = Invoke-RestMethod @ParameterHash
     }
+
+    # Session keys expire after 30 minutes of inactivity, so extend the local estimate after a successful request.
+    if ($null -ne $Script:WHDConnection.Session) {
+        $Script:WHDConnection.Session.ExpirationDate = [DateTime]::Now.AddMinutes(30)
+    }
+
+    return $Response
 }
