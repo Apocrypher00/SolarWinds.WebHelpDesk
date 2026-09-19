@@ -9,6 +9,7 @@
 #>
 function Disconnect-WHDServer {
     [CmdletBinding(SupportsShouldProcess, ConfirmImpact = "High")]
+    [Alias("Disconnect-WebHelpDesk")]
     param ()
 
     if ($PSCmdlet.ShouldProcess("Web Help Desk", "Disconnect and clear session state")) {

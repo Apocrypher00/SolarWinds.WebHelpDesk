@@ -23,6 +23,7 @@
 #>
 function Connect-WHDServer {
     [CmdletBinding()]
+    [Alias("Connect-WebHelpDesk")]
     [OutputType([void])]
     param (
         [Parameter(Mandatory)]
