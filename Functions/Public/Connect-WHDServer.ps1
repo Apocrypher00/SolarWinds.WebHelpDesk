@@ -41,31 +41,37 @@ function Connect-WHDServer {
     # Disconnect first to keep things clean if we're already connected
     Disconnect-WHDServer -Confirm:$false
 
-    # Store the base URL, used by other helper functions when building endpoints
-    $Script:WHDConnection.UriBuilder          = [System.UriBuilder]::new($BaseUrl)
-    $Script:WHDConnection.UriBuilder.Path     = "api/v1/ra"
-    $Script:WHDConnection.UriBuilder.UserName = $null
-    $Script:WHDConnection.UriBuilder.Password = $null
-    $Script:WHDConnection.UriBuilder.Query    = $null
-    $Script:WHDConnection.UriBuilder.Fragment = $null
+    try {
+        # Store the base URL, used by other helper functions when building endpoints
+        $Script:WHDConnection.UriBuilder          = [System.UriBuilder]::new($BaseUrl)
+        $Script:WHDConnection.UriBuilder.Path     = "api/v1/ra"
+        $Script:WHDConnection.UriBuilder.UserName = $null
+        $Script:WHDConnection.UriBuilder.Password = $null
+        $Script:WHDConnection.UriBuilder.Query    = $null
+        $Script:WHDConnection.UriBuilder.Fragment = $null
 
-    # Pre-create a WebSession object that we can reuse for all our requests
-    # This handles cookies/caching for the REST API
-    $Script:WHDConnection.WebSession = [Microsoft.PowerShell.Commands.WebRequestSession]::new()
+        # Pre-create a WebSession object that we can reuse for all our requests
+        # This handles cookies/caching for the REST API
+        $Script:WHDConnection.WebSession = [Microsoft.PowerShell.Commands.WebRequestSession]::new()
 
-    # Store the credentials temporarily in our state; we'll use them to get a session key
-    $Script:WHDConnection.AuthParams.Add("apiKey", $ApiKey)
-    if ($PSBoundParameters.ContainsKey("Username")) {
-        $Script:WHDConnection.AuthParams.Add("username", $Username)
-    }
+        # Store the credentials temporarily in our state; we'll use them to get a session key
+        $Script:WHDConnection.AuthParams.Add("apiKey", $ApiKey)
+        if ($PSBoundParameters.ContainsKey("Username")) {
+            $Script:WHDConnection.AuthParams.Add("username", $Username)
+        }
 
-    if (-not $PersistCredentials) {
-        # Get a session key and save it in our state
-        $Script:WHDConnection.Session = Get-WHDSession
-        $Script:WHDConnection.AuthParams.Add("sessionKey", $Script:WHDConnection.Session.sessionKey)
+        if (-not $PersistCredentials) {
+            # Get a session key and save it in our state
+            $Script:WHDConnection.Session = Get-WHDSession -ErrorAction Stop
+            $Script:WHDConnection.AuthParams.Add("sessionKey", $Script:WHDConnection.Session.sessionKey)
 
-        # Clear the temporary credentials from our state for security; we only need the session key going forward
-        $Script:WHDConnection.AuthParams.Remove("username") | Out-Null
-        $Script:WHDConnection.AuthParams.Remove("apiKey") | Out-Null
+            # Clear the temporary credentials from our state for security; we only need the session key going forward
+            $Script:WHDConnection.AuthParams.Remove("username") | Out-Null
+            $Script:WHDConnection.AuthParams.Remove("apiKey") | Out-Null
+        }
+    } catch {
+        # Do not leave credentials or partial connection state after initialization fails.
+        Clear-Connection
+        throw
     }
 }
