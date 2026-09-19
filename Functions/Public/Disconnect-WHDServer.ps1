@@ -4,24 +4,22 @@
 
     .DESCRIPTION
     This function removes the active session from WHD and clears any connection state from the module.
+    Local state is cleared even if session deletion fails.
+    The deletion error is still reported, and the server session may remain active until it expires.
 #>
 function Disconnect-WHDServer {
     [CmdletBinding(SupportsShouldProcess, ConfirmImpact = "High")]
     param ()
 
     if ($PSCmdlet.ShouldProcess("Web Help Desk", "Disconnect and clear session state")) {
-        # Remove the actual sesson from WHD
-        if (($null -ne $Script:WHDConnection.Session) -and (-not $Script:WHDConnection.Session.IsExpired)) {
-            Remove-WHDSession -Session $Script:WHDConnection.Session -Confirm:$false | Out-Null
+        try {
+            # Remove the actual session from WHD before releasing local state.
+            if (($null -ne $Script:WHDConnection.Session) -and (-not $Script:WHDConnection.Session.IsExpired)) {
+                Remove-WHDSession -Session $Script:WHDConnection.Session -Confirm:$false -ErrorAction Stop | Out-Null
+            }
+        } finally {
+            # Clear-Connection disposes of the WebSession, so this must happen after deleting the Session.
+            Clear-Connection
         }
-
-        # Dispose of the WebSession to clear cookies and free resources
-        # WARNING: This must happen AFTER deleting the Session
-        if ($Script:WHDConnection.WebSession) {
-            $Script:WHDConnection.WebSession.Dispose()
-        }
-
-        # Clear all connection state from our module
-        Clear-Connection
     }
 }
