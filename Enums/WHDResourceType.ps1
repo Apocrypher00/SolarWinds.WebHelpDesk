@@ -11,7 +11,7 @@ enum WHDResourceType {
     AssetStatus            # GET
     AssetType              # GET, POST, PUT, DELETE
     BillingRate            # GET
-    Client                 # GET, POST, PUT, DELETE (DELETE not indicated in API documentation but appears to work)
+    Client                 # GET, POST, PUT (legacy DELETE appeared to work but is absent from the NextGen schema)
     Company                # GET, POST, PUT, DELETE
     CustomFieldDefinition # GET
     Department             # GET
@@ -27,7 +27,7 @@ enum WHDResourceType {
     StatusType             # GET
     TechNote               # POST (This is essentially how you POST a TicketNote)
     Tech                   # GET
-    ticketAttachment       # GET
+    ticketAttachment       # GET (POST uploads use the /upload action)
     TicketBulkAction       # GET
     TicketNote             # GET
     Tickets                # GET, POST, PUT, DELETE
