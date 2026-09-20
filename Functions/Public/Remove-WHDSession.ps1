@@ -18,7 +18,7 @@ function Remove-WHDSession {
     )
 
     process {
-        if ($PSCmdlet.ShouldProcess("SessionKey=$($Session.sessionKey)", "Remove Session from Web Help Desk")) {
+        if ($PSCmdlet.ShouldProcess("Active session", "Remove Session from Web Help Desk")) {
             Remove-WHDResource -Resource $Session -Confirm:$false
         }
     }

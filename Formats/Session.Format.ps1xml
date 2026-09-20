@@ -13,7 +13,6 @@
                     <TableColumnHeader />
                     <TableColumnHeader />
                     <TableColumnHeader />
-                    <TableColumnHeader />
                 </TableHeaders>
                 <TableRowEntries>
                     <TableRowEntry>
@@ -26,9 +25,6 @@
                             </TableColumnItem>
                             <TableColumnItem>
                                 <PropertyName>currentTechId</PropertyName>
-                            </TableColumnItem>
-                            <TableColumnItem>
-                                <PropertyName>sessionKey</PropertyName>
                             </TableColumnItem>
                             <TableColumnItem>
                                 <PropertyName>ExpirationDate</PropertyName>

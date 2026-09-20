@@ -52,7 +52,7 @@ function Remove-WHDResource {
         if ($ResourceType -eq [WHDResourceType]::Session) {
             $QueryParams = New-HttpQSCollection
             $QueryParams.Add("sessionKey", $Resource.sessionKey)
-            $ShouldProcessMessage = "ResourceType=$ResourceType, SessionKey=$($Resource.sessionKey)"
+            $ShouldProcessMessage = "ResourceType=$ResourceType"
         } else {
             $QueryParams = Copy-Authentication
             $UriBuilder.Path += "/$($Resource.id)"
