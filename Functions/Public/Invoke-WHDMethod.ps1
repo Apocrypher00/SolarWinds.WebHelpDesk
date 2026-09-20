@@ -63,6 +63,10 @@ function Invoke-WHDMethod {
         WebSession = $Script:WHDConnection.WebSession
     }
 
+    if ($Script:WHDConnection.AuthHeaders.Count -gt 0) {
+        $ParameterHash["Headers"] = $Script:WHDConnection.AuthHeaders.Clone()
+    }
+
     if ($null -ne $Body) {
         if ($Method -in @("Post", "Put")) {
             $ParameterHash["ContentType"] = "application/json"
