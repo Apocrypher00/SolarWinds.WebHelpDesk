@@ -6,7 +6,8 @@
     This function retrieves a specific Client from WHD, or a list of Clients based on a provided search parameter.
 
     .PARAMETER ResourceId
-    The id of the Client to be retrieved.
+    The id, username, or email address of the Client to be retrieved.
+    This parameter can also be specified using the Identifier alias.
 
     .PARAMETER Qualifier
     A WHDQualifier object to filter the results.
@@ -34,8 +35,9 @@
 function Get-WHDClient {
     [CmdletBinding(DefaultParameterSetName = "Search")]
     param (
-        [Parameter(ParameterSetName = "Single", Mandatory)]
-        [int] $ResourceId,
+        [Parameter(ParameterSetName = "Single", Mandatory, Position = 0)]
+        [Alias("Identifier")]
+        [string] $ResourceId,
 
         [Parameter(ParameterSetName = "Qualifier", Mandatory)]
         [WHDQualifier] $Qualifier,

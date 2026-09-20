@@ -17,7 +17,7 @@
 function Get-WHDDepartment {
     [CmdletBinding()]
     param (
-        [Parameter()]
+        [Parameter(Position = 0)]
         [int] $ResourceId,
 
         [Parameter()]

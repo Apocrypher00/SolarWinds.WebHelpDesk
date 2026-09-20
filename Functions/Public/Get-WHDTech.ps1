@@ -17,7 +17,7 @@
 function Get-WHDTech {
     [CmdletBinding()]
     param (
-        [Parameter()]
+        [Parameter(Position = 0)]
         [int] $ResourceId,
 
         [Parameter()]

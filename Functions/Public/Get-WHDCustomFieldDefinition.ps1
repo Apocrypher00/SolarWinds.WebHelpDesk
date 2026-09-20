@@ -19,7 +19,7 @@
 function Get-WHDCustomFieldDefinition {
     [CmdletBinding()]
     param (
-        [Parameter(Mandatory)]
+        [Parameter(Mandatory, Position = 0)]
         [WHDCustomFieldType] $CustomFieldType,
 
         [Parameter()]

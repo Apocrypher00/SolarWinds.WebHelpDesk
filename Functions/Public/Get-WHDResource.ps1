@@ -15,6 +15,7 @@
 
     .PARAMETER ResourceId
     The id of a specific Resource to retrieve.
+    For Clients, this can also be a username or email address.
     When specified, only that single Resource will be returned.
 
     .PARAMETER Qualifier
@@ -38,7 +39,7 @@
 function Get-WHDResource {
     [CmdletBinding(DefaultParameterSetName = "Qualifier")]
     param (
-        [Parameter(Mandatory)]
+        [Parameter(Mandatory, Position = 0)]
         [WHDResourceType] $ResourceType,
 
         [Parameter()]
@@ -47,8 +48,8 @@ function Get-WHDResource {
         [Parameter()]
         [WHDCustomFieldType] $CustomFieldType,
 
-        [Parameter(ParameterSetName = "Single", Mandatory)]
-        [int] $ResourceId,
+        [Parameter(ParameterSetName = "Single", Mandatory, Position = 1)]
+        [string] $ResourceId,
 
         [Parameter(ParameterSetName = "Qualifier")]
         [WHDQualifier] $Qualifier,

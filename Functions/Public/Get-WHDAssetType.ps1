@@ -25,13 +25,13 @@
 function Get-WHDAssetType {
     [CmdletBinding(DefaultParameterSetName = "Search")]
     param (
-        [Parameter(ParameterSetName = "Single", Mandatory)]
+        [Parameter(ParameterSetName = "Single", Mandatory, Position = 0)]
         [int] $ResourceId,
 
-        [Parameter(ParameterSetName = "Qualifier")]
+        [Parameter(ParameterSetName = "Qualifier", Mandatory)]
         [WHDQualifier] $Qualifier,
 
-        [Parameter(ParameterSetName = "QualifierString")]
+        [Parameter(ParameterSetName = "QualifierString", Mandatory)]
         [string] $QualifierString,
 
         [Parameter(ParameterSetName = "Search")]

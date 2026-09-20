@@ -20,7 +20,7 @@
 function Get-WHDTicketNote {
     [CmdletBinding(DefaultParameterSetName = "List")]
     param (
-        [Parameter(ParameterSetName = "Single", Mandatory)]
+        [Parameter(ParameterSetName = "Single", Mandatory, Position = 0)]
         [int] $ResourceId,
 
         [Parameter(ParameterSetName = "List", Mandatory)]

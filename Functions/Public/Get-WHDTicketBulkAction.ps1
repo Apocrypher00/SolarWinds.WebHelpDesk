@@ -17,7 +17,7 @@
 function Get-WHDTicketBulkAction {
     [CmdletBinding()]
     param (
-        [Parameter()]
+        [Parameter(Position = 0)]
         [int] $ResourceId,
 
         [Parameter()]
