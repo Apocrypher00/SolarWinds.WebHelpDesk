@@ -2,17 +2,18 @@
 <Configuration>
     <ViewDefinitions>
         <View>
-            <Name>SolarWinds.WebHelpDesk.TicketAttachments</Name>
+            <Name>SolarWinds.WebHelpDesk.Asset</Name>
             <ViewSelectedBy>
-                <TypeName>SolarWinds.WebHelpDesk.TicketAttachments</TypeName>
+                <TypeName>SolarWinds.WebHelpDesk.Asset</TypeName>
             </ViewSelectedBy>
             <TableControl>
                 <TableHeaders>
                     <TableColumnHeader />
                     <TableColumnHeader />
-                    <TableColumnHeader>
-                        <Label>Response</Label>
-                    </TableColumnHeader>
+                    <TableColumnHeader />
+                    <TableColumnHeader />
+                    <TableColumnHeader />
+                    <TableColumnHeader />
                 </TableHeaders>
                 <TableRowEntries>
                     <TableRowEntry>
@@ -21,12 +22,19 @@
                                 <PropertyName>ResourceType</PropertyName>
                             </TableColumnItem>
                             <TableColumnItem>
-                                <PropertyName>Id</PropertyName>
+                                <PropertyName>id</PropertyName>
                             </TableColumnItem>
                             <TableColumnItem>
-                                <ScriptBlock>
-                                    $_.Response.GetType()
-                                </ScriptBlock>
+                                <PropertyName>assetNumber</PropertyName>
+                            </TableColumnItem>
+                            <TableColumnItem>
+                                <PropertyName>ModelName</PropertyName>
+                            </TableColumnItem>
+                            <TableColumnItem>
+                                <PropertyName>networkName</PropertyName>
+                            </TableColumnItem>
+                            <TableColumnItem>
+                                <PropertyName>macAddress</PropertyName>
                             </TableColumnItem>
                         </TableColumnItems>
                     </TableRowEntry>

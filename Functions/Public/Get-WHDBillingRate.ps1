@@ -13,5 +13,5 @@
 function Get-WHDBillingRate {
     [CmdletBinding()] param ()
 
-    return Get-WHDResource -ResourceType ([WHDResourceType]::BillingRates)
+    return Get-WHDResource -ResourceType ([WHDResourceType]::BillingRate)
 }

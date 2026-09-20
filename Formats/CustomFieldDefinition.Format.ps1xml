@@ -2,16 +2,12 @@
 <Configuration>
     <ViewDefinitions>
         <View>
-            <Name>SolarWinds.WebHelpDesk.Clients</Name>
+            <Name>SolarWinds.WebHelpDesk.CustomFieldDefinition</Name>
             <ViewSelectedBy>
-                <TypeName>SolarWinds.WebHelpDesk.Clients</TypeName>
+                <TypeName>SolarWinds.WebHelpDesk.CustomFieldDefinition</TypeName>
             </ViewSelectedBy>
             <TableControl>
                 <TableHeaders>
-                    <TableColumnHeader />
-                    <TableColumnHeader />
-                    <TableColumnHeader />
-                    <TableColumnHeader />
                     <TableColumnHeader />
                     <TableColumnHeader />
                     <TableColumnHeader />
@@ -31,34 +27,22 @@
                                 <PropertyName>id</PropertyName>
                             </TableColumnItem>
                             <TableColumnItem>
-                                <PropertyName>firstName</PropertyName>
+                                <PropertyName>label</PropertyName>
                             </TableColumnItem>
                             <TableColumnItem>
-                                <PropertyName>lastName</PropertyName>
+                                <PropertyName>Options</PropertyName>
                             </TableColumnItem>
                             <TableColumnItem>
-                                <PropertyName>LocationName</PropertyName>
+                                <PropertyName>visible</PropertyName>
                             </TableColumnItem>
                             <TableColumnItem>
-                                <PropertyName>RoomName</PropertyName>
+                                <PropertyName>editable</PropertyName>
                             </TableColumnItem>
                             <TableColumnItem>
-                                <PropertyName>companyName</PropertyName>
+                                <PropertyName>required</PropertyName>
                             </TableColumnItem>
                             <TableColumnItem>
-                                <PropertyName>department</PropertyName>
-                            </TableColumnItem>
-                            <TableColumnItem>
-                                <PropertyName>email</PropertyName>
-                            </TableColumnItem>
-                            <TableColumnItem>
-                                <PropertyName>phone</PropertyName>
-                            </TableColumnItem>
-                            <TableColumnItem>
-                                <PropertyName>phone2</PropertyName>
-                            </TableColumnItem>
-                            <TableColumnItem>
-                                <PropertyName>notes</PropertyName>
+                                <PropertyName>displayStyleStorableValue</PropertyName>
                             </TableColumnItem>
                         </TableColumnItems>
                     </TableRowEntry>

@@ -27,7 +27,7 @@ function Get-WHDCustomFieldDefinition {
     )
 
     $QueryParameters = @{
-        ResourceType    = [WHDResourceType]::CustomFieldDefinitions
+        ResourceType    = [WHDResourceType]::CustomFieldDefinition
         CustomFieldType = $CustomFieldType
         Expand          = $Expand.IsPresent
     }

@@ -2,9 +2,9 @@
 <Configuration>
     <ViewDefinitions>
         <View>
-            <Name>SolarWinds.WebHelpDesk.Departments</Name>
+            <Name>SolarWinds.WebHelpDesk.AssetStatus</Name>
             <ViewSelectedBy>
-                <TypeName>SolarWinds.WebHelpDesk.Departments</TypeName>
+                <TypeName>SolarWinds.WebHelpDesk.AssetStatus</TypeName>
             </ViewSelectedBy>
             <TableControl>
                 <TableHeaders>

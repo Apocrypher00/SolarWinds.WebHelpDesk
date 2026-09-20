@@ -25,7 +25,7 @@ function Get-WHDAssetStatus {
     )
 
     $QueryParameters = @{
-        ResourceType = [WHDResourceType]::AssetStatuses
+        ResourceType = [WHDResourceType]::AssetStatus
         Expand       = $Expand.IsPresent
     }
 

@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Types>
     <Type>
-        <Name>SolarWinds.WebHelpDesk.PriorityTypes</Name>
+        <Name>SolarWinds.WebHelpDesk.BillingRate</Name>
         <Members>
             <ScriptProperty>
                 <Name>Name</Name>
                 <GetScriptBlock>
-                    $this.priorityTypeName
+                    $this.displayName
                 </GetScriptBlock>
             </ScriptProperty>
         </Members>

@@ -25,7 +25,7 @@ function Get-WHDRoom {
     )
 
     $QueryParameters = @{
-        ResourceType = [WHDResourceType]::Rooms
+        ResourceType = [WHDResourceType]::Room
         Expand       = $Expand.IsPresent
     }
 

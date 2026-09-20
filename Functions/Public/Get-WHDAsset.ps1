@@ -88,7 +88,7 @@ function Get-WHDAsset {
     }
 
     $QueryParameters = @{
-        ResourceType = [WHDResourceType]::Assets
+        ResourceType = [WHDResourceType]::Asset
         Expand       = $Expand.IsPresent
     }
 

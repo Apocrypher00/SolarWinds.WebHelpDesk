@@ -6,7 +6,7 @@ function Remove-WHDClient {
     [CmdletBinding(SupportsShouldProcess, ConfirmImpact = "High")]
     param (
         [Parameter(Mandatory, ValueFromPipeline)]
-        [PSTypeName("SolarWinds.WebHelpDesk.Clients")] $Client
+        [PSTypeName("SolarWinds.WebHelpDesk.Client")] $Client
     )
 
     process {

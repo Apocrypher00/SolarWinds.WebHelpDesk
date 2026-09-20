@@ -1,4 +1,4 @@
-# Valid CustomFieldDefinitions sub-types
+# Valid CustomFieldDefinition sub-types
 enum WHDCustomFieldType {
     Asset
     Location

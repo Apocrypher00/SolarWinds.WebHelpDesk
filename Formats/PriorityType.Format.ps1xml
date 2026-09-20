@@ -2,12 +2,14 @@
 <Configuration>
     <ViewDefinitions>
         <View>
-            <Name>SolarWinds.WebHelpDesk.TicketBulkActions</Name>
+            <Name>SolarWinds.WebHelpDesk.PriorityType</Name>
             <ViewSelectedBy>
-                <TypeName>SolarWinds.WebHelpDesk.TicketBulkActions</TypeName>
+                <TypeName>SolarWinds.WebHelpDesk.PriorityType</TypeName>
             </ViewSelectedBy>
             <TableControl>
                 <TableHeaders>
+                    <TableColumnHeader />
+                    <TableColumnHeader />
                     <TableColumnHeader />
                     <TableColumnHeader />
                     <TableColumnHeader />
@@ -23,10 +25,16 @@
                                 <PropertyName>id</PropertyName>
                             </TableColumnItem>
                             <TableColumnItem>
-                                <PropertyName>name</PropertyName>
+                                <PropertyName>Name</PropertyName>
                             </TableColumnItem>
                             <TableColumnItem>
-                                <PropertyName>description</PropertyName>
+                                <PropertyName>dueTimeMinutes</PropertyName>
+                            </TableColumnItem>
+                            <TableColumnItem>
+                                <PropertyName>alertReminderMinutes</PropertyName>
+                            </TableColumnItem>
+                            <TableColumnItem>
+                                <PropertyName>clientReminderMinutes</PropertyName>
                             </TableColumnItem>
                         </TableColumnItems>
                     </TableRowEntry>

@@ -6,7 +6,7 @@ function Remove-WHDModel {
     [CmdletBinding(SupportsShouldProcess, ConfirmImpact = "High")]
     param (
         [Parameter(Mandatory, ValueFromPipeline)]
-        [PSTypeName("SolarWinds.WebHelpDesk.Models")] $Model
+        [PSTypeName("SolarWinds.WebHelpDesk.Model")] $Model
     )
 
     process {

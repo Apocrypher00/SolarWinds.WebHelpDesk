@@ -6,7 +6,7 @@ function Remove-WHDLocation {
     [CmdletBinding(SupportsShouldProcess, ConfirmImpact = "High")]
     param (
         [Parameter(Mandatory, ValueFromPipeline)]
-        [PSTypeName("SolarWinds.WebHelpDesk.Locations")] $Location
+        [PSTypeName("SolarWinds.WebHelpDesk.Location")] $Location
     )
 
     process {

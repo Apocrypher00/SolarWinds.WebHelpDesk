@@ -21,21 +21,21 @@ function Remove-WHDResource {
         # The API guide doesn't indicate whether these can/can't be deleted
         # But it explicitly states that others can be, so we'll assume these can't
         if ($ResourceType -in @(
-                [WHDResourceType]::AssetStatuses
-                [WHDResourceType]::BillingRates
-                [WHDResourceType]::CustomFieldDefinitions
-                [WHDResourceType]::Departments
+                [WHDResourceType]::AssetStatus
+                [WHDResourceType]::BillingRate
+                [WHDResourceType]::CustomFieldDefinition
+                [WHDResourceType]::Department
                 [WHDResourceType]::Email
-                [WHDResourceType]::Preferences
-                [WHDResourceType]::PriorityTypes
-                [WHDResourceType]::RequestTypes
-                [WHDResourceType]::Rooms
-                [WHDResourceType]::StatusTypes
-                [WHDResourceType]::TechNotes
-                [WHDResourceType]::Techs
-                [WHDResourceType]::TicketAttachments
-                [WHDResourceType]::TicketBulkActions
-                [WHDResourceType]::TicketNotes
+                [WHDResourceType]::Preference
+                [WHDResourceType]::PriorityType
+                [WHDResourceType]::RequestType
+                [WHDResourceType]::Room
+                [WHDResourceType]::StatusType
+                [WHDResourceType]::TechNote
+                [WHDResourceType]::Tech
+                [WHDResourceType]::ticketAttachment
+                [WHDResourceType]::TicketBulkAction
+                [WHDResourceType]::TicketNote
             )
         ) {
             throw "The '$($Resource.ResourceType)' ResourceType doesn't support DELETE."

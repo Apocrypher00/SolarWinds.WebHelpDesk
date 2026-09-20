@@ -25,7 +25,7 @@ function Get-WHDDepartment {
     )
 
     $QueryParameters = @{
-        ResourceType = [WHDResourceType]::Departments
+        ResourceType = [WHDResourceType]::Department
         Expand       = $Expand.IsPresent
     }
 

@@ -2,9 +2,9 @@
 <Configuration>
     <ViewDefinitions>
         <View>
-            <Name>SolarWinds.WebHelpDesk.StatusTypes</Name>
+            <Name>SolarWinds.WebHelpDesk.BillingRate</Name>
             <ViewSelectedBy>
-                <TypeName>SolarWinds.WebHelpDesk.StatusTypes</TypeName>
+                <TypeName>SolarWinds.WebHelpDesk.BillingRate</TypeName>
             </ViewSelectedBy>
             <TableControl>
                 <TableHeaders>

@@ -6,7 +6,7 @@ function Remove-WHDCompany {
     [CmdletBinding(SupportsShouldProcess, ConfirmImpact = "High")]
     param (
         [Parameter(Mandatory, ValueFromPipeline)]
-        [PSTypeName("SolarWinds.WebHelpDesk.Companies")] $Company
+        [PSTypeName("SolarWinds.WebHelpDesk.Company")] $Company
     )
 
     process {

@@ -2,12 +2,16 @@
 <Configuration>
     <ViewDefinitions>
         <View>
-            <Name>SolarWinds.WebHelpDesk.Techs</Name>
+            <Name>SolarWinds.WebHelpDesk.TicketNote</Name>
             <ViewSelectedBy>
-                <TypeName>SolarWinds.WebHelpDesk.Techs</TypeName>
+                <TypeName>SolarWinds.WebHelpDesk.TicketNote</TypeName>
             </ViewSelectedBy>
             <TableControl>
                 <TableHeaders>
+                    <TableColumnHeader />
+                    <TableColumnHeader />
+                    <TableColumnHeader />
+                    <TableColumnHeader />
                     <TableColumnHeader />
                     <TableColumnHeader />
                     <TableColumnHeader />
@@ -22,7 +26,19 @@
                                 <PropertyName>id</PropertyName>
                             </TableColumnItem>
                             <TableColumnItem>
-                                <PropertyName>Name</PropertyName>
+                                <PropertyName>prettyUpdatedString</PropertyName>
+                            </TableColumnItem>
+                            <TableColumnItem>
+                                <PropertyName>mobileNoteText</PropertyName>
+                            </TableColumnItem>
+                            <TableColumnItem>
+                                <PropertyName>isSolution</PropertyName>
+                            </TableColumnItem>
+                            <TableColumnItem>
+                                <PropertyName>isTechNote</PropertyName>
+                            </TableColumnItem>
+                            <TableColumnItem>
+                                <PropertyName>isHidden</PropertyName>
                             </TableColumnItem>
                         </TableColumnItems>
                     </TableRowEntry>

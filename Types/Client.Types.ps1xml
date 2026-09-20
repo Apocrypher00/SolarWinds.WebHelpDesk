@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Types>
     <Type>
-        <Name>SolarWinds.WebHelpDesk.Clients</Name>
+        <Name>SolarWinds.WebHelpDesk.Client</Name>
         <Members>
             <ScriptProperty>
                 <Name>LocationName</Name>

@@ -2,16 +2,17 @@
 <Configuration>
     <ViewDefinitions>
         <View>
-            <Name>SolarWinds.WebHelpDesk.AssetTypes</Name>
+            <Name>SolarWinds.WebHelpDesk.ticketAttachment</Name>
             <ViewSelectedBy>
-                <TypeName>SolarWinds.WebHelpDesk.AssetTypes</TypeName>
+                <TypeName>SolarWinds.WebHelpDesk.ticketAttachment</TypeName>
             </ViewSelectedBy>
             <TableControl>
                 <TableHeaders>
                     <TableColumnHeader />
                     <TableColumnHeader />
-                    <TableColumnHeader />
-                    <TableColumnHeader />
+                    <TableColumnHeader>
+                        <Label>Response</Label>
+                    </TableColumnHeader>
                 </TableHeaders>
                 <TableRowEntries>
                     <TableRowEntry>
@@ -20,13 +21,12 @@
                                 <PropertyName>ResourceType</PropertyName>
                             </TableColumnItem>
                             <TableColumnItem>
-                                <PropertyName>id</PropertyName>
+                                <PropertyName>Id</PropertyName>
                             </TableColumnItem>
                             <TableColumnItem>
-                                <PropertyName>Name</PropertyName>
-                            </TableColumnItem>
-                            <TableColumnItem>
-                                <PropertyName>hasSpecificCustomFields</PropertyName>
+                                <ScriptBlock>
+                                    $_.Response.GetType()
+                                </ScriptBlock>
                             </TableColumnItem>
                         </TableColumnItems>
                     </TableRowEntry>

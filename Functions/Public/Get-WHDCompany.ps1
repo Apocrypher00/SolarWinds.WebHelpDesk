@@ -49,7 +49,7 @@ function Get-WHDCompany {
     }
 
     $QueryParameters = @{
-        ResourceType = [WHDResourceType]::Companies
+        ResourceType = [WHDResourceType]::Company
         Expand       = $Expand.IsPresent
     }
 

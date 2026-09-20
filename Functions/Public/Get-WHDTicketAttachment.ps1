@@ -22,6 +22,6 @@ function Get-WHDTicketAttachment {
     )
 
     return Get-WHDResource `
-        -ResourceType ([WHDResourceType]::TicketAttachments) `
+        -ResourceType ([WHDResourceType]::ticketAttachment) `
         -ResourceId   $ResourceId
 }

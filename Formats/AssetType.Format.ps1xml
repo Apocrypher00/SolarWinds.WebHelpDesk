@@ -2,12 +2,13 @@
 <Configuration>
     <ViewDefinitions>
         <View>
-            <Name>SolarWinds.WebHelpDesk.AssetStatuses</Name>
+            <Name>SolarWinds.WebHelpDesk.AssetType</Name>
             <ViewSelectedBy>
-                <TypeName>SolarWinds.WebHelpDesk.AssetStatuses</TypeName>
+                <TypeName>SolarWinds.WebHelpDesk.AssetType</TypeName>
             </ViewSelectedBy>
             <TableControl>
                 <TableHeaders>
+                    <TableColumnHeader />
                     <TableColumnHeader />
                     <TableColumnHeader />
                     <TableColumnHeader />
@@ -22,7 +23,10 @@
                                 <PropertyName>id</PropertyName>
                             </TableColumnItem>
                             <TableColumnItem>
-                                <PropertyName>name</PropertyName>
+                                <PropertyName>Name</PropertyName>
+                            </TableColumnItem>
+                            <TableColumnItem>
+                                <PropertyName>hasSpecificCustomFields</PropertyName>
                             </TableColumnItem>
                         </TableColumnItems>
                     </TableRowEntry>

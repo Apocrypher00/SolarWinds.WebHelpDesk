@@ -7,7 +7,7 @@
     or indirectly through the more specific Get-* functions (Get-WHDAsset, Get-WHDTicket, etc.).
 
     .PARAMETER ResourceType
-    The type of Resource to retrieve (Assets, Clients, Manufacturers, Tickets, etc.).
+    The type of Resource to retrieve (Asset, Client, Manufacturer, Tickets, etc.).
 
     .PARAMETER CustomFieldType
     The subtype of CustomFieldDefinition to query, e.g. Asset, Location, or Ticket.
@@ -25,9 +25,9 @@
     A WHD API qualifier string to filter the results.
     This is an alternative to using the Qualifier parameter if you prefer to build the qualifier string manually.
     Qualifiers are case sensitive and support is dependant on the ResourceType.
-    Full support: Assets, AssetTypes, Companies, Locations,
-        Manufacturers, Models, Tickets (limited support when the list parameter is used).
-    Limited support: Clients (predefined Qualifier is already applied).
+    Full support: Asset, AssetType, Company, Location,
+        Manufacturer, Model, Tickets (limited support when the list parameter is used).
+    Limited support: Client (predefined Qualifier is already applied).
 
     .PARAMETER Expand
     If specified, all results will be in the detailed format.
@@ -69,7 +69,7 @@ function Get-WHDResource {
     # But it explicitly states that others can be, so we'll assume these can't
     if ($ResourceType -in @(
             [WHDResourceType]::Email
-            [WHDResourceType]::TechNotes
+            [WHDResourceType]::TechNote
         )
     ) {
         throw "The '$($ResourceType)' ResourceType doesn't support GET."
@@ -81,10 +81,10 @@ function Get-WHDResource {
         throw "TicketListType is only valid for the 'Tickets' resource."
     }
 
-    # Only allow CustomFieldType for CustomFieldDefinitions
+    # Only allow CustomFieldType for CustomFieldDefinition
     $CustomFieldTypeSpecified = $PSBoundParameters.ContainsKey("CustomFieldType")
-    if ($CustomFieldTypeSpecified -and ($ResourceType -ne [WHDResourceType]::CustomFieldDefinitions)) {
-        throw "CustomFieldType is only valid for the 'CustomFieldDefinitions' resource."
+    if ($CustomFieldTypeSpecified -and ($ResourceType -ne [WHDResourceType]::CustomFieldDefinition)) {
+        throw "CustomFieldType is only valid for the 'CustomFieldDefinition' resource."
     }
 
     # If a Qualifier object was provided, convert it to a string for use in the API call
@@ -106,7 +106,7 @@ function Get-WHDResource {
         $UriBuilder.Path += "/$TicketListType"
     }
 
-    # CustomFieldDefinitions have a second-level endpoint for the CustomFieldType, except for the Ticket sub-type.
+    # CustomFieldDefinition has a second-level endpoint for the CustomFieldType, except for the Ticket sub-type.
     if ($CustomFieldTypeSpecified -and ($CustomFieldType -ne [WHDCustomFieldType]::Ticket)) {
         $UriBuilder.Path += "/$CustomFieldType"
     }
@@ -115,9 +115,9 @@ function Get-WHDResource {
     # Some ResourceTypes don't support retrieval by id, so throw an error if that's the case.
     if ($PSCmdlet.ParameterSetName -eq "Single") {
         if ($ResourceType -in @(
-                [WHDResourceType]::CustomFieldDefinitions
+                [WHDResourceType]::CustomFieldDefinition
                 [WHDResourceType]::Session
-                [WHDResourceType]::TicketNotes
+                [WHDResourceType]::TicketNote
             )
         ) {
             throw "The '$ResourceType' ResourceType doesn't support retrieval by id."
@@ -151,9 +151,9 @@ function Get-WHDResource {
     }
 
     # Send the query to the API and store the results
-    # TicketAttachments returns application/octet-stream binary data, not JSON.
+    # ticketAttachment returns application/octet-stream binary data, not JSON.
     # Use Invoke-WebRequest, but continue through the shared type augmentation below.
-    if ($ResourceType -eq [WHDResourceType]::TicketAttachments) {
+    if ($ResourceType -eq [WHDResourceType]::ticketAttachment) {
         $Results = [PSCustomObject]@{
             Id       = $ResourceId
             Response = (Invoke-WHDMethod @ParameterHash -AsWebResponse)

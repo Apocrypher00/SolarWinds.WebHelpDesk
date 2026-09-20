@@ -53,7 +53,7 @@ function Get-WHDModel {
     }
 
     $QueryParameters = @{
-        ResourceType = [WHDResourceType]::Models
+        ResourceType = [WHDResourceType]::Model
         Expand       = $Expand.IsPresent
     }
 

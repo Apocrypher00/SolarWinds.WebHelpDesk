@@ -67,7 +67,7 @@ function Get-WHDClient {
     }
 
     $QueryParameters = @{
-        ResourceType = [WHDResourceType]::Clients
+        ResourceType = [WHDResourceType]::Client
         Expand       = $Expand.IsPresent
     }
 

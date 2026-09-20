@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Types>
     <Type>
-        <Name>SolarWinds.WebHelpDesk.BillingRates</Name>
+        <Name>SolarWinds.WebHelpDesk.Asset</Name>
         <Members>
             <ScriptProperty>
-                <Name>Name</Name>
+                <Name>ModelName</Name>
                 <GetScriptBlock>
-                    $this.displayName
+                    $this.model.modelName
                 </GetScriptBlock>
             </ScriptProperty>
         </Members>

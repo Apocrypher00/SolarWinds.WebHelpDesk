@@ -2,15 +2,12 @@
 <Configuration>
     <ViewDefinitions>
         <View>
-            <Name>SolarWinds.WebHelpDesk.PriorityTypes</Name>
+            <Name>SolarWinds.WebHelpDesk.Department</Name>
             <ViewSelectedBy>
-                <TypeName>SolarWinds.WebHelpDesk.PriorityTypes</TypeName>
+                <TypeName>SolarWinds.WebHelpDesk.Department</TypeName>
             </ViewSelectedBy>
             <TableControl>
                 <TableHeaders>
-                    <TableColumnHeader />
-                    <TableColumnHeader />
-                    <TableColumnHeader />
                     <TableColumnHeader />
                     <TableColumnHeader />
                     <TableColumnHeader />
@@ -25,16 +22,7 @@
                                 <PropertyName>id</PropertyName>
                             </TableColumnItem>
                             <TableColumnItem>
-                                <PropertyName>Name</PropertyName>
-                            </TableColumnItem>
-                            <TableColumnItem>
-                                <PropertyName>dueTimeMinutes</PropertyName>
-                            </TableColumnItem>
-                            <TableColumnItem>
-                                <PropertyName>alertReminderMinutes</PropertyName>
-                            </TableColumnItem>
-                            <TableColumnItem>
-                                <PropertyName>clientReminderMinutes</PropertyName>
+                                <PropertyName>name</PropertyName>
                             </TableColumnItem>
                         </TableColumnItems>
                     </TableRowEntry>

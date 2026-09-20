@@ -2,9 +2,9 @@
 <Configuration>
     <ViewDefinitions>
         <View>
-            <Name>SolarWinds.WebHelpDesk.Models</Name>
+            <Name>SolarWinds.WebHelpDesk.Company</Name>
             <ViewSelectedBy>
-                <TypeName>SolarWinds.WebHelpDesk.Models</TypeName>
+                <TypeName>SolarWinds.WebHelpDesk.Company</TypeName>
             </ViewSelectedBy>
             <TableControl>
                 <TableHeaders>
@@ -22,7 +22,7 @@
                                 <PropertyName>id</PropertyName>
                             </TableColumnItem>
                             <TableColumnItem>
-                                <PropertyName>Name</PropertyName>
+                                <PropertyName>companyName</PropertyName>
                             </TableColumnItem>
                         </TableColumnItems>
                     </TableRowEntry>

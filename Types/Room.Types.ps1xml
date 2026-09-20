@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Types>
     <Type>
-        <Name>SolarWinds.WebHelpDesk.Techs</Name>
+        <Name>SolarWinds.WebHelpDesk.Room</Name>
         <Members>
             <ScriptProperty>
                 <Name>Name</Name>
                 <GetScriptBlock>
-                    $this.displayName
+                    $this.roomName
                 </GetScriptBlock>
             </ScriptProperty>
         </Members>

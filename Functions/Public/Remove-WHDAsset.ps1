@@ -6,7 +6,7 @@ function Remove-WHDAsset {
     [CmdletBinding(SupportsShouldProcess, ConfirmImpact = "High")]
     param (
         [Parameter(Mandatory, ValueFromPipeline)]
-        [PSTypeName("SolarWinds.WebHelpDesk.Assets")] $Asset
+        [PSTypeName("SolarWinds.WebHelpDesk.Asset")] $Asset
     )
 
     process {

@@ -26,7 +26,7 @@ function Get-WHDTicketNote {
     )
 
     $QueryParameters = @{
-        ResourceType         = [WHDResourceType]::TicketNotes
+        ResourceType         = [WHDResourceType]::TicketNote
         AdditionalParameters = @{ jobTicketId = $TicketId }
         Expand               = $Expand.IsPresent
     }

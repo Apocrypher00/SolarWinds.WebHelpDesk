@@ -110,7 +110,7 @@ function Get-WHDManufacturer {
     }
 
     $QueryParameters = @{
-        ResourceType = [WHDResourceType]::Manufacturers
+        ResourceType = [WHDResourceType]::Manufacturer
         Expand       = $Expand.IsPresent
     }
 

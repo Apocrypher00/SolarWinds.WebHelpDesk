@@ -2,12 +2,13 @@
 <Configuration>
     <ViewDefinitions>
         <View>
-            <Name>SolarWinds.WebHelpDesk.Companies</Name>
+            <Name>SolarWinds.WebHelpDesk.RequestType</Name>
             <ViewSelectedBy>
-                <TypeName>SolarWinds.WebHelpDesk.Companies</TypeName>
+                <TypeName>SolarWinds.WebHelpDesk.RequestType</TypeName>
             </ViewSelectedBy>
             <TableControl>
                 <TableHeaders>
+                    <TableColumnHeader />
                     <TableColumnHeader />
                     <TableColumnHeader />
                     <TableColumnHeader />
@@ -22,7 +23,10 @@
                                 <PropertyName>id</PropertyName>
                             </TableColumnItem>
                             <TableColumnItem>
-                                <PropertyName>companyName</PropertyName>
+                                <PropertyName>parentId</PropertyName>
+                            </TableColumnItem>
+                            <TableColumnItem>
+                                <PropertyName>Name</PropertyName>
                             </TableColumnItem>
                         </TableColumnItems>
                     </TableRowEntry>

@@ -25,7 +25,7 @@ function Get-WHDPriorityType {
     )
 
     $QueryParameters = @{
-        ResourceType = [WHDResourceType]::PriorityTypes
+        ResourceType = [WHDResourceType]::PriorityType
         Expand       = $Expand.IsPresent
     }
 

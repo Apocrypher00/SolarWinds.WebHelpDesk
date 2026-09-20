@@ -2,13 +2,12 @@
 <Configuration>
     <ViewDefinitions>
         <View>
-            <Name>SolarWinds.WebHelpDesk.Rooms</Name>
+            <Name>SolarWinds.WebHelpDesk.StatusType</Name>
             <ViewSelectedBy>
-                <TypeName>SolarWinds.WebHelpDesk.Rooms</TypeName>
+                <TypeName>SolarWinds.WebHelpDesk.StatusType</TypeName>
             </ViewSelectedBy>
             <TableControl>
                 <TableHeaders>
-                    <TableColumnHeader />
                     <TableColumnHeader />
                     <TableColumnHeader />
                     <TableColumnHeader />
@@ -24,9 +23,6 @@
                             </TableColumnItem>
                             <TableColumnItem>
                                 <PropertyName>Name</PropertyName>
-                            </TableColumnItem>
-                            <TableColumnItem>
-                                <PropertyName>locationId</PropertyName>
                             </TableColumnItem>
                         </TableColumnItems>
                     </TableRowEntry>

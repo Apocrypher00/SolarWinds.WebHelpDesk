@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Types>
     <Type>
-        <Name>SolarWinds.WebHelpDesk.Locations</Name>
+        <Name>SolarWinds.WebHelpDesk.AssetType</Name>
         <Members>
             <ScriptProperty>
                 <Name>Name</Name>
                 <GetScriptBlock>
-                    $this.locationName
+                    $this.assetType
                 </GetScriptBlock>
             </ScriptProperty>
         </Members>

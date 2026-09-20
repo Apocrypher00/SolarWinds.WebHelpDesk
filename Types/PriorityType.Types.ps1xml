@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Types>
     <Type>
-        <Name>SolarWinds.WebHelpDesk.CustomFieldDefinitions</Name>
+        <Name>SolarWinds.WebHelpDesk.PriorityType</Name>
         <Members>
             <ScriptProperty>
-                <Name>Options</Name>
+                <Name>Name</Name>
                 <GetScriptBlock>
-                    $this.optionsString -split ";"
+                    $this.priorityTypeName
                 </GetScriptBlock>
             </ScriptProperty>
         </Members>

@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Types>
     <Type>
-        <Name>SolarWinds.WebHelpDesk.StatusTypes</Name>
+        <Name>SolarWinds.WebHelpDesk.Tech</Name>
         <Members>
             <ScriptProperty>
                 <Name>Name</Name>
                 <GetScriptBlock>
-                    $this.statusTypeName
+                    $this.displayName
                 </GetScriptBlock>
             </ScriptProperty>
         </Members>

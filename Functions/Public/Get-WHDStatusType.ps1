@@ -25,7 +25,7 @@ function Get-WHDStatusType {
     )
 
     $QueryParameters = @{
-        ResourceType = [WHDResourceType]::StatusTypes
+        ResourceType = [WHDResourceType]::StatusType
         Expand       = $Expand.IsPresent
     }
 

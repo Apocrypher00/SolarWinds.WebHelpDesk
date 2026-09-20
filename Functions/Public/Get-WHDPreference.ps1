@@ -16,5 +16,5 @@ function Get-WHDPreference {
     [Alias("Get-WHDSetup")]
     param ()
 
-    return Get-WHDResource -ResourceType ([WHDResourceType]::Preferences)
+    return Get-WHDResource -ResourceType ([WHDResourceType]::Preference)
 }

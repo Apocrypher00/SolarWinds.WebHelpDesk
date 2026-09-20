@@ -25,7 +25,7 @@ function Get-WHDTicketBulkAction {
     )
 
     $QueryParameters = @{
-        ResourceType = [WHDResourceType]::TicketBulkActions
+        ResourceType = [WHDResourceType]::TicketBulkAction
         Expand       = $Expand.IsPresent
     }
 

@@ -5,28 +5,30 @@
     correspond to the available API operations for that Resource (Get, New, Set, Remove)
 #>
 enum WHDResourceType {
-    Assets                 # GET, POST, PUT, DELETE
-    AssetStatuses          # GET
-    AssetTypes             # GET, POST, PUT, DELETE
-    BillingRates           # GET
-    Clients                # GET, POST, PUT, DELETE (DELETE not indicated in API documentation but appears to work)
-    Companies              # GET, POST, PUT, DELETE
-    CustomFieldDefinitions # GET
-    Departments            # GET
+    # Resource names match singular API endpoints except Tickets, which has no singular endpoint.
+    # ticketAttachment is lowercase because the endpoint path is case-sensitive.
+    Asset                  # GET, POST, PUT, DELETE
+    AssetStatus            # GET
+    AssetType              # GET, POST, PUT, DELETE
+    BillingRate            # GET
+    Client                 # GET, POST, PUT, DELETE (DELETE not indicated in API documentation but appears to work)
+    Company                # GET, POST, PUT, DELETE
+    CustomFieldDefinition # GET
+    Department             # GET
     Email                  # POST
-    Locations              # GET, POST, PUT, DELETE
-    Manufacturers          # GET, POST, PUT, DELETE
-    Models                 # GET, POST, PUT, DELETE
-    Preferences            # GET
-    PriorityTypes          # GET
-    RequestTypes           # GET
-    Rooms                  # GET
+    Location               # GET, POST, PUT, DELETE
+    Manufacturer           # GET, POST, PUT, DELETE
+    Model                  # GET, POST, PUT, DELETE
+    Preference             # GET
+    PriorityType           # GET
+    RequestType            # GET
+    Room                   # GET
     Session                # GET, DELETE
-    StatusTypes            # GET
-    TechNotes              # POST (This is essentially how you POST TicketNotes)
-    Techs                  # GET
-    TicketAttachments      # GET
-    TicketBulkActions      # GET
-    TicketNotes            # GET
+    StatusType             # GET
+    TechNote               # POST (This is essentially how you POST a TicketNote)
+    Tech                   # GET
+    ticketAttachment       # GET
+    TicketBulkAction       # GET
+    TicketNote             # GET
     Tickets                # GET, POST, PUT, DELETE
 }

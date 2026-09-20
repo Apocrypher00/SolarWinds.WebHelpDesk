@@ -2,12 +2,13 @@
 <Configuration>
     <ViewDefinitions>
         <View>
-            <Name>SolarWinds.WebHelpDesk.BillingRates</Name>
+            <Name>SolarWinds.WebHelpDesk.TicketBulkAction</Name>
             <ViewSelectedBy>
-                <TypeName>SolarWinds.WebHelpDesk.BillingRates</TypeName>
+                <TypeName>SolarWinds.WebHelpDesk.TicketBulkAction</TypeName>
             </ViewSelectedBy>
             <TableControl>
                 <TableHeaders>
+                    <TableColumnHeader />
                     <TableColumnHeader />
                     <TableColumnHeader />
                     <TableColumnHeader />
@@ -22,7 +23,10 @@
                                 <PropertyName>id</PropertyName>
                             </TableColumnItem>
                             <TableColumnItem>
-                                <PropertyName>Name</PropertyName>
+                                <PropertyName>name</PropertyName>
+                            </TableColumnItem>
+                            <TableColumnItem>
+                                <PropertyName>description</PropertyName>
                             </TableColumnItem>
                         </TableColumnItems>
                     </TableRowEntry>

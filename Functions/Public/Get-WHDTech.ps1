@@ -25,7 +25,7 @@ function Get-WHDTech {
     )
 
     $QueryParameters = @{
-        ResourceType = [WHDResourceType]::Techs
+        ResourceType = [WHDResourceType]::Tech
         Expand       = $Expand.IsPresent
     }
 

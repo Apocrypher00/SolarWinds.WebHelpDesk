@@ -2,15 +2,12 @@
 <Configuration>
     <ViewDefinitions>
         <View>
-            <Name>SolarWinds.WebHelpDesk.Assets</Name>
+            <Name>SolarWinds.WebHelpDesk.Model</Name>
             <ViewSelectedBy>
-                <TypeName>SolarWinds.WebHelpDesk.Assets</TypeName>
+                <TypeName>SolarWinds.WebHelpDesk.Model</TypeName>
             </ViewSelectedBy>
             <TableControl>
                 <TableHeaders>
-                    <TableColumnHeader />
-                    <TableColumnHeader />
-                    <TableColumnHeader />
                     <TableColumnHeader />
                     <TableColumnHeader />
                     <TableColumnHeader />
@@ -25,16 +22,7 @@
                                 <PropertyName>id</PropertyName>
                             </TableColumnItem>
                             <TableColumnItem>
-                                <PropertyName>assetNumber</PropertyName>
-                            </TableColumnItem>
-                            <TableColumnItem>
-                                <PropertyName>ModelName</PropertyName>
-                            </TableColumnItem>
-                            <TableColumnItem>
-                                <PropertyName>networkName</PropertyName>
-                            </TableColumnItem>
-                            <TableColumnItem>
-                                <PropertyName>macAddress</PropertyName>
+                                <PropertyName>Name</PropertyName>
                             </TableColumnItem>
                         </TableColumnItems>
                     </TableRowEntry>

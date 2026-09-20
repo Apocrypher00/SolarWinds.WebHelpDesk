@@ -2,13 +2,12 @@
 <Configuration>
     <ViewDefinitions>
         <View>
-            <Name>SolarWinds.WebHelpDesk.RequestTypes</Name>
+            <Name>SolarWinds.WebHelpDesk.Location</Name>
             <ViewSelectedBy>
-                <TypeName>SolarWinds.WebHelpDesk.RequestTypes</TypeName>
+                <TypeName>SolarWinds.WebHelpDesk.Location</TypeName>
             </ViewSelectedBy>
             <TableControl>
                 <TableHeaders>
-                    <TableColumnHeader />
                     <TableColumnHeader />
                     <TableColumnHeader />
                     <TableColumnHeader />
@@ -21,9 +20,6 @@
                             </TableColumnItem>
                             <TableColumnItem>
                                 <PropertyName>id</PropertyName>
-                            </TableColumnItem>
-                            <TableColumnItem>
-                                <PropertyName>parentId</PropertyName>
                             </TableColumnItem>
                             <TableColumnItem>
                                 <PropertyName>Name</PropertyName>

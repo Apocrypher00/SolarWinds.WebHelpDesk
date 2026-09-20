@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Types>
     <Type>
-        <Name>SolarWinds.WebHelpDesk.Models</Name>
+        <Name>SolarWinds.WebHelpDesk.CustomFieldDefinition</Name>
         <Members>
             <ScriptProperty>
-                <Name>Name</Name>
+                <Name>Options</Name>
                 <GetScriptBlock>
-                    $this.modelName
+                    $this.optionsString -split ";"
                 </GetScriptBlock>
             </ScriptProperty>
         </Members>

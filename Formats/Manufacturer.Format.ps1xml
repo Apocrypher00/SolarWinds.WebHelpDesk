@@ -2,9 +2,9 @@
 <Configuration>
     <ViewDefinitions>
         <View>
-            <Name>SolarWinds.WebHelpDesk.Manufacturers</Name>
+            <Name>SolarWinds.WebHelpDesk.Manufacturer</Name>
             <ViewSelectedBy>
-                <TypeName>SolarWinds.WebHelpDesk.Manufacturers</TypeName>
+                <TypeName>SolarWinds.WebHelpDesk.Manufacturer</TypeName>
             </ViewSelectedBy>
             <TableControl>
                 <TableHeaders>

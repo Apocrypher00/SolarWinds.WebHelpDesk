@@ -46,7 +46,7 @@ function Get-WHDLocation {
     }
 
     $QueryParameters = @{
-        ResourceType = [WHDResourceType]::Locations
+        ResourceType = [WHDResourceType]::Location
         Expand       = $Expand.IsPresent
     }
 
