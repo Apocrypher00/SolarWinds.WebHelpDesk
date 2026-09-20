@@ -35,6 +35,7 @@
 
     .NOTES
     If no ResourceId or Qualifier/QualifierString is provided, all resources of the specified type will be returned.
+    List responses are automatically paged until all matching resources have been retrieved.
 #>
 function Get-WHDResource {
     [CmdletBinding(DefaultParameterSetName = "Qualifier")]
@@ -136,6 +137,17 @@ function Get-WHDResource {
     # Omit style unless Expand is requested; the API defaults to 'short'.
     if ($Expand) { $QueryParams.Add("style", "details") }
 
+    # Preference and Session return single objects without using a resource id.
+    # All other non-single JSON resources return paged list envelopes.
+    $SupportsPaging = (
+        ($PSCmdlet.ParameterSetName -ne "Single") -and
+        ($ResourceType -notin @(
+            [WHDResourceType]::Preference
+            [WHDResourceType]::Session
+            [WHDResourceType]::ticketAttachment
+        ))
+    )
+
     # Add the query parameters to the UriBuilder, this will handle encoding and formatting for us
     $UriBuilder.Query = $QueryParams.ToString()
 
@@ -158,19 +170,14 @@ function Get-WHDResource {
             Id       = $ResourceId
             Response = (Invoke-WHDMethod @ParameterHash -AsWebResponse)
         }
+    } elseif ($SupportsPaging) {
+        $Results = Invoke-WHDPagedRequest `
+            -UriBuilder      $UriBuilder `
+            -QueryParameters $QueryParams `
+            -ResourceType    $ResourceType `
+            -Body            $ParameterHash["Body"]
     } else {
         $Results = Invoke-WHDMethod @ParameterHash
-
-        # List responses wrap the resources in a result array with paging metadata.
-        # Extract the resources before adding their types and convenience properties.
-        if (
-            ($null -ne $Results) -and
-            ($null -ne $Results.PSObject.Properties["result"]) -and
-            ($null -ne $Results.PSObject.Properties["batch"]) -and
-            ($null -ne $Results.PSObject.Properties["batchSize"])
-        ) {
-            $Results = $Results.result
-        }
     }
 
     # If we got any results, modify them with some additional properties and types to make them easier to work with
