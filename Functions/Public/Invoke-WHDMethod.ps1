@@ -14,7 +14,8 @@
     The HTTP method to use for the request.
 
     .PARAMETER Body
-    Optional request body to send to the API.
+    Optional parameters or request body to send to the API.
+    POST and PUT bodies are serialized as JSON; GET hashtables are sent as query parameters.
 
     .PARAMETER AsWebResponse
     If specified, uses Invoke-WebRequest and returns the web response object.
@@ -32,7 +33,7 @@
     .EXAMPLE
     $Response = Invoke-WHDMethod -UriBuilder $UriBuilder -Method Get -Body @{ qualifier = $QualifierString }
 
-    Sends a GET request with a request body.
+    Sends a GET request with qualifier query parameters.
 
     .EXAMPLE
     $Response = Invoke-WHDMethod -UriBuilder $UriBuilder -Method Get -AsWebResponse
@@ -63,8 +64,13 @@ function Invoke-WHDMethod {
     }
 
     if ($null -ne $Body) {
-        $ParameterHash["ContentType"] = "application/json"
-        $ParameterHash["Body"] = $Body
+        if ($Method -in @("Post", "Put")) {
+            $ParameterHash["ContentType"] = "application/json"
+            # FIXME: Revisit the serialization depth when create/update payloads are implemented.
+            $ParameterHash["Body"] = ConvertTo-Json -InputObject $Body -Depth 10 -Compress
+        } else {
+            $ParameterHash["Body"] = $Body
+        }
     }
 
     if ($AsWebResponse) {
