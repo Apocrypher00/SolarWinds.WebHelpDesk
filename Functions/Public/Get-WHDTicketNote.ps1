@@ -3,22 +3,27 @@
     Get TicketNotes from WHD.
 
     .DESCRIPTION
-    This function retrieves the list of TicketNotes attached to the specified Ticket.
+    This function retrieves a specific TicketNote, or the list of TicketNotes attached to the specified Ticket.
 
     .PARAMETER TicketId
     The ResourceId of the Ticket for which to retrieve TicketNotes.
+
+    .PARAMETER ResourceId
+    The ResourceId of the TicketNote to retrieve.
 
     .PARAMETER Expand
     If specified, all results will be in the detailed format.
 
     .NOTES
-    This ResourceType doesn't support retrieving a single TicketNote by id.
     This ResourceType doesn't support Qualifiers.
 #>
 function Get-WHDTicketNote {
-    [CmdletBinding()]
+    [CmdletBinding(DefaultParameterSetName = "List")]
     param (
-        [Parameter(Mandatory)]
+        [Parameter(ParameterSetName = "Single", Mandatory)]
+        [int] $ResourceId,
+
+        [Parameter(ParameterSetName = "List", Mandatory)]
         [int] $TicketId,
 
         [Parameter()]
@@ -26,9 +31,14 @@ function Get-WHDTicketNote {
     )
 
     $QueryParameters = @{
-        ResourceType         = [WHDResourceType]::TicketNote
-        AdditionalParameters = @{ jobTicketId = $TicketId }
-        Expand               = $Expand.IsPresent
+        ResourceType = [WHDResourceType]::TicketNote
+        Expand       = $Expand.IsPresent
+    }
+
+    if ($PSCmdlet.ParameterSetName -eq "Single") {
+        $QueryParameters["ResourceId"] = $ResourceId
+    } else {
+        $QueryParameters["AdditionalParameters"] = @{ jobTicketId = $TicketId }
     }
 
     return Get-WHDResource @QueryParameters

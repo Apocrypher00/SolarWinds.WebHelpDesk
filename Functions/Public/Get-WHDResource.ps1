@@ -117,7 +117,6 @@ function Get-WHDResource {
         if ($ResourceType -in @(
                 [WHDResourceType]::CustomFieldDefinition
                 [WHDResourceType]::Session
-                [WHDResourceType]::TicketNote
             )
         ) {
             throw "The '$ResourceType' ResourceType doesn't support retrieval by id."
