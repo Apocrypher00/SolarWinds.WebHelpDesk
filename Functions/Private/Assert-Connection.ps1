@@ -10,8 +10,12 @@ function Assert-Connection {
     [OutputType([void])]
     param ()
 
-    # Do we have either a session key or API key available?
-    if (($null -eq $Script:WHDConnection.Session) -and ($null -eq  $Script:WHDConnection.AuthParams["apiKey"])) {
+    # Do we have a token, session key, or API key available?
+    if (
+        ($null -eq $Script:WHDConnection.Token) -and
+        ($null -eq $Script:WHDConnection.Session) -and
+        ($null -eq $Script:WHDConnection.AuthParams["apiKey"])
+    ) {
         throw "No authentication method provided. Please connect to Web Help Desk first using Connect-WebHelpDesk."
     }
 

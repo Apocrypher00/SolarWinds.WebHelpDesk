@@ -4,7 +4,7 @@
 
     .DESCRIPTION
     This function deletes a resource from WHD based on the resource type and ID.
-    Except in the case of Sessions, which must be removed via sessionKey.
+    Sessions and Tokens are removed without a resource ID.
 #>
 function Remove-WHDResource {
     [CmdletBinding(SupportsShouldProcess, ConfirmImpact = "High")]
@@ -17,29 +17,7 @@ function Remove-WHDResource {
         Assert-Connection
 
         $ResourceType = $Resource.ResourceType
-
-        # The API guide doesn't indicate whether these can/can't be deleted
-        # But it explicitly states that others can be, so we'll assume these can't
-        if ($ResourceType -in @(
-                [WHDResourceType]::AssetStatus
-                [WHDResourceType]::BillingRate
-                [WHDResourceType]::CustomFieldDefinition
-                [WHDResourceType]::Department
-                [WHDResourceType]::Email
-                [WHDResourceType]::Preference
-                [WHDResourceType]::PriorityType
-                [WHDResourceType]::RequestType
-                [WHDResourceType]::Room
-                [WHDResourceType]::StatusType
-                [WHDResourceType]::TechNote
-                [WHDResourceType]::Tech
-                [WHDResourceType]::ticketAttachment
-                [WHDResourceType]::TicketBulkAction
-                [WHDResourceType]::TicketNote
-            )
-        ) {
-            throw "The '$($Resource.ResourceType)' ResourceType doesn't support DELETE."
-        }
+        Assert-SupportsMethod -ResourceType $ResourceType -Method Delete
 
         # Create a copy of the Module level UriBuilder
         # FIXME: We should minimize direct references to module-level state
@@ -48,10 +26,13 @@ function Remove-WHDResource {
         # Add the ResourceType to the path
         $UriBuilder.Path += "/$ResourceType"
 
-        # Add the ResourceId to the path; Sessions are an exception
+        # Add the ResourceId to the path; Sessions and Tokens are exceptions
         if ($ResourceType -eq [WHDResourceType]::Session) {
             $QueryParams = New-HttpQSCollection
             $QueryParams.Add("sessionKey", $Resource.sessionKey)
+            $ShouldProcessMessage = "ResourceType=$ResourceType"
+        } elseif ($ResourceType -eq [WHDResourceType]::Token) {
+            $QueryParams = New-HttpQSCollection
             $ShouldProcessMessage = "ResourceType=$ResourceType"
         } else {
             $QueryParams = Copy-Authentication

@@ -66,16 +66,7 @@ function Get-WHDResource {
     )
 
     Assert-Connection
-
-    # The API guide doesn't indicate whether these can/can't be fetched
-    # But it explicitly states that others can be, so we'll assume these can't
-    if ($ResourceType -in @(
-            [WHDResourceType]::Email
-            [WHDResourceType]::TechNote
-        )
-    ) {
-        throw "The '$($ResourceType)' ResourceType doesn't support GET."
-    }
+    Assert-SupportsMethod -ResourceType $ResourceType -Method Get
 
     # Only allow TicketListType for Tickets
     $TicketListTypeSpecified = $PSBoundParameters.ContainsKey("TicketListType")
