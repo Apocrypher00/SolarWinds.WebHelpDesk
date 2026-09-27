@@ -8,8 +8,7 @@ $Script:WHDResourceMethods = & {
         ($Resource::AssetStatus)           = @($Method::Get)
         ($Resource::AssetType)             = @($Method::Get, $Method::Post, $Method::Put, $Method::Delete)
         ($Resource::BillingRate)           = @($Method::Get)
-        # Legacy DELETE isn't documented but appears to work.
-        ($Resource::Client)                = @($Method::Get, $Method::Post, $Method::Put, $Method::Delete)
+        ($Resource::Client)                = @($Method::Get, $Method::Post, $Method::Put)
         ($Resource::Company)               = @($Method::Get, $Method::Post, $Method::Put, $Method::Delete)
         ($Resource::CustomFieldDefinition) = @($Method::Get)
         ($Resource::Department)            = @($Method::Get)

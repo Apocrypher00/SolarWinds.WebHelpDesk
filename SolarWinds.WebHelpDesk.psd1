@@ -143,7 +143,6 @@
         "Remove-WHDResource"
         "Remove-WHDAsset"
         "Remove-WHDAssetType"
-        "Remove-WHDClient"
         "Remove-WHDCompany"
         "Remove-WHDLocation"
         "Remove-WHDManufacturer"
