@@ -1,9 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Types>
-    <!-- TODO: Add a GetJwtPayload() ScriptMethod for optional JWT claim inspection. -->
     <Type>
         <Name>SolarWinds.WebHelpDesk.Token</Name>
         <Members>
+            <ScriptMethod>
+                <Name>GetJwtPayload</Name>
+                <Script>
+                    if ([string]::IsNullOrWhiteSpace($this.accessToken)) {
+                        throw "The Token does not contain an accessToken."
+                    }
+
+                    $Segments = $this.accessToken.Split(".")
+                    if ($Segments.Count -ne 3) {
+                        throw "The accessToken is not a valid three-segment JWT."
+                    }
+
+                    $Payload = $Segments[1].Replace("-", "+").Replace("_", "/")
+                    switch ($Payload.Length % 4) {
+                        0 { }
+                        2 { $Payload += "==" }
+                        3 { $Payload += "=" }
+                        default { throw "The JWT payload contains invalid Base64Url data." }
+                    }
+
+                    try {
+                        $PayloadBytes = [Convert]::FromBase64String($Payload)
+                        $PayloadJson = [Text.Encoding]::UTF8.GetString($PayloadBytes)
+                        return $PayloadJson | ConvertFrom-Json
+                    } catch {
+                        throw "Unable to decode the JWT payload: $($_.Exception.Message)"
+                    }
+                </Script>
+            </ScriptMethod>
             <ScriptProperty>
                 <Name>IsExpired</Name>
                 <GetScriptBlock>
