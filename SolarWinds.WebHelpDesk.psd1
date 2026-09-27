@@ -149,6 +149,7 @@
         "Remove-WHDManufacturer"
         "Remove-WHDModel"
         "Remove-WHDSession"
+        "Remove-WHDToken"
         "Remove-WHDTicket"
     )
 
