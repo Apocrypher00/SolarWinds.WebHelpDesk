@@ -14,9 +14,9 @@ function Clear-Connection {
     } finally {
         $Script:WHDConnection.UriBuilder = $null
         $Script:WHDConnection.WebSession = $null
+        $Script:WHDConnection.ApiKey     = $null
+        $Script:WHDConnection.Username   = $null
         $Script:WHDConnection.Session    = $null
         $Script:WHDConnection.Token      = $null
-        $Script:WHDConnection.AuthParams.Clear()
-        $Script:WHDConnection.AuthHeaders.Clear()
     }
 }

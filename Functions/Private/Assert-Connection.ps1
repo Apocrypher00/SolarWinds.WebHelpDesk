@@ -10,17 +10,21 @@ function Assert-Connection {
     [OutputType([void])]
     param ()
 
-    # Do we have a token, session key, or API key available?
-    if (
-        ($null -eq $Script:WHDConnection.Token) -and
-        ($null -eq $Script:WHDConnection.Session) -and
-        ($null -eq $Script:WHDConnection.AuthParams["apiKey"])
-    ) {
-        throw "No authentication method provided. Please connect to Web Help Desk first using Connect-WebHelpDesk."
-    }
+    switch (Get-AuthenticationType) {
+        ([WHDAuthenticationType]::None) {
+            throw "No authentication method provided. Please connect to Web Help Desk first using Connect-WebHelpDesk."
+        }
 
-    # If we have a session, is it expired?
-    if (($null -ne $Script:WHDConnection.Session) -and ($Script:WHDConnection.Session.IsExpired)) {
-        throw "Session key has expired. Please connect to Web Help Desk again using Connect-WebHelpDesk."
+        ([WHDAuthenticationType]::Headers) {
+            if ($Script:WHDConnection.Token.IsExpired) {
+                throw "Token has expired. Please connect to Web Help Desk again using Connect-WebHelpDesk."
+            }
+        }
+
+        ([WHDAuthenticationType]::QueryParameters) {
+            if (($null -ne $Script:WHDConnection.Session) -and ($Script:WHDConnection.Session.IsExpired)) {
+                throw "Session key has expired. Please connect to Web Help Desk again using Connect-WebHelpDesk."
+            }
+        }
     }
 }

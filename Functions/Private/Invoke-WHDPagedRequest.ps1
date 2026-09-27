@@ -42,8 +42,9 @@ function Invoke-WHDPagedRequest {
     $QueryParameters["page"] = 1
 
     $ParameterHash = @{
-        UriBuilder = $UriBuilder
-        Method     = [Microsoft.PowerShell.Commands.WebRequestMethod]::Get
+        UriBuilder      = $UriBuilder
+        Method          = [Microsoft.PowerShell.Commands.WebRequestMethod]::Get
+        QueryParameters = $QueryParameters
     }
 
     if ($null -ne $Body) {
@@ -54,7 +55,6 @@ function Invoke-WHDPagedRequest {
     $PreviousBatch = $null
 
     do {
-        $UriBuilder.Query = $QueryParameters.ToString()
         $Response = Invoke-WHDMethod @ParameterHash
 
         $IsListEnvelope = (

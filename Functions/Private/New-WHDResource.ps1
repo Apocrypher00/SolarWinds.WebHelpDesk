@@ -36,9 +36,12 @@ function New-WHDResource {
     $UriBuilder = Copy-UriBuilder -UriBuilder $Script:WHDConnection.UriBuilder
     $UriBuilder.Path += "/$ResourceType"
 
+    $QueryParams = New-HttpQSCollection
+    $NoAuthentication = $false
+
     # Token credentials are sent in the JSON body rather than as authentication query parameters.
     if ($ResourceType -eq [WHDResourceType]::Token) {
-        $Authentication = Copy-Authentication
+        $Authentication = Get-AuthenticationParameters
         $ApiKey = $Authentication["apiKey"]
         if ([string]::IsNullOrWhiteSpace($ApiKey)) {
             throw "Creating a Token requires an API key. Reconnect using Connect-WebHelpDesk -PersistCredentials."
@@ -53,13 +56,11 @@ function New-WHDResource {
             $Body["username"] = $Username
         }
 
-        $QueryParams = New-HttpQSCollection
+        $NoAuthentication = $true
     } else {
         if ($null -eq $Body) {
             throw "Creating a '$ResourceType' ResourceType requires a request body."
         }
-
-        $QueryParams = Copy-Authentication
     }
 
     if ($AdditionalParameters) {
@@ -68,12 +69,12 @@ function New-WHDResource {
         }
     }
 
-    $UriBuilder.Query = $QueryParams.ToString()
-
     $ParameterHash = @{
-        UriBuilder = $UriBuilder
-        Method     = [Microsoft.PowerShell.Commands.WebRequestMethod]::Post
-        Body       = $Body
+        UriBuilder       = $UriBuilder
+        Method           = [Microsoft.PowerShell.Commands.WebRequestMethod]::Post
+        Body             = $Body
+        QueryParameters  = $QueryParams
+        NoAuthentication = $NoAuthentication
     }
 
     if ($PSCmdlet.ShouldProcess("ResourceType=$ResourceType", "Create Resource in Web Help Desk")) {

@@ -68,23 +68,21 @@ function Connect-WHDServer {
             }
 
             $Script:WHDConnection.Token = $Token
-            $Script:WHDConnection.AuthHeaders["Authorization"] = "$($Token.tokenType) $($Token.accessToken)"
         } else {
             # Store the credentials temporarily in our state; we'll use them to get a session key
-            $Script:WHDConnection.AuthParams.Add("apiKey", $ApiKey)
+            $Script:WHDConnection.ApiKey = $ApiKey
             if ($PSBoundParameters.ContainsKey("Username")) {
-                $Script:WHDConnection.AuthParams.Add("username", $Username)
+                $Script:WHDConnection.Username = $Username
             }
 
             if (-not $PersistCredentials) {
                 # Get a session key and save it in our state
                 $Script:WHDConnection.Session = Get-WHDSession -ErrorAction Stop
-                $Script:WHDConnection.AuthParams.Add("sessionKey", $Script:WHDConnection.Session.sessionKey)
 
                 # Clear the temporary credentials from our state for security;
                 # we only need the session key going forward.
-                $Script:WHDConnection.AuthParams.Remove("username") | Out-Null
-                $Script:WHDConnection.AuthParams.Remove("apiKey") | Out-Null
+                $Script:WHDConnection.Username = $null
+                $Script:WHDConnection.ApiKey   = $null
             }
         }
     } catch {

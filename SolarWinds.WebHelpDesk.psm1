@@ -25,10 +25,10 @@ foreach ($Function in $PublicFunctions) { . $Function.FullName }
 
 # Module State
 $Script:WHDConnection = [PSCustomObject]@{
-    UriBuilder  = $null
-    WebSession  = $null
-    Session     = $null
-    Token       = $null
-    AuthParams  = New-HttpQSCollection
-    AuthHeaders = @{}
+    UriBuilder = $null
+    WebSession = $null
+    ApiKey     = $null
+    Username   = $null
+    Session    = $null
+    Token      = $null
 }

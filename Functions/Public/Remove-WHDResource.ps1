@@ -26,26 +26,27 @@ function Remove-WHDResource {
         # Add the ResourceType to the path
         $UriBuilder.Path += "/$ResourceType"
 
+        $QueryParams = New-HttpQSCollection
+        $NoAuthentication = $false
+
         # Add the ResourceId to the path; Sessions and Tokens are exceptions
         if ($ResourceType -eq [WHDResourceType]::Session) {
-            $QueryParams = New-HttpQSCollection
             $QueryParams.Add("sessionKey", $Resource.sessionKey)
+            $NoAuthentication = $true
             $ShouldProcessMessage = "ResourceType=$ResourceType"
         } elseif ($ResourceType -eq [WHDResourceType]::Token) {
-            $QueryParams = New-HttpQSCollection
             $ShouldProcessMessage = "ResourceType=$ResourceType"
         } else {
-            $QueryParams = Copy-Authentication
             $UriBuilder.Path += "/$($Resource.id)"
             $ShouldProcessMessage = "ResourceType=$ResourceType, ResourceId=$($Resource.id)"
         }
 
-        $UriBuilder.Query = $QueryParams.ToString()
-
         # Build the parameter hash for Invoke-WHDMethod
         $ParameterHash = @{
-            UriBuilder = $UriBuilder
-            Method     = [Microsoft.PowerShell.Commands.WebRequestMethod]::Delete
+            UriBuilder       = $UriBuilder
+            Method           = [Microsoft.PowerShell.Commands.WebRequestMethod]::Delete
+            QueryParameters  = $QueryParams
+            NoAuthentication = $NoAuthentication
         }
 
         # Send the request and return the result

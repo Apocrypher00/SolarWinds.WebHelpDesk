@@ -88,8 +88,8 @@ function Get-WHDResource {
     # FIXME: We should minimize direct references to module-level state
     $UriBuilder = Copy-UriBuilder -UriBuilder $Script:WHDConnection.UriBuilder
 
-    # Create a copy of the Module level authentication parameters
-    $QueryParams = Copy-Authentication
+    # Create an empty collection for resource-specific query parameters
+    $QueryParams = New-HttpQSCollection
 
     # Add the ResourceType to the UriBuilder path to build the endpoint URI
     $UriBuilder.Path += "/$ResourceType"
@@ -139,13 +139,11 @@ function Get-WHDResource {
         ))
     )
 
-    # Add the query parameters to the UriBuilder, this will handle encoding and formatting for us
-    $UriBuilder.Query = $QueryParams.ToString()
-
     # Parameters for Invoke-WHDMethod
     $ParameterHash = @{
-        UriBuilder = $UriBuilder
-        Method     = [Microsoft.PowerShell.Commands.WebRequestMethod]::Get
+        UriBuilder      = $UriBuilder
+        Method          = [Microsoft.PowerShell.Commands.WebRequestMethod]::Get
+        QueryParameters = $QueryParams
     }
 
     # If a qualifier was specified, add it to the body of the request as JSON.
