@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Types>
+    <!-- TODO: Add a GetJwtPayload() ScriptMethod for optional JWT claim inspection. -->
+    <Type>
+        <Name>SolarWinds.WebHelpDesk.Token</Name>
+        <Members>
+            <ScriptProperty>
+                <Name>IsExpired</Name>
+                <GetScriptBlock>
+                    $this.ExpirationDate -le ([DateTimeOffset]::UtcNow)
+                </GetScriptBlock>
+            </ScriptProperty>
+        </Members>
+    </Type>
+</Types>

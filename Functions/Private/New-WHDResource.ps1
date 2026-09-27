@@ -21,7 +21,7 @@ function New-WHDResource {
         [Parameter(Mandatory, Position = 0)]
         [WHDResourceType] $ResourceType,
 
-        [Parameter(Mandatory, Position = 1)]
+        [Parameter(Position = 1)]
         [hashtable] $Body,
 
         [Parameter()]
@@ -38,8 +38,27 @@ function New-WHDResource {
 
     # Token credentials are sent in the JSON body rather than as authentication query parameters.
     if ($ResourceType -eq [WHDResourceType]::Token) {
+        $Authentication = Copy-Authentication
+        $ApiKey = $Authentication["apiKey"]
+        if ([string]::IsNullOrWhiteSpace($ApiKey)) {
+            throw "Creating a Token requires an API key. Reconnect using Connect-WebHelpDesk -PersistCredentials."
+        }
+
+        $Body = @{
+            apiKey = $ApiKey
+        }
+
+        $Username = $Authentication["username"]
+        if (-not [string]::IsNullOrWhiteSpace($Username)) {
+            $Body["username"] = $Username
+        }
+
         $QueryParams = New-HttpQSCollection
     } else {
+        if ($null -eq $Body) {
+            throw "Creating a '$ResourceType' ResourceType requires a request body."
+        }
+
         $QueryParams = Copy-Authentication
     }
 

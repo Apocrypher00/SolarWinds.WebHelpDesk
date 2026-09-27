@@ -3,8 +3,9 @@
     Connect to the WebHelpDesk API.
 
     .DESCRIPTION
-    This function establishes a connection to the WHD API by obtaining a session key using the provided credentials.
-    The session key and base URL are stored in module state for use in subsequent API calls.
+    This function establishes a connection to the WHD API using an API key or bearer Token.
+    By default, API key authentication is exchanged for a Session.
+    The resulting authentication state and base URL are stored for use in subsequent API calls.
 
     .PARAMETER BaseUrl
     The base URL of the WebHelpDesk instance (e.g., "https://whd.mydomain.com").
@@ -20,23 +21,29 @@
     .PARAMETER PersistCredentials
     If set, the API key and username will be stored in the module's state for future use.
     By default, credentials are only used to obtain a session key and are not stored.
+
+    .PARAMETER Token
+    A bearer Token returned by New-WHDToken.
 #>
 function Connect-WHDServer {
-    [CmdletBinding()]
+    [CmdletBinding(DefaultParameterSetName = "ApiKey")]
     [Alias("Connect-WebHelpDesk")]
     [OutputType([void])]
     param (
         [Parameter(Mandatory)]
         [string] $BaseUrl,
 
-        [Parameter(Mandatory)]
+        [Parameter(Mandatory, ParameterSetName = "ApiKey")]
         [string] $ApiKey,
 
-        [Parameter()]
+        [Parameter(ParameterSetName = "ApiKey")]
         [string] $Username,
 
-        [Parameter()]
-        [switch] $PersistCredentials
+        [Parameter(ParameterSetName = "ApiKey")]
+        [switch] $PersistCredentials,
+
+        [Parameter(Mandatory, ParameterSetName = "Token")]
+        [PSTypeName("SolarWinds.WebHelpDesk.Token")] $Token
     )
 
     # Disconnect first to keep things clean if we're already connected
@@ -55,20 +62,30 @@ function Connect-WHDServer {
         # This handles cookies/caching for the REST API
         $Script:WHDConnection.WebSession = [Microsoft.PowerShell.Commands.WebRequestSession]::new()
 
-        # Store the credentials temporarily in our state; we'll use them to get a session key
-        $Script:WHDConnection.AuthParams.Add("apiKey", $ApiKey)
-        if ($PSBoundParameters.ContainsKey("Username")) {
-            $Script:WHDConnection.AuthParams.Add("username", $Username)
-        }
+        if ($PSCmdlet.ParameterSetName -eq "Token") {
+            if ($Token.IsExpired) {
+                throw "The supplied Token has expired."
+            }
 
-        if (-not $PersistCredentials) {
-            # Get a session key and save it in our state
-            $Script:WHDConnection.Session = Get-WHDSession -ErrorAction Stop
-            $Script:WHDConnection.AuthParams.Add("sessionKey", $Script:WHDConnection.Session.sessionKey)
+            $Script:WHDConnection.Token = $Token
+            $Script:WHDConnection.AuthHeaders["Authorization"] = "$($Token.tokenType) $($Token.accessToken)"
+        } else {
+            # Store the credentials temporarily in our state; we'll use them to get a session key
+            $Script:WHDConnection.AuthParams.Add("apiKey", $ApiKey)
+            if ($PSBoundParameters.ContainsKey("Username")) {
+                $Script:WHDConnection.AuthParams.Add("username", $Username)
+            }
 
-            # Clear the temporary credentials from our state for security; we only need the session key going forward
-            $Script:WHDConnection.AuthParams.Remove("username") | Out-Null
-            $Script:WHDConnection.AuthParams.Remove("apiKey") | Out-Null
+            if (-not $PersistCredentials) {
+                # Get a session key and save it in our state
+                $Script:WHDConnection.Session = Get-WHDSession -ErrorAction Stop
+                $Script:WHDConnection.AuthParams.Add("sessionKey", $Script:WHDConnection.Session.sessionKey)
+
+                # Clear the temporary credentials from our state for security;
+                # we only need the session key going forward.
+                $Script:WHDConnection.AuthParams.Remove("username") | Out-Null
+                $Script:WHDConnection.AuthParams.Remove("apiKey") | Out-Null
+            }
         }
     } catch {
         # Do not leave credentials or partial connection state after initialization fails.
