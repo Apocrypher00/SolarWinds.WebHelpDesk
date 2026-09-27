@@ -65,8 +65,10 @@ function Get-WHDResource {
         [switch] $Expand
     )
 
+    $Method = [Microsoft.PowerShell.Commands.WebRequestMethod]::Get
+
     Assert-Connection
-    Assert-SupportsMethod -ResourceType $ResourceType -Method Get
+    Assert-SupportsMethod -ResourceType $ResourceType -Method $Method
 
     # Only allow TicketListType for Tickets
     $TicketListTypeSpecified = $PSBoundParameters.ContainsKey("TicketListType")
@@ -142,7 +144,7 @@ function Get-WHDResource {
     # Parameters for Invoke-WHDMethod
     $ParameterHash = @{
         UriBuilder      = $UriBuilder
-        Method          = [Microsoft.PowerShell.Commands.WebRequestMethod]::Get
+        Method          = $Method
         QueryParameters = $QueryParams
     }
 

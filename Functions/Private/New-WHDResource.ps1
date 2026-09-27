@@ -28,8 +28,10 @@ function New-WHDResource {
         [hashtable] $AdditionalParameters
     )
 
+    $Method = [Microsoft.PowerShell.Commands.WebRequestMethod]::Post
+
     Assert-Connection
-    Assert-SupportsMethod -ResourceType $ResourceType -Method Post
+    Assert-SupportsMethod -ResourceType $ResourceType -Method $Method
 
     # Create a copy of the Module level UriBuilder
     # FIXME: We should minimize direct references to module-level state
@@ -71,7 +73,7 @@ function New-WHDResource {
 
     $ParameterHash = @{
         UriBuilder       = $UriBuilder
-        Method           = [Microsoft.PowerShell.Commands.WebRequestMethod]::Post
+        Method           = $Method
         Body             = $Body
         QueryParameters  = $QueryParams
         NoAuthentication = $NoAuthentication

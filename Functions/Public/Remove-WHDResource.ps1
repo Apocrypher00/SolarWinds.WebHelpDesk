@@ -14,10 +14,11 @@ function Remove-WHDResource {
     )
 
     process {
-        Assert-Connection
-
         $ResourceType = $Resource.ResourceType
-        Assert-SupportsMethod -ResourceType $ResourceType -Method Delete
+        $Method       = [Microsoft.PowerShell.Commands.WebRequestMethod]::Delete
+
+        Assert-Connection
+        Assert-SupportsMethod -ResourceType $ResourceType -Method $Method
 
         # Create a copy of the Module level UriBuilder
         # FIXME: We should minimize direct references to module-level state
@@ -44,7 +45,7 @@ function Remove-WHDResource {
         # Build the parameter hash for Invoke-WHDMethod
         $ParameterHash = @{
             UriBuilder       = $UriBuilder
-            Method           = [Microsoft.PowerShell.Commands.WebRequestMethod]::Delete
+            Method           = $Method
             QueryParameters  = $QueryParams
             NoAuthentication = $NoAuthentication
         }
