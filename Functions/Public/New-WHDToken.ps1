@@ -4,7 +4,7 @@
 
     .DESCRIPTION
     This function creates a bearer Token using the credentials retained by the current connection.
-    Connect with PersistCredentials before calling this function.
+    Connect with AuthenticationMode Direct before calling this function.
     The returned accessToken is sensitive and isn't included in the default display.
 #>
 function New-WHDToken {

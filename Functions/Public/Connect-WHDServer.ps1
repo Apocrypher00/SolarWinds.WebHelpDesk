@@ -3,8 +3,8 @@
     Connect to the WebHelpDesk API.
 
     .DESCRIPTION
-    This function establishes a connection to the WHD API using an API key or bearer Token.
-    By default, API key authentication is exchanged for a Session.
+    This function establishes a connection to the WHD API using an API key, bearer Token, or Session.
+    By default, API key authentication is exchanged for a bearer Token.
     The resulting authentication state and base URL are stored for use in subsequent API calls.
 
     .PARAMETER BaseUrl
@@ -18,12 +18,16 @@
     The username associated with the API key.
     This is required for Application API keys but optional for User API keys.
 
-    .PARAMETER PersistCredentials
-    If set, the API key and username will be stored in the module's state for future use.
-    By default, credentials are only used to obtain a session key and are not stored.
+    .PARAMETER AuthenticationMode
+    Determines how supplied API-key credentials are used. The default is Token.
+    Token exchanges the credentials for a bearer Token, Session exchanges them for a Session,
+    and Direct retains them for direct API-key authentication.
 
     .PARAMETER Token
     A bearer Token returned by New-WHDToken.
+
+    .PARAMETER Session
+    A Session returned by New-WHDSession.
 #>
 function Connect-WHDServer {
     [CmdletBinding(DefaultParameterSetName = "ApiKey")]
@@ -40,10 +44,13 @@ function Connect-WHDServer {
         [string] $Username,
 
         [Parameter(ParameterSetName = "ApiKey")]
-        [switch] $PersistCredentials,
+        [WHDConnectionMode] $AuthenticationMode = [WHDConnectionMode]::Token,
 
         [Parameter(Mandatory, ParameterSetName = "Token")]
-        [PSTypeName("SolarWinds.WebHelpDesk.Token")] $Token
+        [PSTypeName("SolarWinds.WebHelpDesk.Token")] $Token,
+
+        [Parameter(Mandatory, ParameterSetName = "Session")]
+        [PSTypeName("SolarWinds.WebHelpDesk.Session")] $Session
     )
 
     # Disconnect first to keep things clean if we're already connected
@@ -62,27 +69,45 @@ function Connect-WHDServer {
         # This handles cookies/caching for the REST API
         $Script:WHDConnection.WebSession = [Microsoft.PowerShell.Commands.WebRequestSession]::new()
 
-        if ($PSCmdlet.ParameterSetName -eq "Token") {
-            if ($Token.IsExpired) {
-                throw "The supplied Token has expired."
+        switch ($PSCmdlet.ParameterSetName) {
+            "Token" {
+                if ($Token.IsExpired) {
+                    throw "The supplied Token has expired."
+                }
+
+                $Script:WHDConnection.Token = $Token
             }
+            "Session" {
+                if ($Session.IsExpired) {
+                    throw "The supplied Session has expired."
+                }
 
-            $Script:WHDConnection.Token = $Token
-        } else {
-            # Store the credentials temporarily in our state; we'll use them to get a session key
-            $Script:WHDConnection.ApiKey = $ApiKey
-            if ($PSBoundParameters.ContainsKey("Username")) {
-                $Script:WHDConnection.Username = $Username
+                $Script:WHDConnection.Session = $Session
             }
+            "ApiKey" {
+                # Store the credentials in our state so they can authenticate directly or be exchanged.
+                $Script:WHDConnection.ApiKey = $ApiKey
+                if ($PSBoundParameters.ContainsKey("Username")) {
+                    $Script:WHDConnection.Username = $Username
+                }
 
-            if (-not $PersistCredentials) {
-                # Get a session key and save it in our state
-                $Script:WHDConnection.Session = Get-WHDSession -ErrorAction Stop
+                switch ($AuthenticationMode) {
+                    ([WHDConnectionMode]::Token) {
+                        $Script:WHDConnection.Token = New-WHDToken -ErrorAction Stop
+                    }
+                    ([WHDConnectionMode]::Session) {
+                        $Script:WHDConnection.Session = New-WHDSession -ErrorAction Stop
+                    }
+                    ([WHDConnectionMode]::Direct) {
+                        # Keep the supplied credentials for direct API-key authentication.
+                    }
+                }
 
-                # Clear the temporary credentials from our state for security;
-                # we only need the session key going forward.
-                $Script:WHDConnection.Username = $null
-                $Script:WHDConnection.ApiKey   = $null
+                if ($AuthenticationMode -ne [WHDConnectionMode]::Direct) {
+                    # Clear credentials after exchanging them for the selected authentication type.
+                    $Script:WHDConnection.Username = $null
+                    $Script:WHDConnection.ApiKey   = $null
+                }
             }
         }
     } catch {

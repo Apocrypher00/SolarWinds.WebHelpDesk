@@ -44,7 +44,7 @@ function New-WHDResource {
         $Authentication = Get-AuthenticationParameters
         $ApiKey = $Authentication["apiKey"]
         if ([string]::IsNullOrWhiteSpace($ApiKey)) {
-            throw "Creating a Token requires an API key. Reconnect using Connect-WebHelpDesk -PersistCredentials."
+            throw "Creating a Token requires an API key. Reconnect using Connect-WebHelpDesk -AuthenticationMode Direct."
         }
 
         $Body = @{
