@@ -110,7 +110,11 @@ function Invoke-WHDMethod {
     $ParameterHash["Uri"] = $RequestUriBuilder.Uri
 
     if ($null -ne $Body) {
-        if ($Method -in @("Post", "Put")) {
+        if ($Method -in @(
+                [Microsoft.PowerShell.Commands.WebRequestMethod]::Post,
+                [Microsoft.PowerShell.Commands.WebRequestMethod]::Put
+            )
+        ) {
             $ParameterHash["ContentType"] = "application/json"
             # FIXME: Revisit the serialization depth when create/update payloads are implemented.
             $ParameterHash["Body"] = ConvertTo-Json -InputObject $Body -Depth 10 -Compress
