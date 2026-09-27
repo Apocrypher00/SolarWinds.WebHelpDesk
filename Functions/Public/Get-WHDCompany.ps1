@@ -19,9 +19,6 @@
     .PARAMETER Name
     A companyName to search for.
 
-    .PARAMETER Expand
-    If specified, all results will be in the detailed format.
-
     .NOTES
     TODO: Needs expanding, I don't have any test objects yet.
 #>
@@ -38,10 +35,7 @@ function Get-WHDCompany {
         [string] $QualifierString,
 
         [Parameter(ParameterSetName = "Search")]
-        [string] $Name,
-
-        [Parameter()]
-        [switch] $Expand
+        [string] $Name
     )
 
     $AttributeMap = @{
@@ -50,7 +44,6 @@ function Get-WHDCompany {
 
     $QueryParameters = @{
         ResourceType = [WHDResourceType]::Company
-        Expand       = $Expand.IsPresent
     }
 
     switch ($PSCmdlet.ParameterSetName) {

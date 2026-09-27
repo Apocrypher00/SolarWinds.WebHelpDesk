@@ -129,9 +129,9 @@ SolarWinds uses mostly singular resource paths, with two exceptions represented 
 - `Tickets` has no singular endpoint.
 - `ticketAttachment` is lowercase and case-sensitive.
 
-The API does not consistently implement short and detailed representations.
-Existing `-Expand` parameters request `style=details`, but
-some endpoints ignore that option or return the same representation either way.
+`-Expand` requests `style=detailed` on Asset, Location, Model, Ticket, and TicketNote list operations.
+Single Asset, Location, Ticket, and TicketNote requests are always detailed. Model supports short and detailed
+representations for both list and single requests.
 
 Client deletion is not supported by the NextGen API.
 Although older WHD versions accepted an undocumented Client DELETE request, WHD 2026.4.0 returns HTTP 405.

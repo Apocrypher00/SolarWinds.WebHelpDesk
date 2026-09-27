@@ -38,7 +38,7 @@
     A model.manufacturer.name to search for.
 
     .PARAMETER Expand
-    If specified, all results will be in the detailed format.
+    If specified, list results will use the detailed format.
 #>
 function Get-WHDAsset {
     [CmdletBinding(DefaultParameterSetName = "Search")]
@@ -73,7 +73,9 @@ function Get-WHDAsset {
         [Parameter(ParameterSetName = "Search")]
         [string] $Manufacturer,
 
-        [Parameter()]
+        [Parameter(ParameterSetName = "Search")]
+        [Parameter(ParameterSetName = "Qualifier")]
+        [Parameter(ParameterSetName = "QualifierString")]
         [switch] $Expand
     )
 

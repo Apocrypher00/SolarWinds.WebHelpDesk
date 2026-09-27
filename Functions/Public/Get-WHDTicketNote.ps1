@@ -12,7 +12,7 @@
     The ResourceId of the TicketNote to retrieve.
 
     .PARAMETER Expand
-    If specified, all results will be in the detailed format.
+    If specified, list results will use the detailed format.
 
     .NOTES
     This ResourceType doesn't support Qualifiers.
@@ -26,7 +26,7 @@ function Get-WHDTicketNote {
         [Parameter(ParameterSetName = "List", Mandatory)]
         [int] $TicketId,
 
-        [Parameter()]
+        [Parameter(ParameterSetName = "List")]
         [switch] $Expand
     )
 

@@ -20,7 +20,7 @@
     A locationName to search for.
 
     .PARAMETER Expand
-    If specified, all results will be in the detailed format.
+    If specified, list results will use the detailed format.
 #>
 function Get-WHDLocation {
     [CmdletBinding(DefaultParameterSetName = "Search")]
@@ -37,7 +37,9 @@ function Get-WHDLocation {
         [Parameter(ParameterSetName = "Search")]
         [string] $Name,
 
-        [Parameter()]
+        [Parameter(ParameterSetName = "Search")]
+        [Parameter(ParameterSetName = "Qualifier")]
+        [Parameter(ParameterSetName = "QualifierString")]
         [switch] $Expand
     )
 

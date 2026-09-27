@@ -46,9 +46,6 @@
 
     .PARAMETER Url
     A url to search for.
-
-    .PARAMETER Expand
-    If specified, all results will be in the detailed format.
 #>
 function Get-WHDManufacturer {
     [CmdletBinding(DefaultParameterSetName = "Search")]
@@ -90,10 +87,7 @@ function Get-WHDManufacturer {
         [string] $Fax,
 
         [Parameter(ParameterSetName = "Search")]
-        [string] $Url,
-
-        [Parameter()]
-        [switch] $Expand
+        [string] $Url
     )
 
     $AttributeMap = @{
@@ -111,7 +105,6 @@ function Get-WHDManufacturer {
 
     $QueryParameters = @{
         ResourceType = [WHDResourceType]::Manufacturer
-        Expand       = $Expand.IsPresent
     }
 
     switch ($PSCmdlet.ParameterSetName) {

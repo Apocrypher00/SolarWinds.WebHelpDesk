@@ -8,9 +8,6 @@
     .PARAMETER ResourceId
     The id of the RequestType to be retrieved.
 
-    .PARAMETER Expand
-    If specified, all results will be in the detailed format.
-
     .NOTES
     This ResourceType doesn't support Qualifiers.
 #>
@@ -18,15 +15,11 @@ function Get-WHDRequestType {
     [CmdletBinding()]
     param (
         [Parameter(Position = 0)]
-        [int] $ResourceId,
-
-        [Parameter()]
-        [switch] $Expand
+        [int] $ResourceId
     )
 
     $QueryParameters = @{
         ResourceType = [WHDResourceType]::RequestType
-        Expand       = $Expand.IsPresent
     }
 
     if ($PSBoundParameters.ContainsKey("ResourceId")) {

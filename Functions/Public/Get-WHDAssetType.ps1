@@ -18,9 +18,6 @@
 
     .PARAMETER Name
     An assetType to search for.
-
-    .PARAMETER Expand
-    If specified, all results will be in the detailed format.
 #>
 function Get-WHDAssetType {
     [CmdletBinding(DefaultParameterSetName = "Search")]
@@ -35,10 +32,7 @@ function Get-WHDAssetType {
         [string] $QualifierString,
 
         [Parameter(ParameterSetName = "Search")]
-        [string] $Name,
-
-        [Parameter()]
-        [switch] $Expand
+        [string] $Name
     )
 
     $AttributeMap = @{
@@ -47,7 +41,6 @@ function Get-WHDAssetType {
 
     $QueryParameters = @{
         ResourceType = [WHDResourceType]::AssetType
-        Expand       = $Expand.IsPresent
     }
 
     switch ($PSCmdlet.ParameterSetName) {

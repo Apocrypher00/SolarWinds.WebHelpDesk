@@ -28,9 +28,6 @@
 
     .PARAMETER Email
     An email to search for.
-
-    .PARAMETER Expand
-    If specified, all results will be in the detailed format.
 #>
 function Get-WHDClient {
     [CmdletBinding(DefaultParameterSetName = "Search")]
@@ -55,10 +52,7 @@ function Get-WHDClient {
         [string] $Location,
 
         [Parameter(ParameterSetName = "Search")]
-        [string] $Email,
-
-        [Parameter()]
-        [switch] $Expand
+        [string] $Email
     )
 
     $AttributeMap = @{
@@ -70,7 +64,6 @@ function Get-WHDClient {
 
     $QueryParameters = @{
         ResourceType = [WHDResourceType]::Client
-        Expand       = $Expand.IsPresent
     }
 
     switch ($PSCmdlet.ParameterSetName) {

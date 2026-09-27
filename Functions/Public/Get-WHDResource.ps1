@@ -31,7 +31,9 @@
     Limited support: Client (predefined Qualifier is already applied).
 
     .PARAMETER Expand
-    If specified, all results will be in the detailed format.
+    Requests the detailed representation for supported ResourceTypes.
+    Asset, Location, TicketNote, and Tickets support this only for list requests.
+    Model supports it for both list and single requests.
 
     .NOTES
     If no ResourceId or Qualifier/QualifierString is provided, all resources of the specified type will be returned.
@@ -127,19 +129,14 @@ function Get-WHDResource {
         }
     }
 
-    # Omit style unless Expand is requested; the API defaults to 'short'.
-    if ($Expand) { $QueryParams.Add("style", "details") }
+    $SingleResource = ($PSCmdlet.ParameterSetName -eq "Single")
 
-    # Preference and Session return single objects without using a resource id.
-    # All other non-single JSON resources return paged list envelopes.
-    $SupportsPaging = (
-        ($PSCmdlet.ParameterSetName -ne "Single") -and
-        ($ResourceType -notin @(
-            [WHDResourceType]::Preference
-            [WHDResourceType]::Session
-            [WHDResourceType]::ticketAttachment
-        ))
-    )
+    if ($Expand) {
+        Assert-SupportsExpand -ResourceType $ResourceType -Single:$SingleResource
+        $QueryParams.Add("style", "detailed")
+    }
+
+    $ReturnsPagedResults = Test-ReturnsPagedResults -ResourceType $ResourceType -Single:$SingleResource
 
     # Parameters for Invoke-WHDMethod
     $ParameterHash = @{
@@ -161,7 +158,7 @@ function Get-WHDResource {
             Id       = $ResourceId
             Response = (Invoke-WHDMethod @ParameterHash -AsWebResponse)
         }
-    } elseif ($SupportsPaging) {
+    } elseif ($ReturnsPagedResults) {
         $Results = Invoke-WHDPagedRequest `
             -UriBuilder      $UriBuilder `
             -QueryParameters $QueryParams `
