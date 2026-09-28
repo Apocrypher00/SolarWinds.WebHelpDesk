@@ -183,28 +183,28 @@
         PSData = @{
 
             # Tags applied to this module. These help with module discovery in online galleries.
-            Tags                     = @("SolarWinds", "WHD", "WebHelpDesk", "REST", "API")
+            Tags                       = @("SolarWinds", "WHD", "WebHelpDesk", "REST", "API")
 
             # A URL to the license for this module.
-            LicenseUri               = "https://github.com/Apocrypher00/SolarWinds.WebHelpDesk/blob/master/LICENSE"
+            LicenseUri                 = "https://github.com/Apocrypher00/SolarWinds.WebHelpDesk/blob/master/LICENSE"
 
             # A URL to the main website for this project.
-            ProjectUri               = "https://github.com/Apocrypher00/SolarWinds.WebHelpDesk"
+            ProjectUri                 = "https://github.com/Apocrypher00/SolarWinds.WebHelpDesk"
 
             # A URL to an icon representing this module.
             # IconUri = ""
 
             # ReleaseNotes of this module
-            ReleaseNotes             = "Initial release for the WHD 2026.4.0 NextGen API."
+            ReleaseNotes               = "Initial release for the WHD 2026.4.0 NextGen API."
 
             # Prerelease string of this module
             # Prerelease = ""
 
             # Flag to indicate whether the module requires explicit user acceptance for install/update/save
-            RequireLicenseAcceptance = $false
+            RequireLicenseAcceptance   = $false
 
             # External dependent modules of this module
-            # ExternalModuleDependencies = @()
+            ExternalModuleDependencies = @("Microsoft.PowerShell.Utility")
 
         } # End of PSData hashtable
 
