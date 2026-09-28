@@ -4,7 +4,7 @@
     RootModule           = "SolarWinds.WebHelpDesk.psm1"
 
     # Version number of this module.
-    ModuleVersion        = "0.1.0"
+    ModuleVersion        = "1.0.0"
 
     # Supported PSEditions
     CompatiblePSEditions = @("Desktop", "Core")
@@ -19,10 +19,10 @@
     CompanyName          = "Community"
 
     # Copyright statement for this module
-    Copyright            = "(c) Apocrypher00. All rights reserved."
+    Copyright            = "Released into the public domain under the Unlicense."
 
     # Description of the functionality provided by this module
-    Description          = "Final legacy snapshot for SolarWinds Web Help Desk 2026.1 and earlier. Unmaintained; does not support the 2026.4.0 NextGen API."
+    Description          = "PowerShell module for the SolarWinds Web Help Desk 2026.4.0 NextGen REST API."
 
     # Minimum version of the PowerShell engine required by this module
     PowerShellVersion    = "5.1"
@@ -45,7 +45,7 @@
     # ProcessorArchitecture = ""
 
     # Modules that must be imported into the global environment prior to importing this module
-    # RequiredModules = @()
+    RequiredModules      = @("Microsoft.PowerShell.Utility")
 
     # Assemblies that must be loaded prior to importing this module
     RequiredAssemblies   = @("System.Web")
@@ -195,7 +195,7 @@
             # IconUri = ""
 
             # ReleaseNotes of this module
-            # ReleaseNotes = ""
+            ReleaseNotes             = "Initial release for the WHD 2026.4.0 NextGen API."
 
             # Prerelease string of this module
             # Prerelease = ""

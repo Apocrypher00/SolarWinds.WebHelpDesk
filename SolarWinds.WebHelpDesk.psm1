@@ -1,6 +1,3 @@
-# External Imports
-Add-Type -AssemblyName "System.Web" -ErrorAction Stop
-
 # Import all enums in the Enums folder
 $EnumPath = Join-Path -Path $PSScriptRoot -ChildPath "Enums"
 $Enums = Get-ChildItem -Path $EnumPath -Filter "*.ps1" -File
